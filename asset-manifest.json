@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.js": "/static/js/main.5270e267.js",
-    "static/media/team-1.jpg": "/static/media/team-1.0fd36e0ee93dcfacdef8.jpg",
-    "static/media/team-2.jpg": "/static/media/team-2.13ae2ce3e12f4cfed420.jpg",
-    "static/media/team-3.jpg": "/static/media/team-3.0ef0be95e6850814c79e.jpg",
-    "static/media/team-4.jpg": "/static/media/team-4.85c82b6e60178804017f.jpg",
-    "static/media/infopublishers.png": "/static/media/infopublishers.f8f53b87734e3b307b4f.png",
-    "static/media/logo-slack.svg": "/static/media/logo-slack.7c47c5aa474b5c4fb39fcf05ffb8e4e7.svg",
-    "static/media/logo-xd.svg": "/static/media/logo-xd.6e37886f94dba0c2967ece68a152e30c.svg",
-    "static/media/logo-invision.svg": "/static/media/logo-invision.a1062115730dcd10e1c4f4abe7b9ab33.svg",
-    "static/media/logo-spotify.svg": "/static/media/logo-spotify.e83cf56c9d99a1fdf59e8deb58bbe470.svg",
-    "static/media/logo-jira.svg": "/static/media/logo-jira.c19fd4e416babfbd0fdb0a794188c601.svg",
-    "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.f2b0e8570a4b4ce768854ff3dad1a6e1.svg",
-    "index.html": "/index.html",
-    "main.5270e267.js.map": "/static/js/main.5270e267.js.map"
+    "main.js": "/infopublisher/static/js/main.d5a4faac.js",
+    "static/media/team-1.jpg": "/infopublisher/static/media/team-1.0fd36e0ee93dcfacdef8.jpg",
+    "static/media/team-2.jpg": "/infopublisher/static/media/team-2.13ae2ce3e12f4cfed420.jpg",
+    "static/media/team-3.jpg": "/infopublisher/static/media/team-3.0ef0be95e6850814c79e.jpg",
+    "static/media/team-4.jpg": "/infopublisher/static/media/team-4.85c82b6e60178804017f.jpg",
+    "static/media/infopublishers.png": "/infopublisher/static/media/infopublishers.f8f53b87734e3b307b4f.png",
+    "static/media/logo-slack.svg": "/infopublisher/static/media/logo-slack.7c47c5aa474b5c4fb39fcf05ffb8e4e7.svg",
+    "static/media/logo-xd.svg": "/infopublisher/static/media/logo-xd.6e37886f94dba0c2967ece68a152e30c.svg",
+    "static/media/logo-invision.svg": "/infopublisher/static/media/logo-invision.a1062115730dcd10e1c4f4abe7b9ab33.svg",
+    "static/media/logo-spotify.svg": "/infopublisher/static/media/logo-spotify.e83cf56c9d99a1fdf59e8deb58bbe470.svg",
+    "static/media/logo-jira.svg": "/infopublisher/static/media/logo-jira.c19fd4e416babfbd0fdb0a794188c601.svg",
+    "static/media/logo-atlassian.svg": "/infopublisher/static/media/logo-atlassian.f2b0e8570a4b4ce768854ff3dad1a6e1.svg",
+    "index.html": "/infopublisher/index.html",
+    "main.d5a4faac.js.map": "/infopublisher/static/js/main.d5a4faac.js.map"
   },
   "entrypoints": [
-    "static/js/main.5270e267.js"
+    "static/js/main.d5a4faac.js"
   ]
 }
