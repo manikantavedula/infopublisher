@@ -263,7 +263,7 @@ function Configurator() {
         <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
           <MDTypography variant="h6">Light / Dark</MDTypography>
 
-          <Switch checked={!darkMode} onChange={handleDarkMode} />
+          <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
         <Divider />
         <MDBox mt={3} mb={2}>
