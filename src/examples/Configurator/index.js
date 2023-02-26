@@ -272,7 +272,7 @@ function Configurator() {
             href=""
             target="_blank"
             rel="noreferrer"
-            color={darkMode ? "light" : "dark"}
+            color={darkMode ? "dark" : "light"}
             variant="outlined"
             fullWidth
           >
