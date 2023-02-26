@@ -16,7 +16,7 @@ const routes = [
     name: "Dashboard",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
+    route: "/infopublisher/dashboard",
     component: <Dashboard />,
   },
   {
@@ -24,7 +24,7 @@ const routes = [
     name: "Distributors",
     key: "distributors",
     icon: <Icon fontSize="small">people_alt</Icon>,
-    route: "/distributors",
+    route: "/infopublisher/distributors",
     component: <Distributors />,
   },
   {
@@ -32,7 +32,7 @@ const routes = [
     name: "Series",
     key: "series",
     icon: <Icon fontSize="small">line_weight</Icon>,
-    route: "/series",
+    route: "/infopublisher/series",
     component: <Series />,
   },
   {
@@ -40,7 +40,7 @@ const routes = [
     name: "Schools",
     key: "schools",
     icon: <Icon fontSize="small">corporate_fare</Icon>,
-    route: "/schools",
+    route: "/infopublisher/schools",
     component: <Schools />,
   },
   {
@@ -48,7 +48,7 @@ const routes = [
     name: "Students",
     key: "students",
     icon: <Icon fontSize="small">groups2</Icon>,
-    route: "/students",
+    route: "/infopublisher/students",
     component: <Students />,
   },
   {
@@ -56,7 +56,7 @@ const routes = [
     name: "Online Classes",
     key: "online-classes",
     icon: <Icon fontSize="small">ondemand_video</Icon>,
-    route: "/online-classes",
+    route: "/infopublisher/online-classes",
     component: <OnlineClasses />,
   },
   {
@@ -64,7 +64,7 @@ const routes = [
     name: "Assessments",
     key: "assessments",
     icon: <Icon fontSize="small">quiz</Icon>,
-    route: "/authentication/assessments",
+    route: "/infopublisher/authentication/assessments",
     component: <Assessments />,
   },
   {
@@ -72,7 +72,7 @@ const routes = [
     name: "Exams",
     key: "exams",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/exams",
+    route: "/infopublisher/authentication/exams",
     component: <Exams />,
   },
 ];
