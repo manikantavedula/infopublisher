@@ -1,103 +1,316 @@
+import React, { useLayoutEffect, useState, useMemo, useCallback } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import { styled } from "@mui/material/styles";
-
+// import { styled } from "@mui/material/styles";
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
-import Footer from "examples/Footer";
-
-import DataTable from "examples/Tables/DataTable";
-
-// Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
+// import Footer from "examples/Footer";
 import { useMaterialUIController } from "context";
-
 import TextField from "@mui/material/TextField";
+import { useSelector, useDispatch } from "react-redux";
+import { seriesActions } from "slices/series";
+import axios from "axios";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import SeriesTable from "./seriesTable";
+import SeriesTableNew from "./seriesTableNew";
+import { SeriesAddModal } from "./modals/seriesAddModal";
+import { SeriesEditModal } from "./modals/seriesEditModal";
+import { SeriesDeleteModal } from "./modals/seriesDeleteModal";
+import {
+  Button,
+  CardHeader,
+  Typography,
+  CardContent,
+  Divider,
+  IconButton,
+  Tooltip,
+  Paper,
+  InputBase,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import { IconSearch, IconPlus } from "@tabler/icons";
+
+// Create a custom theme with the desired color
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#673ab7", // purple
+    },
+    secondary: {
+      main: "rgb(33, 150, 243)", // blue
+    },
+  },
+});
 
 function Series() {
-  const { columns, rows } = authorsTableData();
-  const [controller] = useMaterialUIController();
-  const { darkMode } = controller;
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [whichModal, setWhichModal] = useState("");
+  const [editModalData, setEditModalData] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const CssTextField = styled(TextField)({
-    "& label.Mui-focused": {
-      color: "white",
-    },
-    "& label": {
-      color: "white",
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "white",
-    },
-    "& .MuiOutlinedInput-input": {
-      color: "white",
-    },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "white",
-      },
-      "&:hover fieldset": {
-        borderColor: "white",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "white",
-      },
-    },
+  const dispatch = useDispatch();
+  useLayoutEffect(() => {
+    dispatch(seriesActions.getAll());
+  }, []);
+
+  const series = useSelector((state) => state.series.data);
+
+  const filteredData = useMemo(() => {
+    console.log(searchQuery);
+
+    if (searchQuery.trim() === "") {
+      return series;
+    }
+
+    const filteredSeries = series.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.trim().toLowerCase())
+    );
+
+    return filteredSeries;
+  }, [searchQuery, series]);
+
+  const searchInputRef = React.useRef(null);
+
+  const onOpenAddModal = () => {
+    setIsOpen(true);
+    setWhichModal("add");
+  };
+
+  const onOpenEditModal = (val) => {
+    setIsOpen(true);
+    setWhichModal("edit");
+    setEditModalData(val);
+  };
+
+  const onOpenDeleteModal = (val) => {
+    setIsOpen(true);
+    setWhichModal("delete");
+    setEditModalData(val);
+  };
+
+  const onCloseEmptyModal = () => {
+    setIsOpen(false);
+    setWhichModal("");
+    setEditModalData({});
+  };
+
+  const onCloseAddModal = async (values) => {
+    setIsLoading(true);
+    console.log(values);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/series/submit-form`,
+        {
+          ...values,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+
+      setIsOpen(false);
+      setWhichModal("");
+      dispatch(seriesActions.getAll());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
+
+  const onCloseEditModal = async (values) => {
+    setIsLoading(true);
+    console.log(values, editModalData);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/series/submit-edit-form`,
+        {
+          ...editModalData,
+          ...values,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+
+      setIsOpen(false);
+      setWhichModal("");
+      setEditModalData({});
+      dispatch(seriesActions.getAll());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
+
+  const onCloseDeleteModal = async (values) => {
+    setIsLoading(true);
+    console.log(values, editModalData);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/series/submit-delete-form`,
+        {
+          ...editModalData,
+          ...values,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+
+      setIsOpen(false);
+      setWhichModal("");
+      setEditModalData({});
+      dispatch(seriesActions.getAll());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
+
+  const searchTable = useCallback((event) => {
+    console.log(event.target.value, searchInputRef, searchInputRef.current);
+
+    searchInputRef.current?.focus();
+
+    setSearchQuery(event.target.value);
   });
 
+  const toggleSearch = () => {
+    setIsSearchOpen((prevSearch) => !prevSearch);
+  };
+
   return (
-    <>
-      <MDBox>
-        <Grid spacing={12}>
-          <MDBox pt={2} px={2} display="flex" justifyContent="flex-end">
-            <MDButton color={!darkMode ? "error" : "warning"}>
-              <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-              &nbsp;add new Series
-            </MDButton>
-          </MDBox>
-        </Grid>
-      </MDBox>
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
+    <ThemeProvider theme={theme}>
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      {isOpen && whichModal === "add" ? (
+        <SeriesAddModal
+          isOpen={isOpen}
+          onClose={onCloseAddModal}
+          onCloseEmpty={onCloseEmptyModal}
+        />
+      ) : null}
+
+      {isOpen && whichModal === "edit" ? (
+        <SeriesEditModal
+          isOpen={isOpen}
+          onClose={onCloseEditModal}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
+      {isOpen && whichModal === "delete" ? (
+        <SeriesDeleteModal
+          isOpen={isOpen}
+          onClose={onCloseDeleteModal}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
+      <Grid>
+        <Card sx={{ boxShadow: "none" }}>
+          <CardContent>
+            <Grid
+              variant="gradient"
+              bgcolor="info"
+              borderRadius="lg"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h6" fontWeight={500} color="primary">
+                Series List
+              </Typography>
+
+              <Grid
+                size="small"
+                component="form"
+                sx={{ p: "2px 0px", display: "flex", alignItems: "center" }}
               >
-                <MDTypography variant="h6" color="white">
-                  Series List
-                </MDTypography>
-                <CssTextField label="Search this table..." color="error" />
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid>
-        </Grid>
-      </MDBox>
-      <Footer />
-    </>
+                {isSearchOpen ? (
+                  <TextField
+                    sx={{ ml: 1, flex: 1 }}
+                    size="small"
+                    placeholder="Search this table..."
+                    inputProps={{ "aria-label": "search this table..." }}
+                    autoFocus
+                    value={searchQuery}
+                    onChange={searchTable}
+                    variant="standard"
+                    label="Search"
+                  />
+                ) : null}
+                <Tooltip title="Search..." placement="top">
+                  <IconButton
+                    color="primary"
+                    type="button"
+                    aria-label="search"
+                    onClick={toggleSearch}
+                  >
+                    <IconSearch size="24px" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Add Series" placement="top">
+                  <IconButton color="secondary" aria-label="delete" onClick={onOpenAddModal}>
+                    <IconPlus size="27px" />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+            </Grid>
+          </CardContent>
+
+          <Divider />
+
+          <SeriesTableNew
+            filtereddata={filteredData}
+            onOpenEditModal={onOpenEditModal}
+            onOpenDeleteModal={onOpenDeleteModal}
+          />
+        </Card>
+      </Grid>
+      {/* <Footer /> */}
+    </ThemeProvider>
   );
 }
 

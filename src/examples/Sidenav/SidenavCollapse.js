@@ -40,7 +40,12 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
       >
         <ListItemIcon
           sx={(theme) =>
-            collapseIconBox(theme, { transparentSidenav, whiteSidenav, darkMode, active })
+            collapseIconBox(theme, {
+              transparentSidenav,
+              whiteSidenav: !active ? whiteSidenav : null,
+              darkMode,
+              active,
+            })
           }
         >
           {typeof icon === "string" ? (

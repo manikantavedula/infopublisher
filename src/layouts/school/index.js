@@ -1,0 +1,331 @@
+import React, { useLayoutEffect, useState, useMemo, useCallback } from "react";
+// @mui material components
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import { useMaterialUIController } from "context";
+import TextField from "@mui/material/TextField";
+import { useSelector, useDispatch } from "react-redux";
+import { schoolActions } from "slices/school";
+import axios from "axios";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import SchoolTableNew from "./schoolTableNew";
+import { SchoolAddModal } from "./modals/schoolAddModal";
+import { SchoolEditModal } from "./modals/schoolEditModal";
+import { SchoolDeleteModal } from "./modals/schoolDeleteModal";
+import { SchoolViewModal } from "./modals/schoolViewModal";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import { IconSearch, IconPlus } from "@tabler/icons";
+import {
+  Button,
+  CardHeader,
+  Typography,
+  CardContent,
+  Divider,
+  IconButton,
+  Tooltip,
+  Paper,
+  InputBase,
+} from "@mui/material";
+
+// Create a custom theme with the desired color
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#673ab7", // purple
+    },
+    secondary: {
+      main: "rgb(33, 150, 243)", // blue
+    },
+  },
+});
+
+function School() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [whichModal, setWhichModal] = useState("");
+  const [editModalData, setEditModalData] = useState({});
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  useLayoutEffect(() => {
+    dispatch(schoolActions.getAll());
+  }, []);
+
+  const school = useSelector((state) => state.school.data);
+
+  const filteredData = useMemo(() => {
+    console.log(searchQuery);
+
+    if (searchQuery.trim() === "") {
+      return school;
+    }
+
+    const filteredSchool = school.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        item.school_series.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase())
+    );
+
+    return filteredSchool;
+  }, [searchQuery, school]);
+
+  const searchInputRef = React.useRef(null);
+
+  const onOpenAddModal = useCallback(() => {
+    setIsOpen(true);
+    setWhichModal("add");
+  });
+
+  const onOpenEditModal = useCallback((val) => {
+    setIsOpen(true);
+    setWhichModal("edit");
+    setEditModalData(val);
+  });
+
+  const onOpenViewModal = useCallback((val) => {
+    setIsOpen(true);
+    setWhichModal("view");
+    setEditModalData(val);
+  });
+
+  const onOpenDeleteModal = useCallback((val) => {
+    setIsOpen(true);
+    setWhichModal("delete");
+    setEditModalData(val);
+  });
+
+  const onCloseEmptyModal = useCallback(() => {
+    setIsOpen(false);
+    setWhichModal("");
+    setEditModalData({});
+  });
+
+  const onCloseAddModal = async (values) => {
+    setIsLoading(true);
+    console.log(values);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/school/submit-form`,
+        {
+          ...values,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+
+      setIsOpen(false);
+      setWhichModal("");
+      dispatch(schoolActions.getAll());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
+
+  const onCloseEditModal = async (values) => {
+    setIsLoading(true);
+    console.log(values, editModalData);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/school/submit-edit-form`,
+        {
+          ...editModalData,
+          ...values,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+
+      setIsOpen(false);
+      setWhichModal("");
+      setEditModalData({});
+      dispatch(schoolActions.getAll());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
+
+  const onCloseDeleteModal = async (values) => {
+    setIsLoading(true);
+    console.log(values, editModalData);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/school/submit-delete-form`,
+        {
+          ...editModalData,
+          ...values,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+
+      setIsOpen(false);
+      setWhichModal("");
+      setEditModalData({});
+      dispatch(schoolActions.getAll());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
+
+  const searchTable = useCallback((event) => {
+    console.log(event.target.value, searchInputRef, searchInputRef.current);
+
+    searchInputRef.current?.focus();
+
+    setSearchQuery(event.target.value);
+  });
+
+  const toggleSearch = () => {
+    setIsSearchOpen((prevSearch) => !prevSearch);
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      {isOpen && whichModal === "add" ? (
+        <SchoolAddModal
+          isOpen={isOpen}
+          onClose={onCloseAddModal}
+          onCloseEmpty={onCloseEmptyModal}
+        />
+      ) : null}
+
+      {isOpen && whichModal === "edit" ? (
+        <SchoolEditModal
+          isOpen={isOpen}
+          onClose={onCloseEditModal}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
+      {isOpen && whichModal === "view" ? (
+        <SchoolViewModal
+          isOpen={isOpen}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
+      {isOpen && whichModal === "delete" ? (
+        <SchoolDeleteModal
+          isOpen={isOpen}
+          onClose={onCloseDeleteModal}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
+      <Grid>
+        <Card sx={{ boxShadow: "none" }}>
+          <CardContent>
+            <Grid
+              variant="gradient"
+              bgcolor="info"
+              borderRadius="lg"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h6" fontWeight={500} color="primary">
+                School List
+              </Typography>
+
+              <Grid
+                size="small"
+                component="form"
+                sx={{ p: "2px 0px", display: "flex", alignItems: "center" }}
+              >
+                {isSearchOpen ? (
+                  <TextField
+                    sx={{ ml: 1, flex: 1 }}
+                    size="small"
+                    placeholder="Search this table..."
+                    inputProps={{ "aria-label": "search this table..." }}
+                    autoFocus
+                    value={searchQuery}
+                    onChange={searchTable}
+                    variant="standard"
+                    label="Search"
+                  />
+                ) : null}
+                <Tooltip title="Search..." placement="top">
+                  <IconButton
+                    color="primary"
+                    type="button"
+                    aria-label="search"
+                    onClick={toggleSearch}
+                  >
+                    <IconSearch size="24px" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Add Series" placement="top">
+                  <IconButton color="secondary" aria-label="delete" onClick={onOpenAddModal}>
+                    <IconPlus size="27px" />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+            </Grid>
+          </CardContent>
+
+          <Divider />
+
+          <SchoolTableNew
+            filtereddata={filteredData}
+            onOpenEditModal={onOpenEditModal}
+            onOpenDeleteModal={onOpenDeleteModal}
+            onOpenViewModal={onOpenViewModal}
+          />
+        </Card>
+      </Grid>
+      {/* <Footer /> */}
+    </ThemeProvider>
+  );
+}
+
+export default School;
