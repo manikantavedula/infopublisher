@@ -53,7 +53,9 @@ export function SchoolDeleteModal({ isOpen, onClose, onCloseEmpty, editModalData
     <Dialog open={isOpen} fullWidth>
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box padding="8px">Confirm Delete</Box>
+          <Box padding="8px" fontSize={18}>
+            Confirm Delete
+          </Box>
 
           <IconButton onClick={onCloseEmpty}>
             <Close />

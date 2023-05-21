@@ -22,7 +22,7 @@ import axios from "axios";
 import { seriesActions } from "slices/series";
 import { standardActions } from "slices/standard";
 import { subjectActions } from "slices/subject";
-import { lessonActions } from "slices/lesson";
+import { onlineClassesActions } from "slices/onlineClasses";
 import { typeOfVideosActions } from "slices/typeOfVideos";
 // import { styled } from "@mui/material/styles";
 import { Close } from "@mui/icons-material";
@@ -36,38 +36,12 @@ const validationSchema = yup.object().shape({
   subject: yup.string().required("Please select an option"),
   type: yup.string().required("Please select an option"),
   // typeOfVideos: yup.string().required("Please select an option"),
-  lesson: yup.string().required("Lesson is required"),
-  lessonId: yup.string().when("type", {
-    is: "part",
-    then: yup.string().required("Lesson ID is required"),
-    otherwise: yup.string(),
-  }),
-  partNo: yup.string().when("type", {
-    is: "part",
-    then: yup.string().required("Part Number is required"),
-    otherwise: yup.string(),
-  }),
-  videoId: yup.string().when("type", {
-    is: "part",
-    then: yup.string().required("video ID is required"),
-    otherwise: yup.string(),
-  }),
+  onlineClasses: yup.string().required("OnlineClasses is required"),
 });
 
-export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
-  const {
-    name,
-    series: seriesEdit,
-    standard: standardEdit,
-    subject: subjectEdit,
-    type,
-    part_no,
-    lesson_id,
-    live_video_id,
-    animation_video_id,
-  } = editModalData;
-
+export function OnlineClassesAddModal({ isOpen, onClose, onCloseEmpty }) {
   const [fetchedOptions, setFetchedOptions] = useState([]);
+  const [partNo, setPartNo] = useState("");
 
   const dispatch = useDispatch();
   useLayoutEffect(() => {
@@ -87,7 +61,7 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/dataById`,
+        `${process.env.REACT_APP_API_URL}/onlineClasses/dataById`,
         {
           ...v,
         },
@@ -114,7 +88,7 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/dataByLessonId`,
+        `${process.env.REACT_APP_API_URL}/onlineClasses/dataByOnlineClassesId`,
         {
           ...v,
         },
@@ -143,28 +117,20 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
   }, [series, standard, subject]);
 
   const initialValues = {
-    series: seriesEdit,
-    standard: standardEdit,
-    subject: subjectEdit,
-    type,
+    series: "",
+    standard: "",
+    subject: "",
+    type: "main",
     typeOfVideos: "",
-    lesson: name,
-    partNo: part_no,
-    partName: name,
-    lessonId: lesson_id,
-    liveVideoId: live_video_id,
-    animationVideoId: animation_video_id,
+    onlineClasses: "",
+    partNo: "",
+    partName: "",
+    onlineClassesId: "",
   };
-
-  useLayoutEffect(() => {
-    if (type === "part") {
-      fetchData(initialValues);
-    }
-  }, []);
 
   const onSubmit = (values) => {
     console.log(values);
-    // onClose(values);
+    onClose(values);
   };
 
   return (
@@ -172,7 +138,7 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box padding="8px" fontSize={18}>
-            Edit Lesson
+            Add OnlineClasses
           </Box>
 
           <IconButton onClick={onCloseEmpty}>
@@ -180,9 +146,9 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
           </IconButton>
         </Box>
       </DialogTitle>
-      <Formik initialValues={initialValues} validationSchema={validationSchema}>
-        {({ values, errors, touched, setFieldValue }) => (
-          <Form>
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+        {({ values, handleSubmit, errors, touched, setFieldValue }) => (
+          <Form onSubmit={handleSubmit}>
             <DialogContent>
               <FormGroup row style={{ display: "flex", flexDirection: "column" }}>
                 <Grid container spacing={2}>
@@ -196,11 +162,9 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
                         label="Series"
                         error={touched.series && Boolean(errors.series)}
                         helperText={touched.series && errors.series}
-                        // onChange={(event) => {
-                        //   setFieldValue("series", event.target.value);
-                        // }}
-                        defaultValue={values.seriesEdit}
-                        disabled
+                        onChange={(event) => {
+                          setFieldValue("series", event.target.value);
+                        }}
                       >
                         <MenuItem value="">
                           <em>None</em>
@@ -225,11 +189,9 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
                         label="Standard"
                         error={touched.standard && Boolean(errors.standard)}
                         helperText={touched.standard && errors.standard}
-                        // onChange={(event) => {
-                        //   setFieldValue("standard", event.target.value);
-                        // }}
-                        defaultValue={values.standardEdit}
-                        disabled
+                        onChange={(event) => {
+                          setFieldValue("standard", event.target.value);
+                        }}
                       >
                         <MenuItem value="">
                           <em>None</em>
@@ -254,12 +216,10 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
                         label="Subject"
                         error={touched.subject && Boolean(errors.subject)}
                         helperText={touched.subject && errors.subject}
-                        // onChange={(event) => {
-                        //   setFieldValue("subject", event.target.value);
-                        //   console.log(values);
-                        // }}
-                        defaultValue={values.subjectEdit}
-                        disabled
+                        onChange={(event) => {
+                          setFieldValue("subject", event.target.value);
+                          console.log(values);
+                        }}
                       >
                         <MenuItem value="">
                           <em>None</em>
@@ -284,13 +244,14 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
                         label="Type"
                         error={touched.type && Boolean(errors.type)}
                         helperText={touched.type && errors.type}
-                        // onChange={(event) => {
-                        //   setFieldValue("type", event.target.value);
-                        //   fetchData(values);
-                        //   console.log(values);
-                        // }}
-                        disabled
-                        defaultValue={values.type}
+                        onChange={(event) => {
+                          setFieldValue("type", event.target.value);
+                          fetchData(values);
+                          console.log(values);
+                        }}
+                        disabled={
+                          values.series === "" || values.standard === "" || values.subject === ""
+                        }
                       >
                         <MenuItem value="">
                           <em>None</em>
@@ -308,23 +269,21 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
                     <>
                       <Grid item xs={6}>
                         <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">Lesson</InputLabel>
+                          <InputLabel id="demo-simple-select-label">OnlineClasses</InputLabel>
                           <Select
                             labelId="demo-simple-select-label"
-                            id="demo-simple-part-lesson"
-                            value={values.lessonId}
-                            label="Lesson"
-                            error={touched.lessonId && Boolean(errors.lessonId)}
-                            helperText={touched.lessonId && errors.lessonId}
-                            // onChange={(event) => {
-                            //   setFieldValue("lessonId", event.target.value);
-                            //   fetchPart({ lessonId: event.target.value }, (partNo) => {
-                            //     setFieldValue("partNo", partNo);
-                            //   });
-                            //   console.log(values);
-                            // }}
-                            defaultValue={values.lessonId}
-                            disabled
+                            id="demo-simple-part-onlineClasses"
+                            value={values.onlineClassesId}
+                            label="OnlineClasses"
+                            error={touched.onlineClassesId && Boolean(errors.onlineClassesId)}
+                            helperText={touched.onlineClassesId && errors.onlineClassesId}
+                            onChange={(event) => {
+                              setFieldValue("onlineClassesId", event.target.value);
+                              fetchPart({ onlineClassesId: event.target.value }, (partNo) => {
+                                setFieldValue("partNo", partNo);
+                              });
+                              console.log(values);
+                            }}
                           >
                             <MenuItem value="">
                               <em>None</em>
@@ -336,7 +295,9 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
                             ))}
                           </Select>
                           <FormHelperText sx={{ color: "red" }}>
-                            {errors.lessonId && touched.lessonId ? errors.lessonId : ""}
+                            {errors.onlineClassesId && touched.onlineClassesId
+                              ? errors.onlineClassesId
+                              : ""}
                           </FormHelperText>
                         </FormControl>
                       </Grid>
@@ -346,10 +307,9 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
                           name="part_no"
                           label="Part No"
                           variant="outlined"
-                          error={touched.partNo && Boolean(errors.partNo)}
-                          helperText={touched.partNo && errors.partNo}
+                          error={touched.onlineClasses && Boolean(errors.onlineClasses)}
+                          helperText={touched.onlineClasses && errors.onlineClasses}
                           value={values.partNo}
-                          defaultValue={values.partNo}
                           fullWidth
                           disabled
                         />
@@ -357,60 +317,75 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
 
                       <Grid item xs={6}>
                         <TextField
-                          name="liveVideoId"
-                          label="Video ID"
+                          name="onlineClasses"
+                          label="OnlineClasses"
                           variant="outlined"
-                          error={touched.liveVideoId && Boolean(errors.liveVideoId)}
-                          helperText={touched.liveVideoId && errors.liveVideoId}
-                          value={values.liveVideoId}
-                          // onChange={(event) => {
-                          //   setFieldValue("liveVideoId", event.target.value);
-                          // }}
+                          error={touched.onlineClasses && Boolean(errors.onlineClasses)}
+                          helperText={touched.onlineClasses && errors.onlineClasses}
+                          value={values.onlineClasses}
+                          onChange={(event) => {
+                            setFieldValue("onlineClasses", event.target.value);
+                          }}
                           fullWidth
-                          defaultValue={values.liveVideoId}
-                          disabled
-                        />
-                      </Grid>
-
-                      <Grid item xs={6}>
-                        <TextField
-                          name="animationVideoId"
-                          label="Video ID"
-                          variant="outlined"
-                          error={touched.animationVideoId && Boolean(errors.animationVideoId)}
-                          helperText={touched.animationVideoId && errors.animationVideoId}
-                          value={values.animationVideoId}
-                          // onChange={(event) => {
-                          //   setFieldValue("animationVideoId", event.target.value);
-                          // }}
-                          fullWidth
-                          defaultValue={values.animationVideoId}
-                          disabled
+                          focused={values.onlineClasses !== ""}
                         />
                       </Grid>
                     </>
-                  ) : null}
+                  ) : (
+                    <Grid item xs={6}>
+                      <TextField
+                        name="onlineClasses"
+                        label="OnlineClasses"
+                        variant="outlined"
+                        error={touched.onlineClasses && Boolean(errors.onlineClasses)}
+                        helperText={touched.onlineClasses && errors.onlineClasses}
+                        value={values.onlineClasses}
+                        onChange={(event) => {
+                          setFieldValue("onlineClasses", event.target.value);
+                        }}
+                        fullWidth
+                        focused={values.onlineClasses !== ""}
+                      />
+                    </Grid>
+                  )}
 
-                  <Grid item xs={6}>
-                    <TextField
-                      name="lesson"
-                      label="Lesson"
-                      variant="outlined"
-                      error={touched.lesson && Boolean(errors.lesson)}
-                      helperText={touched.lesson && errors.lesson}
-                      value={values.lesson}
-                      // onChange={(event) => {
-                      //   setFieldValue("lesson", event.target.value);
-                      // }}
-                      defaultValue={values.name}
-                      fullWidth
-                      focused={values.lesson !== ""}
-                      disabled
-                    />
-                  </Grid>
+                  {/* <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Type Of Videos</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-typeOfVideos"
+                        value={values.typeOfVideos}
+                        label="Type Of Videos"
+                        error={touched.typeOfVideos && Boolean(errors.typeOfVideos)}
+                        helperText={touched.typeOfVideos && errors.typeOfVideos}
+                        onChange={(event) => {
+                          setFieldValue("typeOfVideos", event.target.value);
+                          console.log(values);
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {typeOfVideos &&
+                          typeOfVideos.length > 0 &&
+                          typeOfVideos.map((v) => (
+                            <MenuItem value={v.name}>{capitalizeString(v.name)}</MenuItem>
+                          ))}
+                      </Select>
+                      <FormHelperText sx={{ color: "red" }}>
+                        {errors.typeOfVideos && touched.typeOfVideos ? errors.typeOfVideos : ""}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid> */}
                 </Grid>
               </FormGroup>
             </DialogContent>
+            <DialogActions>
+              <Button type="submit" color="primary">
+                Submit
+              </Button>
+            </DialogActions>
           </Form>
         )}
       </Formik>
@@ -418,4 +393,4 @@ export function LessonViewModal({ isOpen, onCloseEmpty, editModalData }) {
   );
 }
 
-export default LessonViewModal;
+export default OnlineClassesAddModal;

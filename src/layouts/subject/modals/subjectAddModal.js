@@ -28,7 +28,9 @@ export function SubjectAddModal({ isOpen, onClose, onCloseEmpty }) {
     <Dialog open={isOpen} fullWidth>
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box padding="8px">Add Subject</Box>
+          <Box padding="8px" fontSize={18}>
+            Add Subject
+          </Box>
 
           <IconButton onClick={onCloseEmpty}>
             <Close />

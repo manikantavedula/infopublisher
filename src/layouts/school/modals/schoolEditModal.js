@@ -82,7 +82,9 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
     <Dialog open={isOpen} fullWidth>
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box padding="8px">Edit School</Box>
+          <Box padding="8px" fontSize={18}>
+            Edit School
+          </Box>
 
           <IconButton onClick={onCloseEmpty}>
             <Close />

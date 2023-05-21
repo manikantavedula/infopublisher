@@ -16,6 +16,7 @@ import { SchoolDeleteModal } from "./modals/schoolDeleteModal";
 import { SchoolViewModal } from "./modals/schoolViewModal";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
+import { useTheme } from "@mui/material/styles";
 import { IconSearch, IconPlus } from "@tabler/icons";
 import {
   Button,
@@ -42,6 +43,7 @@ const theme = createTheme({
 });
 
 function School() {
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whichModal, setWhichModal] = useState("");
@@ -271,7 +273,7 @@ function School() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography variant="h6" fontWeight={500} color="primary">
+              <Typography variant="h3" fontWeight={500} color="primary">
                 School List
               </Typography>
 

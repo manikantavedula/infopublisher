@@ -6,6 +6,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery } from "@mui/material";
 
 // project imports
+import PerfectScrollbar from "react-perfect-scrollbar";
 import Breadcrumbs from "ui-component/extended/Breadcrumbs";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -68,6 +69,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 const MainLayout = () => {
   const theme = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
+  const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
   // Handle left drawer
   const leftDrawerOpened = useSelector((state) => state.customization.opened);
   const dispatch = useDispatch();
@@ -104,7 +106,17 @@ const MainLayout = () => {
       <Main theme={theme} open={leftDrawerOpened}>
         {/* breadcrumb */}
         <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
+        {/* <PerfectScrollbar
+          component="div"
+          style={{
+            height: !matchUpMd ? "calc(100vh - 56px)" : "calc(100vh - 88px)",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            paddingBottom: "40px",
+          }}
+        > */}
         <Outlet />
+        {/* </PerfectScrollbar> */}
       </Main>
       <Customization />
     </Box>

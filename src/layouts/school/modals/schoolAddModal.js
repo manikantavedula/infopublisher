@@ -50,7 +50,9 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
     <Dialog open={isOpen} fullWidth>
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box padding="8px">Add School</Box>
+          <Box padding="8px" fontSize={18}>
+            Add School
+          </Box>
 
           <IconButton onClick={onCloseEmpty}>
             <Close />

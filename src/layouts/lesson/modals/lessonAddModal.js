@@ -37,10 +37,21 @@ const validationSchema = yup.object().shape({
   type: yup.string().required("Please select an option"),
   // typeOfVideos: yup.string().required("Please select an option"),
   lesson: yup.string().required("Lesson is required"),
+  lessonId: yup.string().when("type", {
+    is: "part",
+    then: yup.string().required("Lesson ID is required"),
+    otherwise: yup.string(),
+  }),
+  partNo: yup.string().when("type", {
+    is: "part",
+    then: yup.string().required("Part Number is required"),
+    otherwise: yup.string(),
+  }),
 });
 
 export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
   const [fetchedOptions, setFetchedOptions] = useState([]);
+  const [partNo, setPartNo] = useState("");
 
   const dispatch = useDispatch();
   useLayoutEffect(() => {
@@ -57,14 +68,59 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
 
   const fetchData = async (v) => {
     console.log(v);
-    dispatch(lessonActions.getSome(v.series, v.standard, v.subject));
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/lesson/dataById`,
+        {
+          ...v,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+      setFetchedOptions(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const lessonId = useSelector((state) => state.lesson.selectedData);
+  const fetchPart = async (v, cb) => {
+    console.log(v, cb);
 
-  useEffect(() => {
-    console.log(lessonId);
-  }, [lessonId]);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/lesson/dataByLessonId`,
+        {
+          ...v,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+            "Access-Control-Allow-Headers":
+              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        }
+      );
+      console.log(response.data);
+
+      if (response.data.length > 0) cb(response.data.length + 1);
+      else cb(1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     console.log(series, standard, subject);
@@ -80,6 +136,8 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
     partNo: "",
     partName: "",
     lessonId: "",
+    liveVideoId: "",
+    animationVideoId: "",
   };
 
   const onSubmit = (values) => {
@@ -91,7 +149,9 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
     <Dialog open={isOpen} fullWidth>
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box padding="8px">Add Lesson</Box>
+          <Box padding="8px" fontSize={18}>
+            Add Lesson
+          </Box>
 
           <IconButton onClick={onCloseEmpty}>
             <Close />
@@ -116,6 +176,7 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
                         helperText={touched.series && errors.series}
                         onChange={(event) => {
                           setFieldValue("series", event.target.value);
+                          setFieldValue("type", "");
                         }}
                       >
                         <MenuItem value="">
@@ -143,6 +204,7 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
                         helperText={touched.standard && errors.standard}
                         onChange={(event) => {
                           setFieldValue("standard", event.target.value);
+                          setFieldValue("type", "");
                         }}
                       >
                         <MenuItem value="">
@@ -170,6 +232,7 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
                         helperText={touched.subject && errors.subject}
                         onChange={(event) => {
                           setFieldValue("subject", event.target.value);
+                          setFieldValue("type", "");
                           console.log(values);
                         }}
                       >
@@ -201,6 +264,9 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
                           fetchData(values);
                           console.log(values);
                         }}
+                        disabled={
+                          values.series === "" || values.standard === "" || values.subject === ""
+                        }
                       >
                         <MenuItem value="">
                           <em>None</em>
@@ -215,50 +281,100 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
                   </Grid>
 
                   {values.type === "part" ? (
-                    <Grid item xs={6}>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Lesson</InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-part-lesson"
-                          value={values.lessonId}
-                          label="Type"
-                          error={touched.lessonId && Boolean(errors.lessonId)}
-                          helperText={touched.lessonId && errors.lessonId}
-                          onChange={(event) => {
-                            setFieldValue("lessonId", event.target.value);
-                            console.log(values);
-                          }}
-                        >
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          {fetchedOptions.map((option) => (
-                            <MenuItem key={option.id} value={option.id}>
-                              {option.name}
+                    <>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">Lesson</InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-part-lesson"
+                            value={values.lessonId}
+                            label="Lesson"
+                            error={touched.lessonId && Boolean(errors.lessonId)}
+                            helperText={touched.lessonId && errors.lessonId}
+                            onChange={(event) => {
+                              setFieldValue("lessonId", event.target.value);
+                              fetchPart({ lessonId: event.target.value }, (partNo) => {
+                                setFieldValue("partNo", partNo);
+                              });
+                              console.log(values);
+                            }}
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
                             </MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText sx={{ color: "red" }}>
-                          {errors.lessonId && touched.lessonId ? errors.lessonId : ""}
-                        </FormHelperText>
-                      </FormControl>
-                    </Grid>
-                  ) : (
-                    <Grid item xs={6}>
-                      <TextField
-                        name="lesson"
-                        label="Lesson"
-                        variant="outlined"
-                        error={touched.lesson && Boolean(errors.lesson)}
-                        helperText={touched.lesson && errors.lesson}
-                        onChange={(event) => {
-                          setFieldValue("lesson", event.target.value);
-                        }}
-                        fullWidth
-                      />
-                    </Grid>
-                  )}
+                            {fetchedOptions.map((option) => (
+                              <MenuItem key={option.id} value={option.id}>
+                                {option.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText sx={{ color: "red" }}>
+                            {errors.lessonId && touched.lessonId ? errors.lessonId : ""}
+                          </FormHelperText>
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <TextField
+                          name="part_no"
+                          label="Part No"
+                          variant="outlined"
+                          error={touched.partNo && Boolean(errors.partNo)}
+                          helperText={touched.partNo && errors.partNo}
+                          value={values.partNo}
+                          fullWidth
+                          disabled
+                        />
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <TextField
+                          name="liveVideoId"
+                          label="Live Video ID"
+                          variant="outlined"
+                          error={touched.liveVideoId && Boolean(errors.liveVideoId)}
+                          helperText={touched.liveVideoId && errors.liveVideoId}
+                          value={values.liveVideoId}
+                          onChange={(event) => {
+                            setFieldValue("liveVideoId", event.target.value);
+                          }}
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <TextField
+                          name="animationVideoId"
+                          label="Animation Video ID"
+                          variant="outlined"
+                          error={touched.animationVideoId && Boolean(errors.animationVideoId)}
+                          helperText={touched.animationVideoId && errors.animationVideoId}
+                          value={values.animationVideoId}
+                          onChange={(event) => {
+                            setFieldValue("animationVideoId", event.target.value);
+                          }}
+                          fullWidth
+                        />
+                      </Grid>
+                    </>
+                  ) : null}
+
+                  <Grid item xs={6}>
+                    <TextField
+                      name="lesson"
+                      label="Lesson"
+                      variant="outlined"
+                      error={touched.lesson && Boolean(errors.lesson)}
+                      helperText={touched.lesson && errors.lesson}
+                      value={values.lesson}
+                      onChange={(event) => {
+                        setFieldValue("lesson", event.target.value);
+                      }}
+                      fullWidth
+                      focused={values.lesson !== ""}
+                    />
+                  </Grid>
 
                   {/* <Grid item xs={6}>
                     <FormControl fullWidth>

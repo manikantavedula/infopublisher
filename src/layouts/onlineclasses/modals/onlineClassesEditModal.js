@@ -1,27 +1,39 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { FormGroup, IconButton, TextField, Box, Grid, Autocomplete } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-import { seriesActions } from "slices/series";
-// import { styled } from "@mui/material/styles";
+import { FormGroup, IconButton, TextField, Box } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { Formik, Form } from "formik";
+import { useSelector, useDispatch } from "react-redux";
+import { seriesActions } from "slices/series";
+import Grid from "@mui/material/Grid";
 import * as yup from "yup";
+import Autocomplete from "@mui/material/Autocomplete";
 
 const validationSchema = yup.object().shape({
-  standard: yup.string().required("Standard is required"),
+  onlineClasses: yup.string().required("OnlineClasses is required"),
 });
 
-export function StandardAddModal({ isOpen, onClose, onCloseEmpty }) {
-  const initialValues = { standard: "" };
+export function OnlineClassesEditModal({ isOpen, onClose, onCloseEmpty, editModalData }) {
+  // eslint-disable-next-line camelcase
+  const { name } = editModalData;
+
+  const initialValues = { onlineClasses: name };
+
+  useEffect(() => {
+    console.log(initialValues);
+  }, [initialValues]);
 
   const onSubmit = (values) => {
-    console.log(values);
-    onClose(values);
+    console.log({
+      ...values,
+    });
+    onClose({
+      ...values,
+    });
   };
 
   return (
@@ -29,7 +41,7 @@ export function StandardAddModal({ isOpen, onClose, onCloseEmpty }) {
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box padding="8px" fontSize={18}>
-            Add Standard
+            Edit OnlineClasses
           </Box>
 
           <IconButton onClick={onCloseEmpty}>
@@ -38,20 +50,21 @@ export function StandardAddModal({ isOpen, onClose, onCloseEmpty }) {
         </Box>
       </DialogTitle>
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        {({ handleSubmit, errors, touched, setFieldValue }) => (
+        {({ values, handleSubmit, errors, touched, setFieldValue }) => (
           <Form onSubmit={handleSubmit}>
             <DialogContent>
               <FormGroup row style={{ display: "flex", flexDirection: "column" }}>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <TextField
-                      name="standard"
-                      label="Standard"
+                      name="onlineClasses"
+                      label="OnlineClasses"
                       variant="outlined"
-                      error={touched.standard && Boolean(errors.standard)}
-                      helperText={touched.standard && errors.standard}
+                      error={touched.onlineClasses && Boolean(errors.onlineClasses)}
+                      helperText={touched.onlineClasses && errors.onlineClasses}
+                      defaultValue={values.onlineClasses}
                       onChange={(event) => {
-                        setFieldValue("standard", event.target.value);
+                        setFieldValue("onlineClasses", event.target.value);
                       }}
                       focused
                     />
@@ -71,4 +84,4 @@ export function StandardAddModal({ isOpen, onClose, onCloseEmpty }) {
   );
 }
 
-export default StandardAddModal;
+export default OnlineClassesEditModal;

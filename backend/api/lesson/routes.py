@@ -1,5 +1,5 @@
 from flask import jsonify, make_response, Blueprint, request
-from .fetch import get_data, get_data_by_id
+from .fetch import get_data, get_data_by_id, get_data_by_lesson_id
 from .post import post_data
 from .update import update_data
 from .delete import delete_data
@@ -20,10 +20,14 @@ def get_data_endpoint():
     return response
 
 @lesson_routes.route('/dataById', methods=['POST', 'OPTIONS'])
+@cross_origin(supports_credentials=True)
 def get_some_data_endpoint():
+    print("Hello World databyid route")
     logger.debug(f'request: {request} {request.json}')
 
     if request.method == 'OPTIONS':
+        print("Hello World databyid options")
+
         headers = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST',
@@ -33,7 +37,34 @@ def get_some_data_endpoint():
         return ('', 204, headers)
     
     elif request.method == 'POST':
+        print("Hello World databyid post")
+
         data = get_data_by_id(request.json)
+        response = make_response(jsonify(data))
+        
+        return response
+    
+@lesson_routes.route('/dataByLessonId', methods=['POST', 'OPTIONS'])
+@cross_origin(supports_credentials=True)
+def get_some_part_data_endpoint():
+    print("Hello World databylessonid route")
+    logger.debug(f'request: {request} {request.json}')
+
+    if request.method == 'OPTIONS':
+        print("Hello World databylessonid options")
+
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
+            "Access-Control-Allow-Credentials": "true",
+        }
+        return ('', 204, headers)
+    
+    elif request.method == 'POST':
+        print("Hello World databylessonid post")
+
+        data = get_data_by_lesson_id(request.json)
         response = make_response(jsonify(data))
         
         return response
@@ -82,7 +113,7 @@ def submit_edit_form():
 
         logger.debug(f'A message to log. {request.json} {lesson} {id}')
 
-        update_data(lesson, id)
+        update_data(request.json, id)
 
         return 'Data edited successfully!'
     

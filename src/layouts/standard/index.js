@@ -11,6 +11,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Footer from "examples/Footer";
+import { useTheme } from "@mui/material/styles";
 import { useMaterialUIController } from "context";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
@@ -52,6 +53,7 @@ const theme = createTheme({
 });
 
 function Standard() {
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whichModal, setWhichModal] = useState("");
@@ -270,7 +272,7 @@ function Standard() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography variant="h6" fontWeight={500} color="primary">
+              <Typography variant="h3" fontWeight={500} color="primary">
                 Standard List
               </Typography>
 

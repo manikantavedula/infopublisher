@@ -15,6 +15,7 @@ import { useMaterialUIController } from "context";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { subjectActions } from "slices/subject";
+import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -51,6 +52,7 @@ const theme = createTheme({
 });
 
 function Subject() {
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whichModal, setWhichModal] = useState("");
@@ -269,7 +271,7 @@ function Subject() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography variant="h6" fontWeight={500} color="primary">
+              <Typography variant="h3" fontWeight={500} color="primary">
                 Subject List
               </Typography>
 

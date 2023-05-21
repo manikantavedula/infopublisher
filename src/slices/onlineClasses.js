@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const name = "lesson";
+const name = "onlineClasses";
 
 function createInitialState() {
   return {
@@ -15,8 +15,8 @@ const initialState = createInitialState();
 
 function createExtraActions() {
   function getAll() {
-    return createAsyncThunk("lessonSlice/fetchData", async () => {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/lesson/data`, {
+    return createAsyncThunk("onlineClassesSlice/fetchData", async () => {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/onlineClasses/data`, {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
@@ -64,7 +64,7 @@ function createExtraReducers() {
 
 const extraReducers = createExtraReducers();
 
-const lessonSlice = createSlice({ name, initialState, extraReducers });
+const onlineClassesSlice = createSlice({ name, initialState, extraReducers });
 
-export const lessonActions = { ...lessonSlice.actions, ...extraActions };
-export const lessonReducer = lessonSlice.reducer;
+export const onlineClassesActions = { ...onlineClassesSlice.actions, ...extraActions };
+export const onlineClassesReducer = onlineClassesSlice.reducer;

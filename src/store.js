@@ -7,6 +7,7 @@ import { studentReducer } from "./slices/student";
 import { standardReducer } from "./slices/standard";
 import { subjectReducer } from "./slices/subject";
 import { lessonReducer } from "./slices/lesson";
+import { onlineClassesReducer } from "./slices/onlineClasses";
 import { typeOfVideosReducer } from "./slices/typeOfVideos";
 import customizationReducer from "./store/customizationReducer";
 
@@ -19,6 +20,7 @@ const store = configureStore({
     standard: standardReducer,
     subject: subjectReducer,
     lesson: lessonReducer,
+    onlineClasses: onlineClassesReducer,
     student: studentReducer,
     typeOfVideos: typeOfVideosReducer,
     customization: customizationReducer,

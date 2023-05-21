@@ -9,6 +9,7 @@ import { useMaterialUIController } from "context";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { lessonActions } from "slices/lesson";
+import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -16,6 +17,7 @@ import LessonTableNew from "./lessonTableNew";
 import { LessonAddModal } from "./modals/lessonAddModal";
 import { LessonEditModal } from "./modals/lessonEditModal";
 import { LessonViewModal } from "./modals/lessonViewModal";
+import { LessonVideoModal } from "./modals/lessonVideoModal";
 import { LessonDeleteModal } from "./modals/lessonDeleteModal";
 import {
   Button,
@@ -46,6 +48,7 @@ const theme = createTheme({
 });
 
 function Lesson() {
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whichModal, setWhichModal] = useState("");
@@ -97,6 +100,12 @@ function Lesson() {
   const onOpenViewModal = (val) => {
     setIsOpen(true);
     setWhichModal("view");
+    setEditModalData(val);
+  };
+
+  const onOpenVideoModal = (val) => {
+    setIsOpen(true);
+    setWhichModal("video");
     setEditModalData(val);
   };
 
@@ -253,6 +262,22 @@ function Lesson() {
         />
       ) : null}
 
+      {isOpen && whichModal === "view" ? (
+        <LessonViewModal
+          isOpen={isOpen}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
+      {isOpen && whichModal === "video" ? (
+        <LessonVideoModal
+          isOpen={isOpen}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
       <Grid>
         <Card sx={{ boxShadow: "none" }}>
           <CardContent>
@@ -264,7 +289,7 @@ function Lesson() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography variant="h6" fontWeight={500} color="primary">
+              <Typography variant="h3" fontWeight={500} color="primary">
                 Lesson List
               </Typography>
 
@@ -312,6 +337,8 @@ function Lesson() {
             filtereddata={filteredData}
             onOpenEditModal={onOpenEditModal}
             onOpenDeleteModal={onOpenDeleteModal}
+            onOpenViewModal={onOpenViewModal}
+            onOpenVideoModal={onOpenVideoModal}
           />
         </Card>
       </Grid>

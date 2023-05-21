@@ -57,7 +57,9 @@ export function SchoolViewModal({ isOpen, onCloseEmpty, editModalData }) {
     <Dialog open={isOpen} fullWidth>
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box padding="8px">View School</Box>
+          <Box padding="8px" fontSize={18}>
+            View School
+          </Box>
 
           <IconButton onClick={onCloseEmpty}>
             <Close />

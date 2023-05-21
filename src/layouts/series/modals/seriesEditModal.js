@@ -77,7 +77,9 @@ export function SeriesEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
     <Dialog open={isOpen} fullWidth>
       <DialogTitle className="flex justify-content-between">
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box padding="8px">Edit Series</Box>
+          <Box padding="8px" fontSize={18}>
+            Edit Series
+          </Box>
 
           <IconButton onClick={onCloseEmpty}>
             <Close />

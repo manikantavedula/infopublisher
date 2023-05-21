@@ -25,8 +25,8 @@ def post_data(d):
             logger.debug(f'Lesson Insert Query Main. {insert_query} {values}')
             mycursor.execute(insert_query, values)
         else:
-            insert_query = "INSERT INTO lesson (name, series, standard, subject, type, part_no, part_name, lesson_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            values = (lesson, d['series'], d['standard'], d['subject'], "part", d['partNo'], d['partName'], d['lessonId'])
+            insert_query = "INSERT INTO lesson (name, series, standard, subject, type, part_no, lesson_id, live_video_id, animation_video_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            values = (lesson, d['series'], d['standard'], d['subject'], "part", d['partNo'], d['lessonId'], d['liveVideoId'], d['animationVideoId'])
             logger.debug(f'Lesson Insert Query Part. {insert_query} {values}')
             mycursor.execute(insert_query, values)
 
