@@ -21,8 +21,8 @@ import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.dark,
-  color: theme.palette.primary.light,
+  // backgroundColor: theme.palette.success.light,
+  // color: theme.palette.success.light,
   overflow: "hidden",
   position: "relative",
   "&:after": {
@@ -30,7 +30,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     position: "absolute",
     width: 210,
     height: 210,
-    background: `linear-gradient(210.04deg, ${theme.palette.primary[200]} -50.94%, rgba(144, 202, 249, 0) 83.49%)`,
+    background: `linear-gradient(210.04deg, ${theme.palette.success.dark} -50.94%, rgba(144, 202, 249, 0) 83.49%)`,
     borderRadius: "50%",
     top: -30,
     right: -180,
@@ -40,7 +40,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     position: "absolute",
     width: 210,
     height: 210,
-    background: `linear-gradient(140.9deg, ${theme.palette.primary[200]} -14.02%, rgba(144, 202, 249, 0) 77.58%)`,
+    background: `linear-gradient(140.9deg, ${theme.palette.success.dark} -14.02%, rgba(144, 202, 249, 0) 77.58%)`,
     borderRadius: "50%",
     top: -160,
     right: -130,
@@ -67,8 +67,8 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
                     sx={{
                       ...theme.typography.commonAvatar,
                       ...theme.typography.largeAvatar,
-                      backgroundColor: theme.palette.primary[800],
-                      color: "#fff",
+                      backgroundColor: theme.palette.success.light,
+                      color: theme.palette.success.dark,
                     }}
                   >
                     <TableChartOutlinedIcon fontSize="inherit" />
@@ -81,13 +81,13 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
                     mb: 0.45,
                   }}
                   primary={
-                    <Typography variant="h4" sx={{ color: "#fff" }}>
-                      $203k
+                    <Typography variant="h4" sx={{ color: "#000" }}>
+                      0
                     </Typography>
                   }
                   secondary={
-                    <Typography variant="subtitle2" sx={{ color: "primary.light", mt: 0.25 }}>
-                      Total Income
+                    <Typography variant="subtitle2" sx={{ color: "#000", mt: 0.25 }}>
+                      Total Schools
                     </Typography>
                   }
                 />

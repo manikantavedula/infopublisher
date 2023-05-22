@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 // material-ui
@@ -34,6 +34,9 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import Google from "assets/images/icons/social-google.svg";
+import { GoogleLogin } from "@react-oauth/google";
+import GoogleButton from "react-google-button";
+import { useGoogleLogin } from "react-google-login";
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -57,34 +60,73 @@ const FirebaseLogin = ({ ...others }) => {
     event.preventDefault();
   };
 
+  const responseGoogle = (response) => {
+    // Handle the response from Google Sign-In
+    console.log(response);
+  };
+
+  const responseGoogleError = (response) => {
+    // Handle the response from Google Sign-In
+    console.error(response);
+  };
+  const handleGoogleLogin = () => {
+    // Handle the Google Sign-In logic
+  };
+
+  const { signIn } = useGoogleLogin({
+    clientId: process.env.REACT_APP_CLIENT_ID,
+    onSuccess: (response) => {
+      // Handle successful sign-in
+      console.log(response);
+      const { profileObj, tokenId } = response;
+      const { name, email, imageUrl } = profileObj;
+    },
+    onFailure: (error) => {
+      // Handle failed sign-in
+      console.error(error);
+    },
+    isSignedIn: false,
+    accessType: "offline",
+  });
+
+  useEffect(() => {
+    // Load Google API script
+    const script = document.createElement("script");
+    script.src = "https://apis.google.com/js/platform.js";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      // Initialize Google API client
+      window.gapi.load("auth2", () => {
+        window.gapi.auth2.init({
+          client_id: process.env.REACT_APP_CLIENT_ID,
+        });
+      });
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      // Clean up the script tag on component unmount
+      document.head.removeChild(script);
+    };
+  }, []);
+
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={12} textAlign={"center"}>
           <AnimateButton>
-            <Button
-              disableElevation
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              variant="outlined"
-              sx={{
-                color: "grey.700",
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100],
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                console.log(credentialResponse);
               }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img
-                  src={Google}
-                  alt="google"
-                  width={16}
-                  height={16}
-                  style={{ marginRight: matchDownSM ? 8 : 16 }}
-                />
-              </Box>
-              Sign in with Google
-            </Button>
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+
+            <GoogleButton onClick={handleGoogleLogin} />
           </AnimateButton>
         </Grid>
         <Grid item xs={12}>

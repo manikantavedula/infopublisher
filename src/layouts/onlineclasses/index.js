@@ -27,6 +27,7 @@ import React, { useState, useCallback, useMemo, useEffect, useLayoutEffect } fro
 import { useSelector, useDispatch } from "react-redux";
 import { lessonActions } from "slices/lesson";
 import { seriesActions } from "slices/series";
+import { onlineClassesActions } from "slices/onlineClasses";
 import SwipeableViews from "react-swipeable-views";
 import { useTheme } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -35,9 +36,17 @@ import { OnlineClassesAddModal } from "./modals/onlineClassesAddModal";
 import { OnlineClassesEditModal } from "./modals/onlineClassesEditModal";
 import { OnlineClassesDeleteModal } from "./modals/onlineClassesDeleteModal";
 import { OnlineClassesViewModal } from "./modals/onlineClassesViewModal";
+import { OnlineClassesVideoModal } from "./modals/onlineClassesVideoModal";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { IconSearch, IconPlus } from "@tabler/icons";
+import {
+  IconEye,
+  IconSlideshow,
+  IconEditCircle,
+  IconEdit,
+  IconTrash,
+  IconVideo,
+} from "@tabler/icons";
 
 // Create a custom theme with the desired color
 const themes = createTheme({
@@ -135,14 +144,16 @@ function OnlineClasses() {
   useLayoutEffect(() => {
     dispatch(lessonActions.getAll());
     dispatch(seriesActions.getAll());
+    dispatch(onlineClassesActions.getAll());
   }, []);
 
   const lesson = useSelector((state) => state.lesson.data);
   const series = useSelector((state) => state.series.data);
+  const onlineClasses = useSelector((state) => state.onlineClasses.data);
 
   useEffect(() => {
-    console.log(series);
-  }, [series]);
+    console.log(onlineClasses);
+  }, [onlineClasses]);
 
   const filteredData = useMemo(() => {
     console.log(searchQuery);
@@ -169,6 +180,12 @@ function OnlineClasses() {
   const onOpenEditModal = (val) => {
     setIsOpen(true);
     setWhichModal("edit");
+    setEditModalData(val);
+  };
+
+  const onOpenVideoModal = (val) => {
+    setIsOpen(true);
+    setWhichModal("video");
     setEditModalData(val);
   };
 
@@ -305,156 +322,163 @@ function OnlineClasses() {
     setIsSearchOpen((prevSearch) => !prevSearch);
   };
 
-  const [expanded, setExpanded] = useState(false > "panel1");
+  const [expandedSeries, setExpandedSeries] = useState(false);
+  const [expandedStandard, setExpandedStandard] = useState(false);
+  const [expandedSubject, setExpandedSubject] = useState(false);
+  const [expandedLesson, setExpandedLesson] = useState(false);
+  const [expandedParts, setExpandedParts] = useState(false);
 
-  const handleChangeAcc = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
+  const handleChangeAccSeries = (panel) => (event, newExpanded) => {
+    setExpandedSeries(newExpanded ? panel : false);
+    setExpandedStandard(false);
+    setExpandedSubject(false);
+    setExpandedLesson(false);
+    setExpandedParts(false);
+  };
+
+  const handleChangeAccStandard = (panel) => (event, newExpanded) => {
+    setExpandedStandard(newExpanded ? panel : false);
+    setExpandedSubject(false);
+    setExpandedLesson(false);
+    setExpandedParts(false);
+  };
+
+  const handleChangeAccSubject = (panel) => (event, newExpanded) => {
+    setExpandedSubject(newExpanded ? panel : false);
+    setExpandedLesson(false);
+    setExpandedParts(false);
+  };
+
+  const handleChangeAccLesson = (panel) => (event, newExpanded) => {
+    setExpandedLesson(newExpanded ? panel : false);
+    setExpandedParts(false);
+  };
+
+  const handleChangeAccParts = (panel) => (event, newExpanded) => {
+    setExpandedParts(newExpanded ? panel : false);
   };
 
   return (
     <ThemeProvider>
+      {isOpen && whichModal === "video" ? (
+        <OnlineClassesVideoModal
+          isOpen={isOpen}
+          onCloseEmpty={onCloseEmptyModal}
+          editModalData={editModalData}
+        />
+      ) : null}
+
       <Box sx={{ bgcolor: "background.paper", width: "100%" }}>
-        <AppBar position="static" sx={{ backgroundColor: "#663ab6" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="inherit"
-            variant="fullWidth"
-            aria-label="full width tabs example"
-          >
-            <Tab label="Add/View" {...a11yProps(0)} />
-            <Tab label="Student View" {...a11yProps(1)} />
-          </Tabs>
-        </AppBar>
-        <SwipeableViews
-          axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-          index={value}
-          onChangeIndex={handleChangeIndex}
-        >
-          <TabPanel value={value} index={0} dir={theme.direction}>
-            <Backdrop
-              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={isLoading}
+        {onlineClasses &&
+          onlineClasses.length > 0 &&
+          onlineClasses.map((v, i) => (
+            <Accordion
+              expanded={expandedSeries === `panelseries${i + 1}`}
+              onChange={handleChangeAccSeries(`panelseries${i + 1}`)}
             >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-
-            {isOpen && whichModal === "add" ? (
-              <OnlineClassesAddModal
-                isOpen={isOpen}
-                onClose={onCloseAddModal}
-                onCloseEmpty={onCloseEmptyModal}
-              />
-            ) : null}
-
-            {isOpen && whichModal === "edit" ? (
-              <OnlineClassesEditModal
-                isOpen={isOpen}
-                onClose={onCloseEditModal}
-                onCloseEmpty={onCloseEmptyModal}
-                editModalData={editModalData}
-              />
-            ) : null}
-
-            {isOpen && whichModal === "delete" ? (
-              <OnlineClassesDeleteModal
-                isOpen={isOpen}
-                onClose={onCloseDeleteModal}
-                onCloseEmpty={onCloseEmptyModal}
-                editModalData={editModalData}
-              />
-            ) : null}
-
-            <Grid>
-              <Card sx={{ boxShadow: "none", border: "1px solid #000" }}>
-                <CardContent>
-                  <Grid
-                    variant="gradient"
-                    bgcolor="info"
-                    borderRadius="lg"
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography variant="h3" fontWeight={500} color="primary">
-                      OnlineClasses List
-                    </Typography>
-
-                    <Grid
-                      size="small"
-                      component="form"
-                      sx={{ p: "2px 0px", display: "flex", alignItems: "center" }}
+              <AccordionSummary
+                aria-controls={`panelseries${i + 1}d-content`}
+                id={`panelseries${i + 1}d-header`}
+              >
+                <Typography>{v.name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {v.data.length > 0 &&
+                  v.data.map((w, j) => (
+                    <Accordion
+                      expanded={expandedStandard === `panelstandard${i + j + 1}`}
+                      onChange={handleChangeAccStandard(`panelstandard${i + j + 1}`)}
                     >
-                      {isSearchOpen ? (
-                        <TextField
-                          sx={{ ml: 1, flex: 1 }}
-                          size="small"
-                          placeholder="Search this table..."
-                          inputProps={{ "aria-label": "search this table..." }}
-                          autoFocus
-                          value={searchQuery}
-                          onChange={searchTable}
-                          variant="lesson"
-                          label="Search"
-                        />
-                      ) : null}
-                      <Tooltip title="Search..." placement="top">
-                        <IconButton
-                          color="primary"
-                          type="button"
-                          aria-label="search"
-                          onClick={toggleSearch}
-                        >
-                          <IconSearch size="24px" />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Add OnlineClasses" placement="top">
-                        <IconButton color="secondary" aria-label="delete" onClick={onOpenAddModal}>
-                          <IconPlus size="27px" />
-                        </IconButton>
-                      </Tooltip>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-
-                <Divider />
-
-                <OnlineClassesTableNew
-                  filtereddata={filteredData}
-                  onOpenEditModal={onOpenEditModal}
-                  onOpenDeleteModal={onOpenDeleteModal}
-                />
-              </Card>
-            </Grid>
-          </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction}>
-            {series &&
-              series.length > 0 &&
-              series.map((v, i) => (
-                <Accordion
-                  expanded={expanded === `panel${i + 1}`}
-                  onChange={handleChangeAcc(`panel${i + 1}`)}
-                >
-                  <AccordionSummary
-                    aria-controls={`panel${i + 1}d-content`}
-                    id={`panel${i + 1}d-header`}
-                  >
-                    <Typography>{v.name}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-                      lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet,
-                      consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit
-                      leo lobortis eget.
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-          </TabPanel>
-        </SwipeableViews>
+                      <AccordionSummary
+                        aria-controls={`panelstandard${i + j + 1}d-content`}
+                        id={`panelstandard${i + j + 1}d-header`}
+                      >
+                        <Typography>{w.name}</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {w.data.length > 0 &&
+                          w.data.map((x, k) => (
+                            <Accordion
+                              expanded={expandedSubject === `panelsubject${i + j + k + 1}`}
+                              onChange={handleChangeAccSubject(`panelsubject${i + j + k + 1}`)}
+                            >
+                              <AccordionSummary
+                                aria-controls={`panelsubject${i + j + k + 1}d-content`}
+                                id={`panelsubject${i + j + k + 1}d-header`}
+                              >
+                                <Typography>{x.name}</Typography>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                {x.data.length > 0 &&
+                                  x.data.map((y, l) => (
+                                    <Accordion
+                                      expanded={
+                                        expandedLesson === `panellesson${i + j + k + l + 1}`
+                                      }
+                                      onChange={handleChangeAccLesson(
+                                        `panellesson${i + j + k + l + 1}`
+                                      )}
+                                    >
+                                      <AccordionSummary
+                                        aria-controls={`panellesson${i + j + k + l + 1}d-content`}
+                                        id={`panellesson${i + j + k + l + 1}d-header`}
+                                      >
+                                        <Typography>{y.name}</Typography>
+                                      </AccordionSummary>
+                                      <AccordionDetails>
+                                        {y.parts.length > 0 &&
+                                          y.parts.map((z, m) => (
+                                            <Accordion
+                                              expanded={
+                                                expandedParts ===
+                                                `panelparts${i + j + k + l + m + 1}`
+                                              }
+                                              onChange={handleChangeAccParts(
+                                                `panelparts${i + j + k + l + m + 1}`
+                                              )}
+                                            >
+                                              <AccordionSummary
+                                                aria-controls={`panelparts${
+                                                  i + j + k + l + m + 1
+                                                }d-content`}
+                                                id={`panelparts${i + j + k + l + m + 1}d-header`}
+                                              >
+                                                <Typography>{z.name}</Typography>
+                                              </AccordionSummary>
+                                              <AccordionDetails>
+                                                <Tooltip title="Live Video" placement="top">
+                                                  <IconButton
+                                                    color="primary"
+                                                    type="button"
+                                                    onClick={() =>
+                                                      onOpenVideoModal({
+                                                        ...v,
+                                                        videoType: "live",
+                                                        lessonIdName: y.name,
+                                                        name: z.name,
+                                                        partNo: z.partNo,
+                                                        liveVideoId: z.liveVideoId,
+                                                      })
+                                                    }
+                                                  >
+                                                    <IconVideo size="24px" />
+                                                  </IconButton>
+                                                </Tooltip>
+                                              </AccordionDetails>
+                                            </Accordion>
+                                          ))}
+                                      </AccordionDetails>
+                                    </Accordion>
+                                  ))}
+                              </AccordionDetails>
+                            </Accordion>
+                          ))}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+              </AccordionDetails>
+            </Accordion>
+          ))}
       </Box>
     </ThemeProvider>
   );

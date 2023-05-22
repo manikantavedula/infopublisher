@@ -28,7 +28,7 @@ const pages = {
       id: "test",
       title: "Test",
       type: "item",
-      url: "/assess/test",
+      url: "/prepare/test",
       icon: icons.IconPalette,
       breadcrumbs: false,
     },

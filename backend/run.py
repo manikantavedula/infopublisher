@@ -7,8 +7,11 @@ from api.school.routes import school_routes
 from api.standard.routes import standard_routes
 from api.subject.routes import subject_routes
 from api.lesson.routes import lesson_routes
+from api.onlineClasses.routes import onlineClasses_routes
+from api.animatedClasses.routes import animatedClasses_routes
 from api.typeOfVideos.routes import typeOfVideos_routes
 import logging
+# import ssl
 
 # Create a file handler for the root logger
 handler = logging.FileHandler('logs/app.log')
@@ -34,7 +37,13 @@ app.register_blueprint(school_routes)
 app.register_blueprint(standard_routes)
 app.register_blueprint(subject_routes)
 app.register_blueprint(lesson_routes)
+app.register_blueprint(onlineClasses_routes)
+app.register_blueprint(animatedClasses_routes)
 app.register_blueprint(typeOfVideos_routes)
 
+# ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+# ssl_context.load_cert_chain('/home/infopublisher/public_html/backend/dc16729501066a49.crt', '/home/infopublisher/public_html/backend/private-key.pem')
+
 if __name__ == '__main__':
+    # app.run(host="127.0.0.1", port=5000, ssl_context=ssl_context, debug=True)
     app.run()

@@ -28,7 +28,7 @@ const Lesson = Loadable(lazy(() => import("layouts/lesson")));
 const Student = Loadable(lazy(() => import("layouts/student")));
 const OnlineClasses = Loadable(lazy(() => import("layouts/onlineclasses")));
 const AnimatedClasses = Loadable(lazy(() => import("layouts/animatedclasses")));
-const Test = Loadable(lazy(() => import("layouts/test")));
+const PrepareTest = Loadable(lazy(() => import("layouts/preparetest")));
 const Exam = Loadable(lazy(() => import("layouts/exam")));
 const EMS = Loadable(lazy(() => import("layouts/ems")));
 // const Attendance = Loadable(lazy(() => import("layouts/attendance")));
@@ -141,11 +141,11 @@ const MainRoutes = {
       ],
     },
     {
-      path: "assess",
+      path: "prepare",
       children: [
         {
           path: "test",
-          element: <Test />,
+          element: <PrepareTest />,
         },
       ],
     },
