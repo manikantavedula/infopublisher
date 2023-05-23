@@ -49,7 +49,12 @@ const validationSchema = yup.object().shape({
   }),
 });
 
-export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
+export function LessonAddModal({
+  isOpen,
+  onClose,
+  onCloseEmpty,
+  selectedValues: { selectedSeries, selectedStandard, selectedSubject },
+}) {
   const [fetchedOptions, setFetchedOptions] = useState([]);
   const [partNo, setPartNo] = useState("");
 
@@ -127,9 +132,9 @@ export function LessonAddModal({ isOpen, onClose, onCloseEmpty }) {
   }, [series, standard, subject]);
 
   const initialValues = {
-    series: "",
-    standard: "",
-    subject: "",
+    series: selectedSeries || "",
+    standard: selectedStandard || "",
+    subject: selectedSubject || "",
     type: "main",
     typeOfVideos: "",
     lesson: "",

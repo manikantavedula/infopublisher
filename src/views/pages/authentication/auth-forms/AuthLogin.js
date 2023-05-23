@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
 // material-ui
@@ -35,13 +35,13 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import Google from "assets/images/icons/social-google.svg";
 import { GoogleLogin } from "@react-oauth/google";
-import GoogleButton from "react-google-button";
-import { useGoogleLogin } from "react-google-login";
+import jwt_decode from "jwt-decode";
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
+
   const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
   const customization = useSelector((state) => state.customization);
@@ -73,61 +73,21 @@ const FirebaseLogin = ({ ...others }) => {
     // Handle the Google Sign-In logic
   };
 
-  const { signIn } = useGoogleLogin({
-    clientId: process.env.REACT_APP_CLIENT_ID,
-    onSuccess: (response) => {
-      // Handle successful sign-in
-      console.log(response);
-      const { profileObj, tokenId } = response;
-      const { name, email, imageUrl } = profileObj;
-    },
-    onFailure: (error) => {
-      // Handle failed sign-in
-      console.error(error);
-    },
-    isSignedIn: false,
-    accessType: "offline",
-  });
-
-  useEffect(() => {
-    // Load Google API script
-    const script = document.createElement("script");
-    script.src = "https://apis.google.com/js/platform.js";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      // Initialize Google API client
-      window.gapi.load("auth2", () => {
-        window.gapi.auth2.init({
-          client_id: process.env.REACT_APP_CLIENT_ID,
-        });
-      });
-    };
-
-    document.head.appendChild(script);
-
-    return () => {
-      // Clean up the script tag on component unmount
-      document.head.removeChild(script);
-    };
-  }, []);
-
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12} textAlign={"center"}>
-          <AnimateButton>
-            <GoogleLogin
-              onSuccess={(credentialResponse) => {
-                console.log(credentialResponse);
-              }}
-              onError={() => {
-                console.log("Login Failed");
-              }}
-            />
-
-            <GoogleButton onClick={handleGoogleLogin} />
-          </AnimateButton>
+        <Grid item xs={12}>
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              const decodedCredential = jwt_decode(credentialResponse.credential);
+              console.log(credentialResponse, decodedCredential);
+            }}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+            useOneTap
+            width="100%"
+          />
         </Grid>
         <Grid item xs={12}>
           <Box

@@ -64,7 +64,7 @@ export default function LessonTableNew({
   const [columns] = useState([
     { Header: "s.no", accessor: "sno", align: "left" },
     { Header: "lesson", accessor: "lesson", align: "left" },
-    { Header: "Lesson Name", accessor: "lessonname", align: "left" },
+    // { Header: "Lesson Name", accessor: "lessonname", align: "left" },
     { Header: "Main/Part", accessor: "mainorpart", align: "left" },
     { Header: "Part No", accessor: "partno", align: "left" },
     { Header: "action", accessor: "action", align: "right" },
@@ -85,32 +85,43 @@ export default function LessonTableNew({
     if (filtereddata && filtereddata !== null) {
       row = filtereddata.map((v, i) => ({
         sno: (
-          <Typography color="text" variant="h6" fontSize={"16px"} fontWeight={400}>
+          <Typography
+            key={`${v.name}-${i}-sno`}
+            color="text"
+            variant="h6"
+            fontSize={"16px"}
+            fontWeight={400}
+          >
             {i + 1}
           </Typography>
         ),
-        lesson: <LessonModule name={`${v.name}`} />,
-        mainorpart: <LessonModule name={`${v.type}`} />,
-        partno: <LessonModule name={`${v.part_no === null ? "-" : v.part_no}`} />,
-        lessonname: (
+        lesson: <LessonModule key={`${v.name}-${i}-lesson`} name={`${v.name}`} />,
+        mainorpart: <LessonModule key={`${v.name}-${i}-mainorpart`} name={`${v.type}`} />,
+        partno: (
           <LessonModule
-            name={`${
-              v.type === "main"
-                ? "-"
-                : filtereddata.filter(
-                    (w) =>
-                      w.id == v.lesson_id &&
-                      w.series === v.series &&
-                      w.standard === v.standard &&
-                      w.subject === v.subject
-                  )[0].name
-            }`}
+            key={`${v.name}-${i}-partno`}
+            name={`${v.part_no === null ? "-" : v.part_no}`}
           />
         ),
+        // lessonname: (
+        //   <LessonModule
+        //     name={`${
+        //       v.type === "main"
+        //         ? "-"
+        //         : filtereddata.filter(
+        //             (w) =>
+        //               w.id == v.lesson_id &&
+        //               w.series === v.series &&
+        //               w.standard === v.standard &&
+        //               w.subject === v.subject
+        //           )[0]?.name
+        //     }`}
+        //   />
+        // ),
         action: (
           <>
             {v.type === "part" && v.live_video_id !== null ? (
-              <Tooltip title="Live Video" placement="top">
+              <Tooltip title="Live Video" placement="top" key={`${v.name}-${i}-action1`}>
                 <IconButton
                   color="primary"
                   type="button"
@@ -134,7 +145,7 @@ export default function LessonTableNew({
             ) : null}
 
             {v.type === "part" && v.animation_video_id !== null ? (
-              <Tooltip title="Animation Video" placement="top">
+              <Tooltip title="Animation Video" placement="top" key={`${v.name}-${i}-action2`}>
                 <IconButton
                   color="primary"
                   type="button"
@@ -157,19 +168,19 @@ export default function LessonTableNew({
               </Tooltip>
             ) : null}
 
-            <Tooltip title="View" placement="top">
+            <Tooltip title="View" placement="top" key={`${v.name}-${i}-action3`}>
               <IconButton color="primary" type="button" onClick={() => onOpenViewModal(v)}>
                 <IconEye size="24px" />
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Edit" placement="top">
+            <Tooltip title="Edit" placement="top" key={`${v.name}-${i}-action4`}>
               <IconButton color="primary" type="button" onClick={() => onOpenEditModal(v)}>
                 <IconEditCircle size="24px" />
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Delete" placement="top">
+            <Tooltip title="Delete" placement="top" key={`${v.name}-${i}-action5`}>
               <IconButton color="primary" type="button" onClick={() => onOpenDeleteModal(v)}>
                 <IconTrash size="24px" />
               </IconButton>
@@ -191,24 +202,24 @@ export default function LessonTableNew({
             <StyledTableCell align="left">Lesson</StyledTableCell>
             <StyledTableCell align="left">Main or Part</StyledTableCell>
             <StyledTableCell align="left">Part No</StyledTableCell>
-            <StyledTableCell align="left">Lesson Id</StyledTableCell>
+            {/* <StyledTableCell align="left">Lesson Id</StyledTableCell> */}
             {/* <StyledTableCell align="left">Series</StyledTableCell> */}
             <StyledTableCell align="right">Action</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows &&
-            rows.map((row) => (
-              <StyledTableRow key={row.lesson}>
+            rows.map((row, i) => (
+              <StyledTableRow key={`${row.lesson}-${row.action}-${i}`}>
                 <StyledTableCell component="th" scope="row" align={columns[0].align}>
                   {row.sno}
                 </StyledTableCell>
                 <StyledTableCell align={columns[1].align}>{row.lesson}</StyledTableCell>
                 <StyledTableCell align={columns[2].align}>{row.mainorpart}</StyledTableCell>
                 <StyledTableCell align={columns[3].align}>{row.partno}</StyledTableCell>
-                <StyledTableCell align={columns[4].align}>{row.lessonname}</StyledTableCell>
+                {/* <StyledTableCell align={columns[4].align}>{row.lessonname}</StyledTableCell> */}
                 {/* <StyledTableCell align={columns[2].align}>{row.series}</StyledTableCell> */}
-                <StyledTableCell align={columns[5].align}>{row.action}</StyledTableCell>
+                <StyledTableCell align={columns[4].align}>{row.action}</StyledTableCell>
               </StyledTableRow>
             ))}
         </TableBody>

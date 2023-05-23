@@ -1,5 +1,5 @@
 from flask import jsonify, make_response, Blueprint, request
-from .fetch import get_data
+from .fetch import get_data, get_school_series_data
 from .post import post_data
 from .update import update_data
 from .delete import delete_data
@@ -11,6 +11,17 @@ school_routes = Blueprint('school', __name__, url_prefix='/school')
 @school_routes.route('/data')
 def get_data_endpoint():
     data = get_data()
+    response = make_response(jsonify(data))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET'
+    response.headers['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    
+    return response
+
+@school_routes.route('/school-series')
+def get_school_series_data_endpoint():
+    data = get_school_series_data()
     response = make_response(jsonify(data))
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET'

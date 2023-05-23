@@ -9,6 +9,9 @@ import { useMaterialUIController } from "context";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { lessonActions } from "slices/lesson";
+import { seriesActions } from "slices/series";
+import { standardActions } from "slices/standard";
+import { subjectActions } from "slices/subject";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
@@ -19,6 +22,7 @@ import { LessonEditModal } from "./modals/lessonEditModal";
 import { LessonViewModal } from "./modals/lessonViewModal";
 import { LessonVideoModal } from "./modals/lessonVideoModal";
 import { LessonDeleteModal } from "./modals/lessonDeleteModal";
+import { styled, alpha } from "@mui/material/styles";
 import {
   Button,
   CardHeader,
@@ -29,11 +33,22 @@ import {
   Tooltip,
   Paper,
   InputBase,
+  Select,
+  Menu,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  FormGroup,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddIcon from "@mui/icons-material/Add";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { IconSearch, IconPlus } from "@tabler/icons";
+import { IconSearch, IconPlus, IconFilter } from "@tabler/icons";
 
 // Create a custom theme with the desired color
 const theme = createTheme({
@@ -47,6 +62,44 @@ const theme = createTheme({
   },
 });
 
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    textAlign: "center",
+    minWidth: 180,
+    color: theme.palette.mode === "light" ? "rgb(55, 65, 81)" : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+      },
+    },
+  },
+}));
+
 function Lesson() {
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,28 +108,204 @@ function Lesson() {
   const [editModalData, setEditModalData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [selectedSeries, setSelectedSeries] = useState("");
+  const [selectedStandard, setSelectedStandard] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const dispatch = useDispatch();
   useLayoutEffect(() => {
     dispatch(lessonActions.getAll());
+    dispatch(seriesActions.getAll());
+    dispatch(standardActions.getAll());
+    dispatch(subjectActions.getAll());
   }, []);
 
   const lesson = useSelector((state) => state.lesson.data);
+  const series = useSelector((state) => state.series.data);
+  const standard = useSelector((state) => state.standard.data);
+  const subject = useSelector((state) => state.subject.data);
 
   const filteredData = useMemo(() => {
     console.log(searchQuery);
 
-    if (searchQuery.trim() === "") {
+    if (
+      searchQuery.trim() === "" &&
+      selectedSeries === "" &&
+      selectedStandard === "" &&
+      selectedSubject === ""
+    ) {
       return lesson;
     }
 
     const filteredLesson = lesson.filter((item) => {
       console.log(item, item.name, item.name.toLowerCase(), searchQuery);
-      return item.name.toLowerCase().includes(searchQuery.trim().toLowerCase());
+      const queryEmpty = searchQuery === "";
+      const seriesEmpty = selectedSeries === "";
+      const standardEmpty = selectedStandard === "";
+      const subjectEmpty = selectedSubject === "";
+
+      if (!queryEmpty && !seriesEmpty && !standardEmpty && !subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.series}` === `${selectedSeries}` &&
+          `${item.standard}` === `${selectedStandard}` &&
+          `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (!queryEmpty && seriesEmpty && standardEmpty && subjectEmpty) {
+        return item.name.toLowerCase().includes(searchQuery.trim().toLowerCase());
+      }
+
+      if (queryEmpty && !seriesEmpty && standardEmpty && subjectEmpty) {
+        return `${item.series}` === `${selectedSeries}`;
+      }
+
+      if (queryEmpty && seriesEmpty && !standardEmpty && subjectEmpty) {
+        return `${item.standard}` === `${selectedStandard}`;
+      }
+
+      if (queryEmpty && seriesEmpty && standardEmpty && !subjectEmpty) {
+        return `${item.subject}` === `${selectedSubject}`;
+      }
+
+      if (queryEmpty && !seriesEmpty && !standardEmpty && subjectEmpty) {
+        return (
+          `${item.series}` === `${selectedSeries}` && `${item.standard}` === `${selectedStandard}`
+        );
+      }
+
+      if (queryEmpty && !seriesEmpty && standardEmpty && !subjectEmpty) {
+        return (
+          `${item.series}` === `${selectedSeries}` && `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (queryEmpty && seriesEmpty && !standardEmpty && !subjectEmpty) {
+        return (
+          `${item.standard}` === `${selectedStandard}` && `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      // Additional Conditions
+
+      if (!queryEmpty && !seriesEmpty && standardEmpty && subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.series}` === `${selectedSeries}`
+        );
+      }
+
+      if (!queryEmpty && seriesEmpty && !standardEmpty && subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.standard}` === `${selectedStandard}`
+        );
+      }
+
+      if (!queryEmpty && seriesEmpty && standardEmpty && !subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (!queryEmpty && !seriesEmpty && !standardEmpty && subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.series}` === `${selectedSeries}` &&
+          `${item.standard}` === `${selectedStandard}`
+        );
+      }
+
+      if (!queryEmpty && !seriesEmpty && standardEmpty && !subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.series}` === `${selectedSeries}` &&
+          `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (!queryEmpty && seriesEmpty && !standardEmpty && !subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.standard}` === `${selectedStandard}` &&
+          `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (queryEmpty && !seriesEmpty && !standardEmpty && subjectEmpty) {
+        return (
+          `${item.series}` === `${selectedSeries}` && `${item.standard}` === `${selectedStandard}`
+        );
+      }
+
+      if (queryEmpty && !seriesEmpty && standardEmpty && !subjectEmpty) {
+        return (
+          `${item.series}` === `${selectedSeries}` && `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (queryEmpty && seriesEmpty && !standardEmpty && !subjectEmpty) {
+        return (
+          `${item.standard}` === `${selectedStandard}` && `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      // Remaining Conditions
+
+      if (!queryEmpty && !seriesEmpty && !standardEmpty && subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.series}` === `${selectedSeries}` &&
+          `${item.standard}` === `${selectedStandard}`
+        );
+      }
+
+      if (!queryEmpty && !seriesEmpty && standardEmpty && !subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.series}` === `${selectedSeries}` &&
+          `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (!queryEmpty && seriesEmpty && !standardEmpty && !subjectEmpty) {
+        return (
+          item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) &&
+          `${item.standard}` === `${selectedStandard}` &&
+          `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (queryEmpty && !seriesEmpty && !standardEmpty && !subjectEmpty) {
+        return (
+          `${item.series}` === `${selectedSeries}` &&
+          `${item.standard}` === `${selectedStandard}` &&
+          `${item.subject}` === `${selectedSubject}`
+        );
+      }
+
+      if (queryEmpty && !seriesEmpty && standardEmpty && subjectEmpty) {
+        return `${item.series}` === `${selectedSeries}`;
+      }
+
+      if (!queryEmpty && seriesEmpty && standardEmpty && subjectEmpty) {
+        return item.name.toLowerCase().includes(searchQuery.trim().toLowerCase());
+      }
     });
 
     return filteredLesson;
-  }, [searchQuery, lesson]);
+  }, [searchQuery, lesson, selectedSeries, selectedStandard, selectedSubject]);
 
   const searchInputRef = React.useRef(null);
 
@@ -241,6 +470,11 @@ function Lesson() {
           isOpen={isOpen}
           onClose={onCloseAddModal}
           onCloseEmpty={onCloseEmptyModal}
+          selectedValues={{
+            selectedSeries,
+            selectedStandard,
+            selectedSubject,
+          }}
         />
       ) : null}
 
@@ -298,6 +532,106 @@ function Lesson() {
                 component="form"
                 sx={{ p: "2px 0px", display: "flex", alignItems: "center" }}
               >
+                <Tooltip title="Filter Table" placement="top">
+                  <IconButton
+                    color="secondary"
+                    type="button"
+                    aria-label="search"
+                    onClick={handleClick}
+                  >
+                    <IconFilter size="28px" />
+                  </IconButton>
+                </Tooltip>
+
+                <StyledMenu
+                  id="demo-customized-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "demo-customized-button",
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <Typography variant="h6" fontWeight={500} color="primary">
+                    Filter Table
+                  </Typography>
+                  <MenuItem disableRipple>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Series</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-series"
+                        value={selectedSeries}
+                        label="Series"
+                        onChange={(event) => {
+                          setSelectedSeries(event.target.value);
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {series &&
+                          series.length > 0 &&
+                          series.map((v) => (
+                            <MenuItem key={`${v.name}-${v.id}`} value={v.id}>
+                              {v.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </MenuItem>
+                  <MenuItem disableRipple>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Standard</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-standard"
+                        value={selectedStandard}
+                        label="Standard"
+                        onChange={(event) => {
+                          setSelectedStandard(event.target.value);
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {standard &&
+                          standard.length > 0 &&
+                          standard.map((v) => (
+                            <MenuItem key={`${v.name}-${v.id}`} value={v.id}>
+                              {v.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </MenuItem>
+                  <MenuItem disableRipple>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Subject</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-subject"
+                        value={selectedSubject}
+                        label="Subject"
+                        onChange={(event) => {
+                          setSelectedSubject(event.target.value);
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {subject &&
+                          subject.length > 0 &&
+                          subject.map((v) => (
+                            <MenuItem key={`${v.name}-${v.id}`} value={v.id}>
+                              {v.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </MenuItem>
+                </StyledMenu>
+
                 {isSearchOpen ? (
                   <TextField
                     sx={{ ml: 1, flex: 1 }}
@@ -307,7 +641,7 @@ function Lesson() {
                     autoFocus
                     value={searchQuery}
                     onChange={searchTable}
-                    variant="lesson"
+                    variant="outlined"
                     label="Search"
                   />
                 ) : null}
@@ -318,13 +652,13 @@ function Lesson() {
                     aria-label="search"
                     onClick={toggleSearch}
                   >
-                    <IconSearch size="24px" />
+                    <IconSearch size="25px" />
                   </IconButton>
                 </Tooltip>
 
                 <Tooltip title="Add Lesson" placement="top">
                   <IconButton color="secondary" aria-label="delete" onClick={onOpenAddModal}>
-                    <IconPlus size="27px" />
+                    <IconPlus size="28px" />
                   </IconButton>
                 </Tooltip>
               </Grid>

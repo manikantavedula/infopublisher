@@ -358,6 +358,21 @@ function OnlineClasses() {
     setExpandedParts(newExpanded ? panel : false);
   };
 
+  function extractVideoId(url) {
+    let videoId = null;
+
+    // Match the video ID using regular expressions
+    const match = url.match(
+      /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?/]+)/
+    );
+
+    if (match) {
+      videoId = match[1];
+    }
+
+    return videoId;
+  }
+
   return (
     <ThemeProvider>
       {isOpen && whichModal === "video" ? (
@@ -375,6 +390,7 @@ function OnlineClasses() {
             <Accordion
               expanded={expandedSeries === `panelseries${i + 1}`}
               onChange={handleChangeAccSeries(`panelseries${i + 1}`)}
+              key={`panelseries${i + 1}`}
             >
               <AccordionSummary
                 aria-controls={`panelseries${i + 1}d-content`}
@@ -388,6 +404,7 @@ function OnlineClasses() {
                     <Accordion
                       expanded={expandedStandard === `panelstandard${i + j + 1}`}
                       onChange={handleChangeAccStandard(`panelstandard${i + j + 1}`)}
+                      key={`panelstandard${i + j + 1}`}
                     >
                       <AccordionSummary
                         aria-controls={`panelstandard${i + j + 1}d-content`}
@@ -401,6 +418,7 @@ function OnlineClasses() {
                             <Accordion
                               expanded={expandedSubject === `panelsubject${i + j + k + 1}`}
                               onChange={handleChangeAccSubject(`panelsubject${i + j + k + 1}`)}
+                              key={`panelsubject${i + j + k + 1}`}
                             >
                               <AccordionSummary
                                 aria-controls={`panelsubject${i + j + k + 1}d-content`}
@@ -418,6 +436,7 @@ function OnlineClasses() {
                                       onChange={handleChangeAccLesson(
                                         `panellesson${i + j + k + l + 1}`
                                       )}
+                                      key={`panellesson${i + j + k + l + 1}`}
                                     >
                                       <AccordionSummary
                                         aria-controls={`panellesson${i + j + k + l + 1}d-content`}
@@ -436,6 +455,7 @@ function OnlineClasses() {
                                               onChange={handleChangeAccParts(
                                                 `panelparts${i + j + k + l + m + 1}`
                                               )}
+                                              key={`panelparts${i + j + k + l + m + 1}`}
                                             >
                                               <AccordionSummary
                                                 aria-controls={`panelparts${
@@ -446,24 +466,32 @@ function OnlineClasses() {
                                                 <Typography>{z.name}</Typography>
                                               </AccordionSummary>
                                               <AccordionDetails>
-                                                <Tooltip title="Live Video" placement="top">
-                                                  <IconButton
-                                                    color="primary"
-                                                    type="button"
-                                                    onClick={() =>
-                                                      onOpenVideoModal({
-                                                        ...v,
-                                                        videoType: "live",
-                                                        lessonIdName: y.name,
-                                                        name: z.name,
-                                                        partNo: z.partNo,
-                                                        liveVideoId: z.liveVideoId,
-                                                      })
-                                                    }
+                                                {!z.liveVideoId ? null : (
+                                                  <Tooltip
+                                                    title="Live Video"
+                                                    placement="top"
+                                                    className={z.liveVideoId}
                                                   >
-                                                    <IconVideo size="24px" />
-                                                  </IconButton>
-                                                </Tooltip>
+                                                    <IconButton
+                                                      color="primary"
+                                                      type="button"
+                                                      onClick={() =>
+                                                        onOpenVideoModal({
+                                                          ...v,
+                                                          videoType: "live",
+                                                          lessonIdName: y.name,
+                                                          name: z.name,
+                                                          partNo: z.partNo,
+                                                          liveVideoId: extractVideoId(
+                                                            z.liveVideoId
+                                                          ),
+                                                        })
+                                                      }
+                                                    >
+                                                      <IconVideo size="24px" />
+                                                    </IconButton>
+                                                  </Tooltip>
+                                                )}
                                               </AccordionDetails>
                                             </Accordion>
                                           ))}

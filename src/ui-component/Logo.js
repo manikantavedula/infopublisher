@@ -30,7 +30,7 @@ const Logo = () => {
         y="0px"
         width="180px"
         viewBox="0 0 3036 348"
-        enable-background="new 0 0 3036 348"
+        enableBackground="new 0 0 3036 348"
       >
         <path
           fill="#FFFFFF"

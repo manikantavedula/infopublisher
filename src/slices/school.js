@@ -6,6 +6,7 @@ const name = "school";
 function createInitialState() {
   return {
     data: null,
+    dataSchoolSeries: null,
     isLoading: false,
     error: null,
   };
@@ -30,8 +31,25 @@ function createExtraActions() {
     });
   }
 
+  function getSchoolSeries() {
+    return createAsyncThunk("schoolSlice/fetchSchoolSeriesData", async () => {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/school/school-series`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          "Access-Control-Allow-Headers":
+            "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+          "Access-Control-Allow-Credentials": "true",
+        },
+      });
+      return response.data;
+    });
+  }
+
   return {
     getAll: getAll(),
+    getSchoolSeries: getSchoolSeries(),
   };
 }
 
@@ -57,8 +75,28 @@ function createExtraReducers() {
     };
   }
 
+  function getSchoolSeries() {
+    const { pending, fulfilled, rejected } = extraActions.getSchoolSeries;
+
+    return {
+      [pending]: (state) => ({ ...state, isLoading: true }),
+      [fulfilled]: (state, action) => ({
+        ...state,
+        dataSchoolSeries: action.payload,
+        isLoading: false,
+        error: null,
+      }),
+      [rejected]: (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      }),
+    };
+  }
+
   return {
     ...getAll(),
+    ...getSchoolSeries(),
   };
 }
 

@@ -5,7 +5,10 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 
 // project imports
+// import * as serviceWorker from "serviceWorker";
 import * as serviceWorker from "serviceWorker";
+import { Workbox } from "workbox-window";
+
 import App from "App";
 import store from "store";
 
@@ -14,6 +17,22 @@ import "assets/scss/style.scss";
 import config from "./config";
 import { MaterialUIControllerProvider } from "context";
 import ErrorBoundary from "./ErrorBoundary";
+
+//////////////////////////////////
+
+// // Register the service worker
+// if ("serviceWorker" in navigator) {
+//   window.addEventListener("load", () => {
+//     navigator.serviceWorker
+//       .register("/service-worker.js")
+//       .then((registration) => {
+//         console.log("Service worker registered successfully:", registration);
+//       })
+//       .catch((error) => {
+//         console.log("Service worker registration failed:", error);
+//       });
+//   });
+// }
 
 // ==============================|| REACT DOM RENDER  ||============================== //
 
@@ -35,3 +54,4 @@ root.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+// serviceWorker.register();

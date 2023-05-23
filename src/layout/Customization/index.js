@@ -38,15 +38,45 @@ const Customization = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const customization = useSelector((state) => state.customization);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [installPromptEvent, setInstallPromptEvent] = useState(null);
 
   // drawer on/off
   const [open, setOpen] = useState(false);
+  const [borderRadius, setBorderRadius] = useState(customization.borderRadius);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault(); // Prevent the default browser prompt from showing
+      // Store the event for later use
+      setInstallPromptEvent(event);
+      // Update your component state or trigger UI changes
+      setIsInstallable(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
   const handleToggle = () => {
     setOpen(!open);
   };
 
+  const handleInstallClick = () => {
+    if (installPromptEvent) {
+      installPromptEvent.prompt(); // Show the installation prompt
+      installPromptEvent.userChoice.then((choiceResult) => {
+        // Handle the user's choice (e.g., accepted or dismissed)
+        console.log(choiceResult.outcome);
+      });
+    }
+  };
+
   // state - border radius
-  const [borderRadius, setBorderRadius] = useState(customization.borderRadius);
   const handleBorderRadius = (event, newValue) => {
     setBorderRadius(newValue);
   };
@@ -91,32 +121,35 @@ const Customization = () => {
   return (
     <>
       {/* toggle button */}
-      {/* <Tooltip title="Live Customize">
-        <Fab
-          component="div"
-          onClick={handleToggle}
-          size="medium"
-          variant="circular"
-          color="secondary"
-          sx={{
-            borderRadius: 0,
-            borderTopLeftRadius: "50%",
-            borderBottomLeftRadius: "50%",
-            borderTopRightRadius: "50%",
-            borderBottomRightRadius: "4px",
-            top: "25%",
-            position: "fixed",
-            right: 10,
-            zIndex: theme.zIndex.speedDial,
-          }}
-        >
-          <AnimateButton type="rotate">
-            <IconButton color="inherit" size="large" disableRipple>
-              <IconSettings />
-            </IconButton>
-          </AnimateButton>
-        </Fab>
-      </Tooltip> */}
+      {isInstallable && (
+        <Tooltip title="Live Customize">
+          <Fab
+            component="div"
+            // onClick={handleToggle}
+            onClick={handleInstallClick}
+            size="medium"
+            variant="circular"
+            color="secondary"
+            sx={{
+              borderRadius: 0,
+              borderTopLeftRadius: "50%",
+              borderBottomLeftRadius: "50%",
+              borderTopRightRadius: "50%",
+              borderBottomRightRadius: "4px",
+              top: "25%",
+              position: "fixed",
+              right: 10,
+              zIndex: theme.zIndex.speedDial,
+            }}
+          >
+            <AnimateButton type="rotate">
+              <IconButton color="inherit" size="large" disableRipple>
+                <IconSettings />
+              </IconButton>
+            </AnimateButton>
+          </Fab>
+        </Tooltip>
+      )}
 
       <Drawer
         anchor="right"
