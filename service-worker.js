@@ -16,14 +16,7 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request);
-    })
-  );
+  event.respondWith(handleFetch(event.request));
 });
 
 self.addEventListener("activate", (event) => {
@@ -35,3 +28,20 @@ self.addEventListener("activate", (event) => {
     })
   );
 });
+
+async function handleFetch(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cachedResponse = await cache.match(request);
+
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+
+  const response = await fetch(request.clone());
+
+  if (response && response.status === 200) {
+    cache.put(request, response.clone());
+  }
+
+  return response;
+}
