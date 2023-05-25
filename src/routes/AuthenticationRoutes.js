@@ -11,6 +11,7 @@ const AuthLogin3 = Loadable(
 const AuthRegister3 = Loadable(
   lazy(() => import("views/pages/authentication/authentication3/Register3"))
 );
+const Callback = Loadable(lazy(() => import("layouts/callback")));
 
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
@@ -19,13 +20,17 @@ const AuthenticationRoutes = {
   element: <MinimalLayout />,
   children: [
     {
-      path: "/pages/login/login3",
+      path: "/",
       element: <AuthLogin3 />,
     },
     {
-      path: "/pages/register/register3",
-      element: <AuthRegister3 />,
+      path: "/callback",
+      element: <Callback />,
     },
+    // {
+    //   path: "/pages/register/register3",
+    //   element: <AuthRegister3 />,
+    // },
   ],
 };
 

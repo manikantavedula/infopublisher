@@ -1,6 +1,10 @@
 from connection import connect_to_db
 from .logger import logger
 
+# Download the helper library from https://www.twilio.com/docs/python/install
+import os
+from twilio.rest import Client
+
 def get_data():
     mycursor = None
 
@@ -38,6 +42,18 @@ def get_data():
             flat_list = [item for sublist in res2 for item in sublist]
             res['school_series'] = flat_list
 
+        # Set environment variables for your credentials
+        # Read more at http://twil.io/secure
+        # account_sid = "ACe30998fba8470202c114f2ce5a8b632d"
+        # auth_token = "9c538ade9db1c9d5e87dcb08e04274ac"
+        # client = Client(account_sid, auth_token)
+        # message = client.messages.create(
+        #     body="Hello from Twilio",
+        #     from_="+13158471955",
+        #     to="+918639693342"
+        # )
+        # print(message.sid)
+
         mycursor.close()
         mydb.close()
     else:
@@ -60,7 +76,7 @@ def get_school_series_data():
     results = []
     
     if mydb.is_connected():
-        mycursor.execute("SELECT DISTINCT(st.name) as standard, se.name as series FROM lesson l, series se, standard st, subject su WHERE l.series = se.id AND l.standard = st.id AND l.subject = su.id ORDER BY se.name")
+        mycursor.execute("SELECT DISTINCT(st.name) as standard, st.id as standard_id, se.name as series, se.id as series_id FROM lesson l, series se, standard st, subject su WHERE l.series = se.id AND l.standard = st.id AND l.subject = su.id ORDER BY se.name")
         rows = mycursor.fetchall()
         
         # get the column names

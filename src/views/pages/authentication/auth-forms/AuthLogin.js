@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { commonActions } from "slices/common";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -34,13 +35,14 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import Google from "assets/images/icons/social-google.svg";
-import { GoogleLogin } from "@react-oauth/google";
-import jwt_decode from "jwt-decode";
+import styles from "./googleButton.module.css";
 
+import { getGoogleUrl } from "layouts/callback";
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
@@ -60,36 +62,18 @@ const FirebaseLogin = ({ ...others }) => {
     event.preventDefault();
   };
 
-  const responseGoogle = (response) => {
-    // Handle the response from Google Sign-In
-    console.log(response);
-  };
-
-  const responseGoogleError = (response) => {
-    // Handle the response from Google Sign-In
-    console.error(response);
-  };
-  const handleGoogleLogin = () => {
-    // Handle the Google Sign-In logic
-  };
-
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12}>
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              const decodedCredential = jwt_decode(credentialResponse.credential);
-              console.log(credentialResponse, decodedCredential);
-            }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-            useOneTap
-            width="100%"
-          />
+        <Grid item xs={12} margin={"auto"}>
+          <a className={styles["google-btn"]} href={getGoogleUrl()}>
+            <div className={styles["google-icon-wrapper"]}>
+              <img className={styles["google-icon"]} src={Google} alt="Google Icon" />
+            </div>
+            <span className={styles["btn-text"]}>Sign in with Google</span>
+          </a>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Box
             sx={{
               alignItems: "center",
@@ -123,10 +107,10 @@ const FirebaseLogin = ({ ...others }) => {
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle1">Sign in with Email address</Typography>
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
 
-      <Formik
+      {/* <Formik
         initialValues={{
           email: "info@codedthemes.com",
           password: "123456",
@@ -257,7 +241,7 @@ const FirebaseLogin = ({ ...others }) => {
             </Box>
           </form>
         )}
-      </Formik>
+      </Formik> */}
     </>
   );
 };

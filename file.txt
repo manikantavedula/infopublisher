@@ -1,0 +1,36 @@
+const Dotenv = require("dotenv-webpack");
+const nodeExternals = require("webpack-node-externals");
+const crypto = require.resolve("crypto-browserify");
+const https = require.resolve("https-browserify");
+const zlib = require.resolve("browserify-zlib");
+
+module.exports = {
+  // ...
+  plugins: [new Dotenv()],
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            plugins: [["@babel/plugin-transform-react-jsx", { throwIfNamespace: false }]],
+          },
+        },
+      },
+    ],
+  },
+  resolve: {
+    fallback: {
+      https: require.resolve("https-browserify"),
+      fs: require.resolve("fs"),
+      child_process: require.resolve("child_process"),
+      crypto: require.resolve("crypto-browserify"),
+      zlib: require.resolve("browserify-zlib"),
+      net: require.resolve("net"),
+      tls: require.resolve("tls"),
+    },
+  },
+  externals: [nodeExternals()],
+};

@@ -51,12 +51,50 @@ const ProfileSection = () => {
   const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
+
+  useEffect(() => {
+    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
+
+    console.log(storedUserInfoResponse, JSON.parse(storedUserInfoResponse));
+
+    const parsed = JSON.parse(storedUserInfoResponse);
+
+    if (storedUserInfoResponse) {
+      setName(`${parsed?.data?.given_name} ${parsed?.data?.family_name}`);
+      setEmail(`${parsed?.data?.email}`);
+      setProfilePicture(`${parsed?.data?.picture}`);
+    }
+  }, []);
+
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
   const handleLogout = async () => {
     console.log("Logout");
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("expiration_timestamp");
+    localStorage.removeItem("userinfo_response");
+
+    const storedAccessToken = localStorage.getItem("access_token");
+    const storedRefreshToken = localStorage.getItem("refresh_token");
+    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+    const userInfoResponse = localStorage.getItem("userinfo_response");
+
+    if (
+      !storedAccessToken ||
+      !storedRefreshToken ||
+      !expirationTimestamp ||
+      !userInfoResponse ||
+      !(Date.now() < expirationTimestamp)
+    ) {
+      navigate("/");
+    }
   };
 
   const handleClose = (event) => {
@@ -111,7 +149,7 @@ const ProfileSection = () => {
         }}
         icon={
           <Avatar
-            src={User1}
+            src={profilePicture}
             sx={{
               ...theme.typography.mediumAvatar,
               margin: "8px 0 8px 8px !important",
@@ -121,6 +159,7 @@ const ProfileSection = () => {
             aria-controls={open ? "menu-list-grow" : undefined}
             aria-haspopup="true"
             color="inherit"
+            referrerpolicy="no-referrer"
           />
         }
         label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
@@ -165,12 +204,12 @@ const ProfileSection = () => {
                       <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant="h4">Good Morning,</Typography>
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          Johne Doe
+                          {name}
                         </Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography variant="subtitle2">{email}</Typography>
                     </Stack>
-                    <OutlinedInput
+                    {/* <OutlinedInput
                       sx={{ width: "100%", pr: 1, pl: 2, my: 2 }}
                       id="input-search-profile"
                       value={value}
@@ -186,7 +225,7 @@ const ProfileSection = () => {
                         "aria-label": "weight",
                       }}
                     />
-                    <Divider />
+                    <Divider /> */}
                   </Box>
                   <PerfectScrollbar
                     style={{
@@ -196,9 +235,9 @@ const ProfileSection = () => {
                     }}
                   >
                     <Box sx={{ p: 2 }}>
-                      <UpgradePlanCard />
-                      <Divider />
-                      <Card
+                      {/* <UpgradePlanCard /> */}
+                      {/* <Divider /> */}
+                      {/* <Card
                         sx={{
                           bgcolor: theme.palette.primary.light,
                           my: 2,
@@ -249,7 +288,7 @@ const ProfileSection = () => {
                             </Grid>
                           </Grid>
                         </CardContent>
-                      </Card>
+                      </Card> */}
                       <Divider />
                       <List
                         component="nav"
@@ -267,7 +306,7 @@ const ProfileSection = () => {
                           },
                         }}
                       >
-                        <ListItemButton
+                        {/* <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 0}
                           onClick={(event) =>
@@ -310,7 +349,7 @@ const ProfileSection = () => {
                               </Grid>
                             }
                           />
-                        </ListItemButton>
+                        </ListItemButton> */}
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}

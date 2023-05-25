@@ -1,6 +1,7 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 import thunk from "redux-thunk";
+import { commonReducer } from "./slices/common";
 import { seriesReducer } from "./slices/series";
 import { schoolReducer } from "./slices/school";
 import { studentReducer } from "./slices/student";
@@ -16,6 +17,7 @@ const middleware = [...getDefaultMiddleware(), thunk, logger];
 
 const store = configureStore({
   reducer: {
+    common: commonReducer,
     series: seriesReducer,
     school: schoolReducer,
     standard: standardReducer,

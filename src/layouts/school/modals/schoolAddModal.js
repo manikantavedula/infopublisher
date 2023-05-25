@@ -1,4 +1,9 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { styled } from "@mui/material/styles";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import MuiAccordion from "@mui/material/Accordion";
+import MuiAccordionSummary from "@mui/material/AccordionSummary";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,6 +18,43 @@ import Grid from "@mui/material/Grid";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import Autocomplete from "@mui/material/Autocomplete";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+// import { google } from "googleapis";
+import axios from "axios";
+
+const Accordion = styled((props) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  "&:not(:last-child)": {
+    borderBottom: 0,
+  },
+  "&:before": {
+    display: "none",
+  },
+}));
+
+const AccordionSummary = styled((props) => (
+  <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+    {...props}
+  />
+))(({ theme }) => ({
+  backgroundColor:
+    theme.palette.mode === "dark" ? "rgba(255, 255, 255, .05)" : "rgba(0, 0, 0, .03)",
+  // flexDirection: "row-reverse",
+  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+    transform: "rotate(90deg)",
+  },
+  "& .MuiAccordionSummary-content": {
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderTop: "1px solid rgba(0, 0, 0, .125)",
+}));
 
 const validationSchema = yup.object().shape({
   school: yup.string().required("School is required"),
@@ -51,12 +93,16 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
     );
   }, [series, schoolSeries]);
 
-  const initialValues = { school: "", contact: "", address: "", school_series: [] };
+  const initialValues = { school: "", email: "", contact: "", address: "", school_series: [] };
 
   const onSubmit = (values) => {
     console.log(values);
     onClose(values);
   };
+
+  useEffect(() => {
+    console.log(checkedItems);
+  }, [checkedItems]);
 
   useEffect(() => {
     const newCheckedItems = [];
@@ -66,11 +112,11 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
         const children =
           schoolSeries &&
           schoolSeries.length > 0 &&
-          schoolSeries.filter((item) => item.series === parent.name).map((item) => item.standard);
+          schoolSeries.filter((item) => item.series === parent.name);
         if (
           children &&
           children.length > 0 &&
-          children.every((child) => checkedItems.includes(child))
+          children.every((child) => checkedItems.some((item) => item.standard === child.standard))
         ) {
           newCheckedItems.push(parent.name);
           newCheckedItems.push(...children);
@@ -85,20 +131,26 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
 
     if (parentIndex === -1) {
       // Parent checkbox was unchecked, so add it and its associated children to checkedItems
-      newCheckedItems.push(parent);
-      const children = schoolSeries.filter((item) => item.series === parent).map((item) => item);
+      // newCheckedItems.push(parent);
+      const children = schoolSeries.filter((item) => item.series === parent);
       console.log(children);
       children.forEach((child) => {
-        if (!newCheckedItems.some((item) => item.standard === child.standard)) {
+        if (
+          !newCheckedItems.some(
+            (item) => item.standard === child.standard && item.series === child.series
+          )
+        ) {
           newCheckedItems.push(child);
         }
       });
     } else {
       // Parent checkbox was checked, so remove it and its associated children from checkedItems
-      newCheckedItems.splice(parentIndex, 1);
-      const children = schoolSeries.filter((item) => item.series === parent).map((item) => item);
+      // newCheckedItems.splice(parentIndex, 1);
+      const children = schoolSeries.filter((item) => item.series === parent);
       children.forEach((child) => {
-        const childIndex = newCheckedItems.findIndex((item) => item.standard === child.standard);
+        const childIndex = newCheckedItems.findIndex(
+          (item) => item.standard === child.standard && item.series === child.series
+        );
         if (childIndex !== -1) {
           newCheckedItems.splice(childIndex, 1);
         }
@@ -110,7 +162,9 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
 
   const handleChildCheckboxChange = (child) => {
     let newCheckedItems = [...checkedItems];
-    const childIndex = newCheckedItems.findIndex((item) => item.standard === child.standard);
+    const childIndex = newCheckedItems.findIndex(
+      (item) => item.standard === child.standard && item.series === child.series
+    );
 
     if (childIndex === -1) {
       // Child checkbox was unchecked, so add it to checkedItems
@@ -127,10 +181,55 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
     const children =
       schoolSeries &&
       schoolSeries.length > 0 &&
-      schoolSeries.filter((item) => item.series === parent).map((item) => item);
-    return (
-      children && children.length > 0 && children.every((child) => checkedItems.includes(child))
+      schoolSeries.filter((item) => item.series === parent);
+
+    console.log(
+      children,
+      parent,
+      children &&
+        children.length > 0 &&
+        children.every((child) =>
+          checkedItems.some((item) => item.standard === child.standard && item.series === parent)
+        )
     );
+
+    return (
+      children &&
+      children.length > 0 &&
+      children.every((child) =>
+        checkedItems.some((item) => item.standard === child.standard && item.series === parent)
+      )
+    );
+  };
+
+  const isParentIndeterminate = (parent) => {
+    const childItems =
+      schoolSeries &&
+      schoolSeries.length > 0 &&
+      schoolSeries.filter((child) => child.series === parent);
+
+    console.log(childItems);
+
+    const checkedChildItems =
+      childItems &&
+      childItems.length > 0 &&
+      childItems.filter((child) =>
+        checkedItems.some((item) => item.standard === child.standard && item.series === parent)
+      );
+
+    console.log(checkedChildItems);
+
+    return (
+      checkedChildItems &&
+      checkedChildItems.length > 0 &&
+      checkedChildItems.length !== childItems.length
+    );
+  };
+
+  const [expandedSeries, setExpandedSeries] = useState(false);
+
+  const handleChangeAccSeries = (panel) => (event, newExpanded) => {
+    setExpandedSeries(newExpanded ? panel : false);
   };
 
   return (
@@ -187,6 +286,20 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
 
                   <Grid item xs={6}>
                     <TextField
+                      name="email"
+                      label="Email"
+                      variant="outlined"
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
+                      onChange={(event) => {
+                        setFieldValue("email", event.target.value);
+                      }}
+                      fullWidth
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
                       name="contact"
                       label="Contact"
                       variant="outlined"
@@ -199,7 +312,72 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
                       inputProps={{
                         maxLength: 10,
                       }}
+                      sx={{
+                        marginBottom: "16px",
+                      }}
                     />
+
+                    <FormGroup sx={{ borderRadius: "13px" }}>
+                      {series &&
+                        series.length > 0 &&
+                        series.map((parent, i) => (
+                          <Accordion
+                            expanded={expandedSeries === `panelseries${i + 1}`}
+                            onChange={handleChangeAccSeries(`panelseries${i + 1}`)}
+                            key={`panelseries${i + 1}`}
+                            sx={{
+                              borderTopRightRadius: "13px",
+                              borderTopLeftRadius: "13px",
+                              marginBottom: "16px",
+                              border: "none",
+                            }}
+                          >
+                            {/* <FormGroup key={parent.name}> */}
+                            <AccordionSummary
+                              aria-controls={`panelseries${i + 1}d-content`}
+                              id={`panelseries${i + 1}d-header`}
+                              sx={{
+                                borderTopRightRadius: "13px",
+                                borderTopLeftRadius: "13px",
+                              }}
+                            >
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={isParentChecked(parent.name)}
+                                    onChange={() => handleParentCheckboxChange(parent.name)}
+                                    indeterminate={isParentIndeterminate(parent.name)}
+                                  />
+                                }
+                                label={parent.name}
+                              />
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
+                              {schoolSeries &&
+                                schoolSeries.length > 0 &&
+                                schoolSeries
+                                  .filter((item) => item.series === parent.name)
+                                  .map((child) => (
+                                    <FormControlLabel
+                                      key={`${child.standard}-${child.series}`}
+                                      control={
+                                        <Checkbox
+                                          checked={checkedItems.some(
+                                            (item) =>
+                                              item.standard === child.standard &&
+                                              item.series === parent.name
+                                          )}
+                                          onChange={() => handleChildCheckboxChange(child)}
+                                        />
+                                      }
+                                      label={child.standard}
+                                    />
+                                  ))}
+                            </AccordionDetails>
+                            {/* </FormGroup> */}
+                          </Accordion>
+                        ))}
+                    </FormGroup>
                   </Grid>
 
                   <Grid item xs={6}>
@@ -219,47 +397,9 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
-                    <FormGroup>
-                      {series &&
-                        series.length > 0 &&
-                        series.map((parent) => (
-                          <FormGroup key={parent.name}>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={isParentChecked(parent.name)}
-                                  onChange={() => handleParentCheckboxChange(parent.name)}
-                                />
-                              }
-                              label={parent.name}
-                            />
-                            {schoolSeries &&
-                              schoolSeries.length > 0 &&
-                              schoolSeries
-                                .filter((item) => item.series === parent.name)
-                                .map((child) => (
-                                  <FormControlLabel
-                                    key={`${child.standard}-${child.series}`}
-                                    control={
-                                      <Checkbox
-                                        checked={checkedItems.some(
-                                          (item) =>
-                                            item.standard === child.standard &&
-                                            item.series === parent.name
-                                        )}
-                                        onChange={() => handleChildCheckboxChange(child)}
-                                      />
-                                    }
-                                    label={child.standard}
-                                  />
-                                ))}
-                          </FormGroup>
-                        ))}
-                    </FormGroup>
-                  </Grid>
+                  <Grid item xs={6}></Grid>
 
-                  <Grid item xs={6}>
+                  {/* <Grid item xs={6}>
                     {series && series !== null && series.length > 0 && (
                       <Autocomplete
                         multiple
@@ -291,7 +431,7 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
                         )}
                       />
                     )}
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </FormGroup>
             </DialogContent>

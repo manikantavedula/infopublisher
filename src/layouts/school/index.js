@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useMemo, useCallback } from "react";
+import React, { useLayoutEffect, useState, useMemo, useCallback, useEffect } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -52,6 +52,47 @@ function School() {
   const { darkMode } = controller;
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    // var requestOptions = {
+    //   method: "GET",
+    //   redirect: "follow",
+    // };
+
+    // fetch(
+    //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/+918639693342/AUTOGEN2/INFOPB",
+    //   requestOptions
+    // )
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log("error", error));
+
+    // var requestOptions = {
+    //   method: "GET",
+    //   redirect: "follow",
+    // };
+
+    // fetch(
+    //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/VERIFY3/918639693342/487638",
+    //   requestOptions
+    // )
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log("error", error));
+
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/VERIFY/f18eaa75-fa37-11ed-addf-0200cd936042/487638",
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  }, []);
 
   const dispatch = useDispatch();
   useLayoutEffect(() => {

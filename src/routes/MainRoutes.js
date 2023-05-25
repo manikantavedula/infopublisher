@@ -31,6 +31,7 @@ const AnimatedClasses = Loadable(lazy(() => import("layouts/animatedclasses")));
 const PrepareTest = Loadable(lazy(() => import("layouts/preparetest")));
 const Exam = Loadable(lazy(() => import("layouts/exam")));
 const EMS = Loadable(lazy(() => import("layouts/ems")));
+
 // const Attendance = Loadable(lazy(() => import("layouts/attendance")));
 
 const MainRoutes = {
@@ -38,7 +39,7 @@ const MainRoutes = {
   element: <MainLayout />,
   children: [
     {
-      path: "/",
+      path: "/dashboard",
       element: <Dashboard />,
     },
     {

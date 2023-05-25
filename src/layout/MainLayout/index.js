@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 // material-ui
 import { styled, useTheme } from "@mui/material/styles";
@@ -17,6 +18,10 @@ import { SET_MENU } from "store/actions";
 
 // assets
 import { IconChevronRight } from "@tabler/icons";
+import { refreshToken } from "layouts/callback";
+
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // styles
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -68,6 +73,8 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 
 const MainLayout = () => {
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
   // Handle left drawer
@@ -77,36 +84,58 @@ const MainLayout = () => {
     dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
   };
 
+  useEffect(() => {
+    const storedAccessToken = localStorage.getItem("access_token");
+    const storedRefreshToken = localStorage.getItem("refresh_token");
+    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+
+    if (
+      storedAccessToken &&
+      storedRefreshToken &&
+      expirationTimestamp &&
+      Date.now() < expirationTimestamp
+    ) {
+      console.log("Auth is working fine.");
+    } else {
+      navigate("/");
+    }
+  }, []);
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      {/* header */}
-      <AppBar
-        enableColorOnDark
-        position="fixed"
-        color="inherit"
-        elevation={0}
-        sx={{
-          bgcolor: theme.palette.background.default,
-          transition: leftDrawerOpened ? theme.transitions.create("width") : "none",
-        }}
-      >
-        <Toolbar>
-          <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
-        </Toolbar>
-      </AppBar>
+    <>
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
-      {/* drawer */}
-      <Sidebar
-        drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened}
-        drawerToggle={handleLeftDrawerToggle}
-      />
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        {/* header */}
+        <AppBar
+          enableColorOnDark
+          position="fixed"
+          color="inherit"
+          elevation={0}
+          sx={{
+            bgcolor: theme.palette.background.default,
+            transition: leftDrawerOpened ? theme.transitions.create("width") : "none",
+          }}
+        >
+          <Toolbar>
+            <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
+          </Toolbar>
+        </AppBar>
 
-      {/* main content */}
-      <Main theme={theme} open={leftDrawerOpened}>
-        {/* breadcrumb */}
-        <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
-        {/* <PerfectScrollbar
+        {/* drawer */}
+        <Sidebar
+          drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened}
+          drawerToggle={handleLeftDrawerToggle}
+        />
+
+        {/* main content */}
+        <Main theme={theme} open={leftDrawerOpened}>
+          {/* breadcrumb */}
+          <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
+          {/* <PerfectScrollbar
           component="div"
           style={{
             height: !matchUpMd ? "calc(100vh - 56px)" : "calc(100vh - 88px)",
@@ -115,11 +144,12 @@ const MainLayout = () => {
             paddingBottom: "40px",
           }}
         > */}
-        <Outlet />
-        {/* </PerfectScrollbar> */}
-      </Main>
-      <Customization />
-    </Box>
+          <Outlet />
+          {/* </PerfectScrollbar> */}
+        </Main>
+        <Customization />
+      </Box>
+    </>
   );
 };
 
