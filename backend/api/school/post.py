@@ -34,8 +34,8 @@ def post_data(payload):
 
         logger.debug(f'{my_string}')
 
-        insert_query = "INSERT INTO school (name, proper_name_id, contact, address, school_series, school_classes, created_by, last_edited_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (school, proper_name_id, contact, address, my_string, '', 'admin', 'admin')
+        insert_query = "INSERT INTO school (name, proper_name_id, email, contact, address, school_series, school_classes, created_by, last_edited_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (school, proper_name_id, email, contact, address, my_string, '', 'admin', 'admin')
         mycursor.execute(insert_query, values)
         mydb.commit()
 

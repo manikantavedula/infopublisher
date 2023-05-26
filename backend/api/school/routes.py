@@ -78,7 +78,7 @@ def submit_edit_form():
 
         logger.debug(f'A message to log. {request.json} {school} {contact} {address} {school_series} {id}')
 
-        update_data(school, contact, address, school_series, id)
+        update_data(request.json)
 
         return 'Data edited successfully!'
     

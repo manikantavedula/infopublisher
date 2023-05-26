@@ -77,17 +77,58 @@ const validationSchema = yup.object().shape({
 
 export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }) {
   // eslint-disable-next-line camelcase
-  const { name, email, contact, address, school_series } = editModalData;
+  const { name, email, contact, address, school_series, formatted_series } = editModalData;
+
+  const initialValues = {
+    school: name,
+    email,
+    contact,
+    address,
+    // eslint-disable-next-line camelcase
+    school_series,
+  };
+
+  const [checkedItems, setCheckedItems] = useState([]);
+  const [selectedSeries, setSelectedSeries] = useState([]);
+
   const dispatch = useDispatch();
   useLayoutEffect(() => {
     dispatch(seriesActions.getAll());
     dispatch(schoolActions.getSchoolSeries());
   }, []);
 
-  // const [names, setNames] = useState();
-
   const series = useSelector((state) => state.series.data);
   const schoolSeries = useSelector((state) => state.school.dataSchoolSeries);
+
+  useEffect(() => {
+    console.log(initialValues);
+  }, [initialValues]);
+
+  useEffect(() => {
+    console.log(checkedItems);
+  }, [checkedItems]);
+
+  useEffect(() => {
+    const format = [];
+
+    formatted_series &&
+      formatted_series.length > 0 &&
+      formatted_series.forEach((series) => {
+        const { series_id, series_name, standards } = series;
+        standards.forEach((standard) => {
+          const { standard_id, standard_name } = standard;
+          format.push({
+            series: series_name,
+            series_id,
+            standard: standard_name,
+            standard_id,
+          });
+        });
+      });
+
+    console.log(format);
+    setCheckedItems(format);
+  }, [formatted_series]);
 
   useEffect(() => {
     console.log(series, schoolSeries);
@@ -104,66 +145,14 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
     );
   }, [series, schoolSeries]);
 
-  const initialValues = {
-    school: name,
-    email,
-    contact,
-    address,
-    // eslint-disable-next-line camelcase
-    school_series,
-  };
-
-  const [selectedSeries, setSelectedSeries] = useState([]);
-
-  useEffect(() => {
-    if (series && series.length > 0) {
-      setSelectedSeries([...series.filter((v) => initialValues.school_series.includes(v.name))]);
-    }
-  }, [series]);
-
-  useEffect(() => {
-    console.log(initialValues);
-  }, [initialValues]);
-
   useEffect(() => {
     console.log(selectedSeries);
   }, [selectedSeries]);
 
   const onSubmit = (values) => {
-    console.log({
-      ...values,
-      school_series: [...selectedSeries.map((v) => v.name)],
-    });
-    onClose({
-      ...values,
-      school_series: [...selectedSeries],
-    });
+    console.log(values, checkedItems);
+    onClose(values, checkedItems);
   };
-
-  useEffect(() => {
-    const newCheckedItems = [];
-    series &&
-      series.length > 0 &&
-      series.forEach((parent) => {
-        const children =
-          schoolSeries &&
-          schoolSeries.length > 0 &&
-          schoolSeries.filter((item) => item.series === parent.name);
-        if (
-          children &&
-          children.length > 0 &&
-          children.every((child) =>
-            checkedItems.some(
-              (item) => item.standard === child.standard && item.series === parent.name
-            )
-          )
-        ) {
-          // newCheckedItems.push(parent.name);
-          newCheckedItems.push(...children);
-        }
-      });
-    setCheckedItems(newCheckedItems);
-  }, [series, schoolSeries]);
 
   const handleParentCheckboxChange = (parent) => {
     let newCheckedItems = [...checkedItems];
@@ -329,6 +318,21 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
 
                   <Grid item xs={6}>
                     <TextField
+                      name="email"
+                      label="Email"
+                      variant="outlined"
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
+                      onChange={(event) => {
+                        setFieldValue("email", event.target.value);
+                      }}
+                      fullWidth
+                      defaultValue={values.email}
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
                       name="contact"
                       label="Contact"
                       variant="outlined"
@@ -340,6 +344,9 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
                       fullWidth
                       inputProps={{
                         maxLength: 10,
+                      }}
+                      sx={{
+                        marginBottom: "16px",
                       }}
                       defaultValue={values.contact}
                     />

@@ -183,9 +183,9 @@ function School() {
     }
   };
 
-  const onCloseEditModal = async (values) => {
+  const onCloseEditModal = async (values, checkedItems) => {
     setIsLoading(true);
-    console.log(values, editModalData);
+    console.log(values, editModalData, checkedItems);
 
     try {
       const response = await axios.post(
@@ -193,6 +193,7 @@ function School() {
         {
           ...editModalData,
           ...values,
+          checkedItems,
         },
         {
           headers: {
