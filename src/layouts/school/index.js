@@ -148,15 +148,16 @@ function School() {
     setEditModalData({});
   });
 
-  const onCloseAddModal = async (values) => {
+  const onCloseAddModal = async (values, checkedItems) => {
     setIsLoading(true);
-    console.log(values);
+    console.log(values, checkedItems);
 
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/school/submit-form`,
         {
           ...values,
+          checkedItems,
         },
         {
           headers: {
@@ -176,8 +177,9 @@ function School() {
       dispatch(schoolActions.getAll());
       setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

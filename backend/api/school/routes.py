@@ -51,7 +51,7 @@ def submit_form():
 
         logger.debug(f'A message to log. {request.json} {school} {contact} {address} {school_series}')
 
-        post_data(school, contact, address, school_series)
+        post_data(request.json)
 
         return 'Data stored successfully!'
     

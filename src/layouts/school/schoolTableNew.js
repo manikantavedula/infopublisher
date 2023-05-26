@@ -79,13 +79,13 @@ export default function SchoolTableNew({
         school: <SchoolModule name={`${v.name}`} />,
         series: (
           <List>
-            {v.school_series &&
-              v.school_series.length > 0 &&
-              v.school_series.map((w, j) => (
+            {v.formatted_series &&
+              v.formatted_series.length > 0 &&
+              v.formatted_series.map((w, j) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <ListItem disablePadding key={i + j} dense>
                   <ListItemButton sx={{ paddingLeft: 0 }}>
-                    <ListItemText primary={w} />
+                    <ListItemText primary={w.series_name} />
                   </ListItemButton>
                 </ListItem>
               ))}

@@ -15,17 +15,21 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 const validationSchema = yup.object().shape({
   school: yup.string().required("School is required"),
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "Invalid Gmail address")
+    .required("Email is required"),
   contact: yup
     .string()
     .matches(/^\d{10}$/, "Phone number is not valid")
     .required("Phone number is required"),
   address: yup.string().required("Address is required"),
-  school_series: yup.array().min(1, "Please select at least one option"),
 });
 
 export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }) {
   // eslint-disable-next-line camelcase
-  const { name, contact, address, school_series } = editModalData;
+  const { name, email, contact, address, school_series } = editModalData;
   const dispatch = useDispatch();
   useLayoutEffect(() => {
     dispatch(seriesActions.getAll());
@@ -45,6 +49,7 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
 
   const initialValues = {
     school: name,
+    email,
     contact,
     address,
     // eslint-disable-next-line camelcase
@@ -147,9 +152,7 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
                       }}
                       defaultValue={values.contact}
                     />
-                  </Grid>
 
-                  <Grid item xs={6}>
                     <TextField
                       name="address"
                       label="Address"
@@ -167,6 +170,79 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
                   </Grid>
 
                   <Grid item xs={6}>
+                    <Box
+                      sx={{
+                        border: "1px solid rgba(0, 0, 0, 0.12)",
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                        backgroundColor: "#f8fafc",
+                      }}
+                    >
+                      <Typography sx={{ margin: "15.5px 14px" }}>Class Access</Typography>
+                      <FormGroup sx={{ borderRadius: "13px" }}>
+                        {series &&
+                          series.length > 0 &&
+                          series.map((parent, i) => (
+                            <Accordion
+                              expanded={expandedSeries === `panelseries${i + 1}`}
+                              onChange={handleChangeAccSeries(`panelseries${i + 1}`)}
+                              key={`panelseries${i + 1}`}
+                              // sx={{
+                              //   borderTopRightRadius: "13px",
+                              //   borderTopLeftRadius: "13px",
+                              //   marginBottom: "16px",
+                              //   border: "none",
+                              // }}
+                            >
+                              <AccordionSummary
+                                aria-controls={`panelseries${i + 1}d-content`}
+                                id={`panelseries${i + 1}d-header`}
+                                // sx={{
+                                //   borderTopRightRadius: "13px",
+                                //   borderTopLeftRadius: "13px",
+                                // }}
+                              >
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={isParentChecked(parent.name)}
+                                      onChange={() => handleParentCheckboxChange(parent.name)}
+                                      indeterminate={isParentIndeterminate(parent.name)}
+                                    />
+                                  }
+                                  label={parent.name}
+                                />
+                              </AccordionSummary>
+                              <AccordionDetails sx={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
+                                {schoolSeries &&
+                                  schoolSeries.length > 0 &&
+                                  schoolSeries
+                                    .filter((item) => item.series === parent.name)
+                                    .map((child) => (
+                                      <FormControlLabel
+                                        key={`${child.standard}-${child.series}`}
+                                        control={
+                                          <Checkbox
+                                            checked={checkedItems.some(
+                                              (item) =>
+                                                item.standard === child.standard &&
+                                                item.series === parent.name
+                                            )}
+                                            onChange={() => handleChildCheckboxChange(child)}
+                                          />
+                                        }
+                                        label={child.standard}
+                                      />
+                                    ))}
+                              </AccordionDetails>
+                              {/* </FormGroup> */}
+                            </Accordion>
+                          ))}
+                      </FormGroup>
+                    </Box>
+                  </Grid>
+
+                  {/* <Grid item xs={6}>
                     {series && series !== null && series.length > 0 && (
                       <Autocomplete
                         multiple
@@ -204,7 +280,7 @@ export function SchoolEditModal({ isOpen, onClose, onCloseEmpty, editModalData }
                         )}
                       />
                     )}
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </FormGroup>
             </DialogContent>

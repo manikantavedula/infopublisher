@@ -2,8 +2,8 @@ from connection import connect_to_db
 from .logger import logger
 
 # Download the helper library from https://www.twilio.com/docs/python/install
-import os
-from twilio.rest import Client
+# import os
+# from twilio.rest import Client
 
 def get_data():
     mycursor = None
@@ -32,27 +32,52 @@ def get_data():
         logger.debug(results)
 
         for res in results:
-            school_series = [int(id) for id in res['school_series'].split(", ")]
-            params = tuple(school_series)
+            school_series = [str(series_standard_id) for series_standard_id in res['school_series'].split(", ")]
+            params = {}
+
+            for item in school_series:
+                series_id, standard_id = item.split("|-|")
+                series_id = int(series_id)
+                standard_id = int(standard_id)
+                
+                if series_id not in params:
+                    params[series_id] = []
+                
+                params[series_id].append(standard_id)
+
+            series_ids = list(params.keys())
+            standard_ids = [standard_id for standard_ids_list in params.values() for standard_id in standard_ids_list]
 
             # Create a SQL query with the IN operator to get rows where id matches any value in id_list
-            query = "SELECT name FROM series WHERE id IN (%s)" % (','.join(['%s'] * len(school_series)))
-            mycursor.execute(query, params)
-            res2 = mycursor.fetchall()
-            flat_list = [item for sublist in res2 for item in sublist]
-            res['school_series'] = flat_list
+            series_query = "SELECT id, name FROM series WHERE id IN (%s)"
+            standard_query = "SELECT id, name FROM standard WHERE id IN (%s)"
 
-        # Set environment variables for your credentials
-        # Read more at http://twil.io/secure
-        # account_sid = "ACe30998fba8470202c114f2ce5a8b632d"
-        # auth_token = "9c538ade9db1c9d5e87dcb08e04274ac"
-        # client = Client(account_sid, auth_token)
-        # message = client.messages.create(
-        #     body="Hello from Twilio",
-        #     from_="+13158471955",
-        #     to="+918639693342"
-        # )
-        # print(message.sid)
+            series_placeholders = ",".join(["%s"] * len(series_ids))
+            standard_placeholders = ",".join(["%s"] * len(standard_ids))
+            series_query = series_query % series_placeholders
+            standard_query = standard_query % standard_placeholders
+
+            mycursor.execute(series_query, tuple(series_ids))
+            series_rows = mycursor.fetchall()
+
+            mycursor.execute(standard_query, tuple(standard_ids))
+            standard_rows = mycursor.fetchall()
+
+            # series_names = [row[0] for row in series_rows]
+            # standard_names = [row[0] for row in standard_rows]
+            
+            series_data = {}
+            for row in series_rows:
+                series_id, series_name = row
+                series_data[series_id] = {'series_id': series_id, 'series_name': series_name, 'standards': []}
+
+            for row in standard_rows:
+                standard_id, standard_name = row
+                for series_id, standards in params.items():
+                    if standard_id in standards:
+                        series_data[series_id]['standards'].append({'standard_id': standard_id, 'standard_name': standard_name})
+
+            res['formatted_series'] = list(series_data.values())
 
         mycursor.close()
         mydb.close()
