@@ -53,7 +53,7 @@ export const getUserInfo = async (tokenResponse, handleLoading, handleLogin) => 
 
     // const isGmail = response.data.emailAddress.endsWith("@gmail.com"); // return isGmail;
   } catch (error) {
-    console.error("Error checking Gmail address:", error);
+    console.error("Error Getting User Info:", error);
     return false;
   } finally {
     handleLogin(tokenResponse, userInfoResponse);
@@ -90,14 +90,16 @@ export const getAccessToken = async (code, handleLoading, handleLogin) => {
   }
 };
 
-export const refreshToken = async () => {
-  try {
-    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+export const RefreshToken = async () => {
+  const expirationTimestamp = localStorage.getItem("expiration_timestamp");
 
-    if (expirationTimestamp && Date.now() < expirationTimestamp) {
-      console.log("access token is not expired");
-    } else {
-      const storedRefreshToken = localStorage.getItem("refresh_token");
+  console.log(expirationTimestamp && Date.now() < expirationTimestamp);
+
+  if (expirationTimestamp && Date.now() < expirationTimestamp) {
+    console.log("access token is not expired");
+  } else {
+    const storedRefreshToken = localStorage.getItem("refresh_token");
+    try {
       const response = await axios.post("https://oauth2.googleapis.com/token", {
         client_id: process.env.REACT_APP_CLIENT_ID,
         client_secret: process.env.REACT_APP_CLIENT_SECRET,
@@ -105,15 +107,24 @@ export const refreshToken = async () => {
         grant_type: "refresh_token",
       });
 
-      const { access_token } = response.data;
+      console.log(response.data);
+
+      const { access_token, expires_in } = response.data;
+
+      const expirationTimestamp = Date.now() + expires_in * 1000;
 
       // Update the stored tokens
       localStorage.setItem("access_token", access_token);
+      localStorage.setItem("expiration_timestamp", expirationTimestamp);
 
       console.log("Access Token:", access_token);
+
+      return "refreshed";
+    } catch (error) {
+      console.log("Error refreshing token:", error);
+
+      return "error";
     }
-  } catch (error) {
-    console.error("Error refreshing token:", error);
   }
 };
 
@@ -138,6 +149,31 @@ const Callback = () => {
   };
 
   const emailCheck = useSelector((state) => state.common.emailCheck);
+  const tokens = useSelector((state) => state.common.tokens);
+
+  useEffect(() => {
+    console.log(tokens);
+
+    if (tokens && tokens?.message !== "no data") {
+      (async () => {
+        await dispatch(commonActions.getUserRole());
+        await console.log("email_check");
+
+        await navigate("/dashboard/default");
+      })();
+    } else if (tokens && tokens?.message === "no data") {
+      console.log("remove everything");
+
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("expiration_timestamp");
+      localStorage.removeItem("userinfo_response");
+      localStorage.removeItem("role");
+      localStorage.removeItem("email_check");
+
+      navigate("/");
+    }
+  }, [tokens]);
 
   useEffect(() => {
     console.log(emailCheck);
@@ -153,6 +189,7 @@ const Callback = () => {
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("refresh_token", refresh_token);
       localStorage.setItem("userinfo_response", JSON.stringify(userData));
+      localStorage.setItem("role", emailCheck?.role);
 
       const exp = localStorage.getItem("expiration_timestamp");
       const acc = localStorage.getItem("access_token");
@@ -160,11 +197,11 @@ const Callback = () => {
       const usr = localStorage.getItem("userinfo_response");
 
       if (exp && acc && ref && usr) {
-        localStorage.removeItem("email_check");
-        navigate("/dashboard/default");
+        (async () => {
+          await dispatch(commonActions.storeTokens());
+        })();
       }
     } else if (emailCheck && emailCheck?.message === "no data") {
-      localStorage.removeItem("email_check");
       console.log("No Profile Available");
       navigate("/");
     }

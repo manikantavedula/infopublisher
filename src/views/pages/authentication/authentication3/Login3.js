@@ -14,6 +14,9 @@ import AuthFooter from "ui-component/cards/AuthFooter";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useLayoutEffect } from "react";
+import { RefreshToken } from "layouts/callback";
+import { useDispatch } from "react-redux";
+import { commonActions } from "slices/common";
 
 // assets
 
@@ -21,27 +24,69 @@ import { useLayoutEffect } from "react";
 
 const Login = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   useLayoutEffect(() => {
     setIsLoading(true);
+
+    dispatch(commonActions.getUserRole());
   }, []);
 
   useEffect(() => {
     const storedAccessToken = localStorage.getItem("access_token");
     const storedRefreshToken = localStorage.getItem("refresh_token");
+    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
     const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+
+    console.log(expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken);
 
     if (
       storedAccessToken &&
       storedRefreshToken &&
       expirationTimestamp &&
+      storedUserInfoResponse &&
       Date.now() < expirationTimestamp
     ) {
       setIsLoading(false);
       navigate("/dashboard/default");
+    } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
+      console.log("refresh token for login auth");
+      let status;
+
+      (async () => {
+        status = await RefreshToken();
+
+        await dispatch(commonActions.storeTokens());
+
+        await console.log("refresh token status", status);
+
+        if (status === "error") {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("expiration_timestamp");
+          localStorage.removeItem("userinfo_response");
+
+          const storedAccessToken = localStorage.getItem("access_token");
+          const storedRefreshToken = localStorage.getItem("refresh_token");
+          const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+          const userInfoResponse = localStorage.getItem("userinfo_response");
+
+          if (
+            !storedAccessToken ||
+            !storedRefreshToken ||
+            !expirationTimestamp ||
+            !userInfoResponse ||
+            !(Date.now() < expirationTimestamp)
+          ) {
+            navigate("/");
+          }
+        }
+
+        setIsLoading(false);
+      })();
     } else {
       setIsLoading(false);
     }

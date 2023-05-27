@@ -13,7 +13,7 @@ from api.typeOfVideos.routes import typeOfVideos_routes
 from api.common.routes import common_routes
 import logging
 from datetime import datetime, timedelta, timezone
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
+# from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from connection import connect_to_db
@@ -40,7 +40,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 app.config["JWT_SECRET_KEY"] = "2edc71d35a7c977e2f9a4eaa7d88c5b1ae7adf8454d0f43ffd83a7c977e2f9a4370dce9affe7a261d0f23eb067a588b313e5a8ef162c40460f418fe8cd7bedb16b2dc61efc6"
 app.config["GOOGLE_CLIENT_ID"] = "948640071935-o7fftdda4hnsnm8odnjjibsko94s9ou7.apps.googleusercontent.com"
-jwt = JWTManager(app)
+# jwt = JWTManager(app)
 
 app.register_blueprint(series_routes)
 app.register_blueprint(school_routes)

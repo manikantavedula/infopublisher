@@ -27,6 +27,7 @@ import React, { useState, useCallback, useMemo, useEffect, useLayoutEffect } fro
 import { useSelector, useDispatch } from "react-redux";
 import { lessonActions } from "slices/lesson";
 import { seriesActions } from "slices/series";
+import { commonActions } from "slices/common";
 import { onlineClassesActions } from "slices/onlineClasses";
 import SwipeableViews from "react-swipeable-views";
 import { useTheme } from "@mui/material/styles";
@@ -47,6 +48,8 @@ import {
   IconTrash,
   IconVideo,
 } from "@tabler/icons";
+import { useNavigate } from "react-router-dom";
+import { RefreshToken } from "layouts/callback";
 
 // Create a custom theme with the desired color
 const themes = createTheme({
@@ -124,6 +127,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 function OnlineClasses() {
   const theme = useTheme();
   const [value, setValue] = useState(0);
+  const navigate = useNavigate;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -145,6 +149,58 @@ function OnlineClasses() {
     dispatch(lessonActions.getAll());
     dispatch(seriesActions.getAll());
     dispatch(onlineClassesActions.getAll());
+
+    dispatch(commonActions.getUserRole());
+
+    const storedAccessToken = localStorage.getItem("access_token");
+    const storedRefreshToken = localStorage.getItem("refresh_token");
+    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
+    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+
+    if (
+      storedAccessToken &&
+      storedRefreshToken &&
+      expirationTimestamp &&
+      storedUserInfoResponse &&
+      Date.now() < expirationTimestamp
+    ) {
+      console.log("Auth is working fine.");
+    } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
+      console.log("refresh token for main layout");
+      let status;
+
+      (async () => {
+        status = await RefreshToken();
+
+        await dispatch(commonActions.storeTokens());
+
+        await console.log("refresh token status", status);
+
+        if (status === "error") {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("expiration_timestamp");
+          localStorage.removeItem("userinfo_response");
+
+          const storedAccessToken = localStorage.getItem("access_token");
+          const storedRefreshToken = localStorage.getItem("refresh_token");
+          const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+          const userInfoResponse = localStorage.getItem("userinfo_response");
+
+          if (
+            !storedAccessToken ||
+            !storedRefreshToken ||
+            !expirationTimestamp ||
+            !userInfoResponse ||
+            !(Date.now() < expirationTimestamp)
+          ) {
+            navigate("/");
+          }
+        }
+      })();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   const lesson = useSelector((state) => state.lesson.data);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
+import { commonActions } from "slices/common";
 
 // material-ui
 import { styled, useTheme } from "@mui/material/styles";
@@ -18,7 +19,7 @@ import { SET_MENU } from "store/actions";
 
 // assets
 import { IconChevronRight } from "@tabler/icons";
-import { refreshToken } from "layouts/callback";
+import { RefreshToken } from "layouts/callback";
 
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -87,19 +88,87 @@ const MainLayout = () => {
   useEffect(() => {
     const storedAccessToken = localStorage.getItem("access_token");
     const storedRefreshToken = localStorage.getItem("refresh_token");
+    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
     const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+
+    dispatch(commonActions.getUserRole());
 
     if (
       storedAccessToken &&
       storedRefreshToken &&
       expirationTimestamp &&
+      storedUserInfoResponse &&
       Date.now() < expirationTimestamp
     ) {
       console.log("Auth is working fine.");
+    } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
+      console.log("refresh token for main layout");
+      let status;
+
+      (async () => {
+        status = await RefreshToken();
+
+        await dispatch(commonActions.storeTokens());
+
+        await console.log("refresh token status", status);
+
+        if (status === "error") {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("expiration_timestamp");
+          localStorage.removeItem("userinfo_response");
+
+          const storedAccessToken = localStorage.getItem("access_token");
+          const storedRefreshToken = localStorage.getItem("refresh_token");
+          const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+          const userInfoResponse = localStorage.getItem("userinfo_response");
+
+          if (
+            !storedAccessToken ||
+            !storedRefreshToken ||
+            !expirationTimestamp ||
+            !userInfoResponse ||
+            !(Date.now() < expirationTimestamp)
+          ) {
+            navigate("/");
+          }
+        }
+      })();
     } else {
       navigate("/");
     }
   }, []);
+
+  const userRole = useSelector((state) => state.common.role);
+
+  useEffect(() => {
+    console.log(userRole);
+
+    if (userRole && userRole.role !== "none" && userRole?.message !== "role verified") {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("expiration_timestamp");
+      localStorage.removeItem("userinfo_response");
+      localStorage.removeItem("role");
+
+      const storedAccessToken = localStorage.getItem("access_token");
+      const storedRefreshToken = localStorage.getItem("refresh_token");
+      const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+      const userInfoResponse = localStorage.getItem("userinfo_response");
+      const role = localStorage.getItem("role");
+
+      if (
+        !storedAccessToken ||
+        !storedRefreshToken ||
+        !expirationTimestamp ||
+        !userInfoResponse ||
+        !role ||
+        !(Date.now() < expirationTimestamp)
+      ) {
+        navigate("/");
+      }
+    }
+  }, [userRole]);
 
   return (
     <>

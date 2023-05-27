@@ -7,6 +7,7 @@ import other from "./other";
 
 const menuItems = {
   items: [dashboard, pages, other, utilities],
+  schoolItems: [dashboard, pages, other],
 };
 
 export default menuItems;

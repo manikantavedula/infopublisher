@@ -52,6 +52,7 @@ function School() {
   const { darkMode } = controller;
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [errorMessageEmailToAddModal, setErrorMessageEmailToAddModal] = useState("");
 
   useEffect(() => {
     // var requestOptions = {
@@ -148,6 +149,10 @@ function School() {
     setEditModalData({});
   });
 
+  useEffect(() => {
+    console.log(errorMessageEmailToAddModal);
+  }, [errorMessageEmailToAddModal]);
+
   const onCloseAddModal = async (values, checkedItems) => {
     setIsLoading(true);
     console.log(values, checkedItems);
@@ -172,10 +177,14 @@ function School() {
       );
       console.log(response.data);
 
-      setIsOpen(false);
-      setWhichModal("");
-      dispatch(schoolActions.getAll());
-      setIsLoading(false);
+      if (response.data === "Email already exists") {
+        setErrorMessageEmailToAddModal(values.email);
+      } else {
+        setErrorMessageEmailToAddModal("");
+        setIsOpen(false);
+        setWhichModal("");
+        dispatch(schoolActions.getAll());
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -212,10 +221,10 @@ function School() {
       setWhichModal("");
       setEditModalData({});
       dispatch(schoolActions.getAll());
-      setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -247,10 +256,10 @@ function School() {
       setWhichModal("");
       setEditModalData({});
       dispatch(schoolActions.getAll());
-      setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -277,6 +286,7 @@ function School() {
           isOpen={isOpen}
           onClose={onCloseAddModal}
           onCloseEmpty={onCloseEmptyModal}
+          errorEmail={errorMessageEmailToAddModal}
         />
       ) : null}
 

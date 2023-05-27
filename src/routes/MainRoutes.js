@@ -2,6 +2,7 @@ import { lazy } from "react";
 
 import MainLayout from "layout/MainLayout";
 import Loadable from "ui-component/Loadable";
+import { useSelector } from "react-redux";
 
 // @mui icons
 // import {
@@ -33,6 +34,32 @@ const Exam = Loadable(lazy(() => import("layouts/exam")));
 const EMS = Loadable(lazy(() => import("layouts/ems")));
 
 // const Attendance = Loadable(lazy(() => import("layouts/attendance")));
+
+// Define your roles
+const ROLES = {
+  ADMIN: "admin",
+  SCHOOL: "school",
+};
+
+export const DashboardRoutes = {
+  path: "/",
+  element: <MainLayout />,
+  children: [
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
+    },
+    {
+      path: "dashboard",
+      children: [
+        {
+          path: "default",
+          element: <Dashboard />,
+        },
+      ],
+    },
+  ],
+};
 
 const MainRoutes = {
   path: "/",
@@ -129,6 +156,136 @@ const MainRoutes = {
         {
           path: "ems",
           element: <EMS />,
+        },
+      ],
+    },
+    {
+      path: "assess",
+      children: [
+        {
+          path: "exam",
+          element: <Exam />,
+        },
+      ],
+    },
+    {
+      path: "prepare",
+      children: [
+        {
+          path: "test",
+          element: <PrepareTest />,
+        },
+      ],
+    },
+  ],
+};
+
+export const RestrictedSchoolRoutes = {
+  path: "/",
+  element: <MainLayout />,
+  children: [
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
+    },
+    {
+      path: "dashboard",
+      children: [
+        {
+          path: "default",
+          element: <Dashboard />,
+        },
+      ],
+    },
+    {
+      path: "utils",
+      children: [
+        {
+          path: "student",
+          element: <Student />,
+        },
+      ],
+    },
+    {
+      path: "learn",
+      children: [
+        {
+          path: "online-classes",
+          element: <OnlineClasses />,
+        },
+      ],
+    },
+    {
+      path: "learn",
+      children: [
+        {
+          path: "animated-classes",
+          element: <AnimatedClasses />,
+        },
+      ],
+    },
+    {
+      path: "assess",
+      children: [
+        {
+          path: "exam",
+          element: <Exam />,
+        },
+      ],
+    },
+    {
+      path: "prepare",
+      children: [
+        {
+          path: "test",
+          element: <PrepareTest />,
+        },
+      ],
+    },
+  ],
+};
+
+export const RestrictedStudentRoutes = {
+  path: "/",
+  element: <MainLayout />,
+  children: [
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
+    },
+    {
+      path: "dashboard",
+      children: [
+        {
+          path: "default",
+          element: <Dashboard />,
+        },
+      ],
+    },
+    {
+      path: "utils",
+      children: [
+        {
+          path: "student",
+          element: <Student />,
+        },
+      ],
+    },
+    {
+      path: "learn",
+      children: [
+        {
+          path: "online-classes",
+          element: <OnlineClasses />,
+        },
+      ],
+    },
+    {
+      path: "learn",
+      children: [
+        {
+          path: "animated-classes",
+          element: <AnimatedClasses />,
         },
       ],
     },

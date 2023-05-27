@@ -47,13 +47,13 @@ def submit_form():
         school = request.json['school']
         contact = request.json['contact']
         address = request.json['address']
-        school_series = request.json['school_series']
+        # school_series = request.json['school_series']
 
-        logger.debug(f'A message to log. {request.json} {school} {contact} {address} {school_series}')
+        logger.debug(f'A message to log. {request.json} {school} {contact} {address}')
 
-        post_data(request.json)
+        data = post_data(request.json)
 
-        return 'Data stored successfully!'
+        return data
     
 
 @school_routes.route('/submit-edit-form', methods=['POST', 'OPTIONS'])
@@ -73,10 +73,10 @@ def submit_edit_form():
         school = request.json['school']
         contact = request.json['contact']
         address = request.json['address']
-        school_series = request.json['school_series']
+        # school_series = request.json['school_series']
         id = request.json['id']
 
-        logger.debug(f'A message to log. {request.json} {school} {contact} {address} {school_series} {id}')
+        logger.debug(f'A message to log. {request.json} {school} {contact} {address} {id}')
 
         update_data(request.json)
 
@@ -100,10 +100,10 @@ def submit_delete_form():
         school = request.json['school']
         contact = request.json['contact']
         address = request.json['address']
-        school_series = request.json['school_series']
+        # school_series = request.json['school_series']
         id = request.json['id']
 
-        logger.debug(f'A message to log. {request.json} {school} {contact} {address} {school_series} {id}')
+        logger.debug(f'A message to log. {request.json} {school} {contact} {address} {id}')
 
         delete_data(id)
 

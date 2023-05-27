@@ -64,22 +64,32 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));
 
-const validationSchema = yup.object().shape({
-  school: yup.string().required("School is required"),
-  email: yup
-    .string()
-    .email("Invalid email address")
-    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "Invalid Gmail address")
-    .required("Email is required"),
-  contact: yup
-    .string()
-    .matches(/^\d{10}$/, "Phone number is not valid")
-    .required("Phone number is required"),
-  address: yup.string().required("Address is required"),
-});
-
-export function SchoolAddModal({ isOpen, onClose, onCloseEmpty }) {
+export function SchoolAddModal({ isOpen, onClose, onCloseEmpty, errorEmail }) {
   const [checkedItems, setCheckedItems] = useState([]);
+
+  useEffect(() => {
+    console.log(errorEmail);
+  }, [errorEmail]);
+
+  const validationSchema = yup.object().shape({
+    school: yup.string().required("School is required"),
+    email: yup
+      .string()
+      .email("Invalid email address")
+      .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "Invalid Gmail address")
+      .test("email-check", "Email Already Exists", function (value) {
+        if (value === errorEmail) {
+          return false;
+        }
+        return true;
+      })
+      .required("Email is required"),
+    contact: yup
+      .string()
+      .matches(/^\d{10}$/, "Phone number is not valid")
+      .required("Phone number is required"),
+    address: yup.string().required("Address is required"),
+  });
 
   const dispatch = useDispatch();
   useLayoutEffect(() => {

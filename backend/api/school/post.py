@@ -24,23 +24,45 @@ def post_data(payload):
 
         logger.debug(f'{checkedItems}')
         
-        school = school.strip() if school is not None else ''
-        s = school.lower() if school is not None else ''
-        proper_name_id = s.replace(" ", "_")
-        arr = []
-        for obj in checkedItems:
-            arr.append(str(obj['series_id']) + '|-|' + str(obj['standard_id']))
-        my_string = ', '.join(list(set(arr)))
+        check_query = "SELECT COUNT(*) FROM school WHERE email = %s"
+        mycursor.execute(check_query, (email,))
+        result = mycursor.fetchone()
+        
+        check_query = "SELECT COUNT(*) FROM users WHERE email = %s"
+        mycursor.execute(check_query, (email,))
+        result1 = mycursor.fetchone()
 
-        logger.debug(f'{my_string}')
+        if result[0] == 0 and result1[0] == 0:
+            # insert_query = "INSERT INTO users (email, role) VALUES (%s, %s)"
+            # values = (email, "school")
+            # mycursor.execute(insert_query, values)
+            # mydb.commit()
+        
+            school = school.strip() if school is not None else ''
+            s = school.lower() if school is not None else ''
+            proper_name_id = s.replace(" ", "_")
+            arr = []
+            for obj in checkedItems:
+                arr.append(str(obj['series_id']) + '|-|' + str(obj['standard_id']))
+            my_string = ', '.join(list(set(arr)))
 
-        insert_query = "INSERT INTO school (name, proper_name_id, email, contact, address, school_series, school_classes, created_by, last_edited_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (school, proper_name_id, email, contact, address, my_string, '', 'admin', 'admin')
-        mycursor.execute(insert_query, values)
-        mydb.commit()
+            logger.debug(f'{my_string}')
 
-        mycursor.close()
-        mydb.close()
+            insert_query = "INSERT INTO school (name, proper_name_id, email, contact, address, school_series, school_classes, created_by, last_edited_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            values = (school, proper_name_id, email, contact, address, my_string, '', 'admin', 'admin')
+            mycursor.execute(insert_query, values)
+            mydb.commit()
+
+            mycursor.close()
+            mydb.close()
+
+            results = 'Data stored successfully!'
+        else:
+            mycursor.close()
+            mydb.close()
+
+            results = "Email already exists"
+        
     else:
         mycursor = None
 
