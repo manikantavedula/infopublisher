@@ -21,7 +21,7 @@ export default function ThemeRoutes() {
 
   return useRoutes(
     user.role === "none"
-      ? [AuthenticationRoutes, DashboardRoutes]
+      ? [AuthenticationRoutes, MainRoutes]
       : user.role === "admin"
       ? [AuthenticationRoutes, MainRoutes]
       : user.role === "school"

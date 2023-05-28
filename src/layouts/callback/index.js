@@ -138,9 +138,9 @@ const Callback = () => {
   const [userData, setUserData] = useState([]);
 
   const handleLogin = async (tokenResponse, userInfoResponse) => {
-    console.log(tokenResponse, userInfoResponse, userInfoResponse.data.email);
+    console.log(tokenResponse, userInfoResponse, userInfoResponse?.data.email);
 
-    await localStorage.setItem("email_check", userInfoResponse.data.email);
+    await localStorage.setItem("email_check", userInfoResponse?.data.email);
 
     dispatch(commonActions.getEmailCheck());
 
