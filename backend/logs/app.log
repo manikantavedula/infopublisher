@@ -14807,3 +14807,73 @@ mysql.connector.errors.ProgrammingError: Not all parameters were used in the SQL
 2023-05-28 22:19:34,223 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:19:34] "GET /series/data HTTP/1.1" 200 -
 2023-05-28 22:19:34,223 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:19:34] "GET /standard/data HTTP/1.1" 200 -
 2023-05-28 22:19:34,223 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:19:34] "GET /subject/data HTTP/1.1" 200 -
+2023-05-28 22:34:10,566 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-05-28 22:34:10,566 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2023-05-28 22:34:13,792 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:13] "OPTIONS /common/api/role HTTP/1.1" 200 -
+2023-05-28 22:34:13,795 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmBC75GLpnTTeCf5K6EbVTmlYietRP_OLGXdrFpB-wOcOLy59lsXVo3nq3muM3Hg2c5O7Kd2m71w2ug30Znmp5Y9D0D3dqjgOBpCscqUU0TMkHp7zYCiEcI24V__dSIusQUlvSw5h5bC1KZEC5XmuzsCTZRaCgYKAaESARASFQG1tDrpMBqz_0uwfjunSQg0jm-u9Q0167
+2023-05-28 22:34:13,796 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 22:34:13,894 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:13] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 22:34:14,183 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 22:34:14,185 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "OPTIONS /series/data HTTP/1.1" 200 -
+2023-05-28 22:34:14,186 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "OPTIONS /standard/data HTTP/1.1" 200 -
+2023-05-28 22:34:14,190 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "OPTIONS /subject/data HTTP/1.1" 200 -
+2023-05-28 22:34:14,201 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "GET /series/data HTTP/1.1" 200 -
+2023-05-28 22:34:14,205 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "GET /standard/data HTTP/1.1" 200 -
+2023-05-28 22:34:14,206 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 22:34:14,206 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:34:14] "GET /subject/data HTTP/1.1" 200 -
+2023-05-28 22:38:05,057 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:38:05] "OPTIONS /common/api/role HTTP/1.1" 200 -
+2023-05-28 22:38:05,139 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmBC75GLpnTTeCf5K6EbVTmlYietRP_OLGXdrFpB-wOcOLy59lsXVo3nq3muM3Hg2c5O7Kd2m71w2ug30Znmp5Y9D0D3dqjgOBpCscqUU0TMkHp7zYCiEcI24V__dSIusQUlvSw5h5bC1KZEC5XmuzsCTZRaCgYKAaESARASFQG1tDrpMBqz_0uwfjunSQg0jm-u9Q0167
+2023-05-28 22:38:05,140 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 22:38:05,148 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:38:05] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 22:38:05,384 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmBC75GLpnTTeCf5K6EbVTmlYietRP_OLGXdrFpB-wOcOLy59lsXVo3nq3muM3Hg2c5O7Kd2m71w2ug30Znmp5Y9D0D3dqjgOBpCscqUU0TMkHp7zYCiEcI24V__dSIusQUlvSw5h5bC1KZEC5XmuzsCTZRaCgYKAaESARASFQG1tDrpMBqz_0uwfjunSQg0jm-u9Q0167
+2023-05-28 22:38:05,385 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 22:38:05,392 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:38:05] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 22:38:06,147 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:38:06] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 22:38:06,245 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:38:06] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 22:38:06,430 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:38:06] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 22:38:06,506 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 22:38:06] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:21:34,443 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:34] "OPTIONS /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:21:34,450 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmBC75GLpnTTeCf5K6EbVTmlYietRP_OLGXdrFpB-wOcOLy59lsXVo3nq3muM3Hg2c5O7Kd2m71w2ug30Znmp5Y9D0D3dqjgOBpCscqUU0TMkHp7zYCiEcI24V__dSIusQUlvSw5h5bC1KZEC5XmuzsCTZRaCgYKAaESARASFQG1tDrpMBqz_0uwfjunSQg0jm-u9Q0167
+2023-05-28 23:21:34,456 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 23:21:34,463 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:34] "OPTIONS /common/api/storeTokens HTTP/1.1" 200 -
+2023-05-28 23:21:34,464 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/storeTokens' [POST]> {'email': 'manikantavedula7@gmail.com', 'storedAccessToken': 'ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167', 'storedRefreshToken': '1//0giNg4mZwAAKgCgYIARAAGBASNwF-L9IrnxC3N2iY1zmE8peqOAnM7BVeIDDE-gDfFp3M8rOHyLfML5DJPv5PPZFbu5wIyqOYD48'}
+2023-05-28 23:21:34,519 - api.common.logger - DEBUG - manikantavedula7@gmail.com, ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167, 1//0giNg4mZwAAKgCgYIARAAGBASNwF-L9IrnxC3N2iY1zmE8peqOAnM7BVeIDDE-gDfFp3M8rOHyLfML5DJPv5PPZFbu5wIyqOYD48
+2023-05-28 23:21:34,562 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:34] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:21:34,568 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:34] "POST /common/api/storeTokens HTTP/1.1" 200 -
+2023-05-28 23:21:46,874 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:46] "OPTIONS /common/api/login HTTP/1.1" 200 -
+2023-05-28 23:21:46,879 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/login' [POST]> {'email': 'undefined'}
+2023-05-28 23:21:46,883 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:46] "POST /common/api/login HTTP/1.1" 200 -
+2023-05-28 23:21:46,960 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:46] "OPTIONS /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:21:46,966 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167
+2023-05-28 23:21:46,966 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 23:21:46,974 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:46] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:21:47,212 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167
+2023-05-28 23:21:47,213 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 23:21:47,218 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:47] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:21:47,580 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:47] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:21:47,647 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:47] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:21:48,357 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:48] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:21:48,416 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:21:48] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:28:36,351 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:28:36] "OPTIONS /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:28:36,357 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167
+2023-05-28 23:28:36,358 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 23:28:36,369 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:28:36] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:28:36,516 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167
+2023-05-28 23:28:36,516 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 23:28:36,535 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:28:36] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:28:37,066 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:28:37] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:28:37,162 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:28:37] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:28:37,240 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:28:37] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:28:37,354 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:28:37] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:36:22,975 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:36:22] "OPTIONS /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:36:22,989 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167
+2023-05-28 23:36:22,991 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 23:36:23,014 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:36:23] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:36:23,161 - api.common.logger - DEBUG - Bearer ya29.a0AWY7CkmxqLKUC46vneDbaYYgAb7RwdY3I312SZWwf-pKV9syGj83BbdNJPUFa6F0sw4xTLNUvjFGxAxWmRJw_gkzMJFbf9E8B-1iQifUFvm6Og2gnO5sjQ3KJST1vq9LN6FiqH6FwSxlzLQfPuyaBE9lWf4iJZUGaCgYKAZgSARASFQG1tDrpk0HwBsubbZpwiW40jPxA0g0167
+2023-05-28 23:36:23,162 - api.common.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/common/api/role' [POST]> {'role': 'admin', 'email': 'manikantavedula7@gmail.com'}
+2023-05-28 23:36:23,174 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:36:23] "POST /common/api/role HTTP/1.1" 200 -
+2023-05-28 23:36:23,735 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:36:23] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:36:23,819 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:36:23] "OPTIONS /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:36:23,916 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:36:23] "GET /lesson/data HTTP/1.1" 200 -
+2023-05-28 23:36:24,027 - werkzeug - INFO - 127.0.0.1 - - [28/May/2023 23:36:24] "GET /lesson/data HTTP/1.1" 200 -
