@@ -36,10 +36,19 @@ import Transitions from "ui-component/extended/Transitions";
 import UpgradePlanCard from "./UpgradePlanCard";
 import User1 from "assets/images/users/user-round.svg";
 
+import CryptoJS from "crypto-js";
+
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from "@tabler/icons";
 
 // ==============================|| PROFILE MENU ||============================== //
+
+function decryptObject(ciphertext, secretKey) {
+  // Decrypt the object using AES
+  const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+  const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(plaintext);
+}
 
 const ProfileSection = () => {
   const theme = useTheme();
@@ -53,19 +62,40 @@ const ProfileSection = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
 
   useEffect(() => {
     const storedUserInfoResponse = localStorage.getItem("userinfo_response");
 
-    console.log(storedUserInfoResponse, JSON.parse(storedUserInfoResponse));
+    const key = localStorage.getItem("key_for_access");
+    const login_role_data = localStorage.getItem("access_role_data");
+    const decryptedObject = decryptObject(login_role_data, key);
+    const login_role = decryptedObject.role;
+
+    const storedAccessRoleData = decryptedObject;
+
+    console.log(
+      storedUserInfoResponse,
+      JSON.parse(storedUserInfoResponse),
+      storedAccessRoleData
+      // JSON.parse(storedAccessRoleData)
+    );
 
     const parsed = JSON.parse(storedUserInfoResponse);
+    const parsedRoleData = decryptedObject;
 
     if (storedUserInfoResponse) {
       setName(`${parsed?.data?.given_name} ${parsed?.data?.family_name}`);
       setEmail(`${parsed?.data?.email}`);
       setProfilePicture(`${parsed?.data?.picture}`);
+    }
+
+    if (storedAccessRoleData) {
+      setName(`${parsedRoleData?.name}`);
+      setEmail(`${parsedRoleData?.email}`);
+      setContact(`${parsedRoleData?.contact}`);
+      // setProfilePicture(`${parsed?.data?.picture}`);
     }
   }, []);
 
@@ -77,6 +107,7 @@ const ProfileSection = () => {
     console.log("Logout");
 
     localStorage.removeItem("access_token");
+    localStorage.removeItem("access_role");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("expiration_timestamp");
     localStorage.removeItem("userinfo_response");
@@ -85,6 +116,11 @@ const ProfileSection = () => {
     const storedRefreshToken = localStorage.getItem("refresh_token");
     const expirationTimestamp = localStorage.getItem("expiration_timestamp");
     const userInfoResponse = localStorage.getItem("userinfo_response");
+    const accessRole = localStorage.getItem("access_role");
+
+    if (!accessRole) {
+      navigate("/");
+    }
 
     if (
       !storedAccessToken ||
@@ -96,6 +132,27 @@ const ProfileSection = () => {
       navigate("/");
     }
   };
+
+  function getGreetingByTime() {
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+
+    let greeting;
+
+    if (currentHour >= 5 && currentHour < 12) {
+      greeting = "Good Morning";
+    } else if (currentHour >= 12 && currentHour < 17) {
+      greeting = "Good Afternoon";
+    } else {
+      greeting = "Good Evening";
+    }
+
+    return greeting;
+  }
+
+  // Example usage:
+  const greeting = getGreetingByTime();
+  console.log(greeting);
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -201,13 +258,15 @@ const ProfileSection = () => {
                 >
                   <Box sx={{ p: 2 }}>
                     <Stack>
-                      <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
-                        <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          {name}
-                        </Typography>
-                      </Stack>
-                      <Typography variant="subtitle2">{email}</Typography>
+                      <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
+                        Name: <b>{name}</b>
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        Email: <b>{email}</b>
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        Phone: <b>{contact}</b>
+                      </Typography>
                     </Stack>
                     {/* <OutlinedInput
                       sx={{ width: "100%", pr: 1, pl: 2, my: 2 }}

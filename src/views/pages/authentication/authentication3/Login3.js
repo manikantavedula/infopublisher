@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // material-ui
@@ -17,6 +17,10 @@ import { useLayoutEffect } from "react";
 import { RefreshToken } from "layouts/callback";
 import { useDispatch } from "react-redux";
 import { commonActions } from "slices/common";
+import { getLocalItems } from "layouts/callback";
+import { loginCheck } from "layouts/callback";
+import { removeLocalItems } from "layouts/callback";
+import { getRemovedLocalItemsStatus } from "layouts/callback";
 
 // assets
 
@@ -28,6 +32,24 @@ const Login = () => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isOTP, setIsOTP] = useState(false);
+
+  const [initialValues, setInitialValues] = useState({
+    mobileNumber: "",
+    otp: "",
+  });
+
+  const handleInitialValues = (values) => {
+    setInitialValues((prev) => values);
+  };
+
+  const handleLoading = (bool) => {
+    setIsLoading((prevLoad) => !prevLoad);
+  };
+
+  const handleIsOTP = useCallback((bool) => {
+    setIsOTP(bool);
+  }, []);
 
   useLayoutEffect(() => {
     setIsLoading(true);
@@ -36,60 +58,49 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    const storedAccessToken = localStorage.getItem("access_token");
-    const storedRefreshToken = localStorage.getItem("refresh_token");
-    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
-    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+    console.log(getLocalItems());
+    const storedAccessRole = localStorage.getItem("access_role");
 
-    console.log(expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken);
-
-    if (
-      storedAccessToken &&
-      storedRefreshToken &&
-      expirationTimestamp &&
-      storedUserInfoResponse &&
-      Date.now() < expirationTimestamp
-    ) {
+    if (storedAccessRole) {
       setIsLoading(false);
-      navigate("/dashboard/default");
-    } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
-      console.log("refresh token for login auth");
-      let status;
-
-      (async () => {
-        status = await RefreshToken();
-
-        await dispatch(commonActions.storeTokens());
-
-        await console.log("refresh token status", status);
-
-        if (status === "error") {
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
-          localStorage.removeItem("expiration_timestamp");
-          localStorage.removeItem("userinfo_response");
-
-          const storedAccessToken = localStorage.getItem("access_token");
-          const storedRefreshToken = localStorage.getItem("refresh_token");
-          const expirationTimestamp = localStorage.getItem("expiration_timestamp");
-          const userInfoResponse = localStorage.getItem("userinfo_response");
-
-          if (
-            !storedAccessToken ||
-            !storedRefreshToken ||
-            !expirationTimestamp ||
-            !userInfoResponse ||
-            !(Date.now() < expirationTimestamp)
-          ) {
-            navigate("/");
-          }
-        }
-
-        setIsLoading(false);
-      })();
+      if (storedAccessRole === "admin") {
+        navigate("/dashboard/default");
+      } else {
+        navigate("/learn/onlineclasses");
+      }
     } else {
       setIsLoading(false);
+      navigate("/");
     }
+
+    // if (loginCheck()) {
+    //   setIsLoading(false);
+    //   navigate("/dashboard/default");
+    // }
+    // else if (!loginCheck()) {
+    //   console.log("refresh token for login auth");
+    //   let status;
+
+    //   (async () => {
+    //     status = await RefreshToken();
+
+    //     await dispatch(commonActions.storeTokens());
+
+    //     await console.log("refresh token status", status);
+
+    //     if (status === "error" || status === "logout") {
+    //       await removeLocalItems();
+
+    //       if (getRemovedLocalItemsStatus()) {
+    //         navigate("/");
+    //       }
+    //     }
+
+    //     setIsLoading(false);
+    //   })();
+    // } else {
+    //   setIsLoading(false);
+    // }
   }, []);
 
   return (
@@ -144,7 +155,14 @@ const Login = () => {
                     </Grid>
                   </Grid> */}
                       <Grid item xs={12}>
-                        <AuthLogin />
+                        <AuthLogin
+                          isLoading={isLoading}
+                          handleLoading={handleLoading}
+                          isOTP={isOTP}
+                          handleIsOTP={handleIsOTP}
+                          initialValues={initialValues}
+                          handleInitialValues={handleInitialValues}
+                        />
                       </Grid>
                       {/* <Grid item xs={12}>
                     <Divider />

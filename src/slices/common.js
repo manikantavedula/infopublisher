@@ -23,6 +23,14 @@ function createExtraActions() {
     });
   }
 
+  function setUserRole() {
+    return createAsyncThunk("commonSlice/setUserRole", async () => {
+      const role = localStorage.getItem("role");
+
+      return { role };
+    });
+  }
+
   function getUserRole() {
     return createAsyncThunk("commonSlice/fetchUserRole", async () => {
       const storedAccessToken = localStorage.getItem("access_token");
@@ -42,7 +50,7 @@ function createExtraActions() {
             headers: {
               Authorization: `Bearer ${storedAccessToken}`,
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Origin": "https://app.infopublisher.in",
               "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
               "Access-Control-Allow-Headers":
                 "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -76,7 +84,7 @@ function createExtraActions() {
           {
             headers: {
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Origin": "https://app.infopublisher.in",
               "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
               "Access-Control-Allow-Headers":
                 "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -106,7 +114,7 @@ function createExtraActions() {
           {
             headers: {
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Origin": "https://app.infopublisher.in",
               "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
               "Access-Control-Allow-Headers":
                 "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -125,6 +133,7 @@ function createExtraActions() {
   return {
     getCredentialResponse: getCredentialResponse(),
     storeTokens: storeTokens(),
+    setUserRole: setUserRole(),
     getUserRole: getUserRole(),
     getEmailCheck: getEmailCheck(),
   };
@@ -141,6 +150,25 @@ function createExtraReducers() {
       [fulfilled]: (state, action) => ({
         ...state,
         credentialResponse: action.payload,
+        isLoading: false,
+        error: null,
+      }),
+      [rejected]: (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      }),
+    };
+  }
+
+  function setUserRole() {
+    const { pending, fulfilled, rejected } = extraActions.setUserRole;
+
+    return {
+      [pending]: (state) => ({ ...state, isLoading: true }),
+      [fulfilled]: (state, action) => ({
+        ...state,
+        role: action.payload,
         isLoading: false,
         error: null,
       }),
@@ -212,6 +240,7 @@ function createExtraReducers() {
   return {
     ...getCredentialResponse(),
     ...getUserRole(),
+    ...setUserRole(),
     ...storeTokens(),
     ...getEmailCheck(),
   };

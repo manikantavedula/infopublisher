@@ -20,12 +20,50 @@ class ErrorBoundary extends React.Component {
     console.error(error, errorInfo);
   }
 
+  handleLogout() {
+    console.log("Logout");
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("access_role");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("expiration_timestamp");
+    localStorage.removeItem("userinfo_response");
+
+    const storedAccessToken = localStorage.getItem("access_token");
+    const storedRefreshToken = localStorage.getItem("refresh_token");
+    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+    const userInfoResponse = localStorage.getItem("userinfo_response");
+    const accessRole = localStorage.getItem("access_role");
+
+    if (!accessRole) {
+      window.location.href = "/";
+    }
+
+    if (
+      !storedAccessToken ||
+      !storedRefreshToken ||
+      !expirationTimestamp ||
+      !userInfoResponse ||
+      !(Date.now() < expirationTimestamp)
+    ) {
+      window.location.href = "/";
+    }
+  }
+
   render() {
     if (this.state.hasError) {
       // You can customize the error message or fallback UI here
       return (
         <div>
-          <h1>Something went wrong.</h1>
+          <h1>
+            Something went wrong.{" "}
+            <span
+              style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}
+              onClick={() => this.handleLogout()}
+            >
+              Logout
+            </span>
+          </h1>
         </div>
       );
     }

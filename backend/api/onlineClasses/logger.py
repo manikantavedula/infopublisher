@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # Create a file handler and set the log level
-handler = logging.FileHandler('logs/routes.log')
+handler = logging.FileHandler('logs/debug.log')
 handler.setLevel(logging.DEBUG)
 
 # Create a formatter

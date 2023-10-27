@@ -5,7 +5,7 @@ import { commonActions } from "slices/common";
 
 // material-ui
 import { styled, useTheme } from "@mui/material/styles";
-import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery } from "@mui/material";
+import { AppBar, Box, CssBaseline, Toolbar, Typography, useMediaQuery } from "@mui/material";
 
 // project imports
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -23,6 +23,17 @@ import { RefreshToken } from "layouts/callback";
 
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+
+import CryptoJS from "crypto-js";
+
+function decryptObject(ciphertext, secretKey) {
+  // Decrypt the object using AES
+  const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+  const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+
+  console.log(plaintext);
+  return JSON.parse(plaintext);
+}
 
 // styles
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -85,90 +96,119 @@ const MainLayout = () => {
     dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
   };
 
+  const key = localStorage.getItem("key_for_access");
+  const login_role_data = localStorage.getItem("access_role_data");
+  const decryptedObject = decryptObject(login_role_data, key);
+
   useEffect(() => {
-    const storedAccessToken = localStorage.getItem("access_token");
-    const storedRefreshToken = localStorage.getItem("refresh_token");
-    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
-    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+    console.log(decryptedObject);
+  }, [decryptedObject]);
 
-    dispatch(commonActions.getUserRole());
+  function getGreetingByTime() {
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
 
-    if (
-      storedAccessToken &&
-      storedRefreshToken &&
-      expirationTimestamp &&
-      storedUserInfoResponse &&
-      Date.now() < expirationTimestamp
-    ) {
-      console.log("Auth is working fine.");
-    } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
-      console.log("refresh token for main layout");
-      let status;
+    let greeting;
 
-      (async () => {
-        status = await RefreshToken();
-
-        await dispatch(commonActions.storeTokens());
-
-        await console.log("refresh token status", status);
-
-        if (status === "error") {
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
-          localStorage.removeItem("expiration_timestamp");
-          localStorage.removeItem("userinfo_response");
-
-          const storedAccessToken = localStorage.getItem("access_token");
-          const storedRefreshToken = localStorage.getItem("refresh_token");
-          const expirationTimestamp = localStorage.getItem("expiration_timestamp");
-          const userInfoResponse = localStorage.getItem("userinfo_response");
-
-          if (
-            !storedAccessToken ||
-            !storedRefreshToken ||
-            !expirationTimestamp ||
-            !userInfoResponse ||
-            !(Date.now() < expirationTimestamp)
-          ) {
-            navigate("/");
-          }
-        }
-      })();
+    if (currentHour >= 5 && currentHour < 12) {
+      greeting = "Good Morning";
+    } else if (currentHour >= 12 && currentHour < 17) {
+      greeting = "Good Afternoon";
     } else {
-      navigate("/");
+      greeting = "Good Evening";
     }
-  }, []);
+
+    return greeting;
+  }
+
+  // Example usage:
+  const greeting = getGreetingByTime();
+  console.log(greeting);
+
+  // useEffect(() => {
+  //   const storedAccessToken = localStorage.getItem("access_token");
+  //   const storedRefreshToken = localStorage.getItem("refresh_token");
+  //   const storedUserInfoResponse = localStorage.getItem("userinfo_response");
+  //   const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+
+  //   dispatch(commonActions.getUserRole());
+
+  //   if (
+  //     storedAccessToken &&
+  //     storedRefreshToken &&
+  //     expirationTimestamp &&
+  //     storedUserInfoResponse &&
+  //     Date.now() < expirationTimestamp
+  //   ) {
+  //     console.log("Auth is working fine.");
+  //   } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
+  //     console.log("refresh token for main layout");
+  //     let status;
+
+  //     (async () => {
+  //       status = await RefreshToken();
+
+  //       await dispatch(commonActions.storeTokens());
+
+  //       await console.log("refresh token status", status);
+
+  //       if (status === "error") {
+  //         localStorage.removeItem("access_token");
+  //         localStorage.removeItem("refresh_token");
+  //         localStorage.removeItem("expiration_timestamp");
+  //         localStorage.removeItem("userinfo_response");
+
+  //         const storedAccessToken = localStorage.getItem("access_token");
+  //         const storedRefreshToken = localStorage.getItem("refresh_token");
+  //         const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+  //         const userInfoResponse = localStorage.getItem("userinfo_response");
+
+  //         if (
+  //           !storedAccessToken ||
+  //           !storedRefreshToken ||
+  //           !expirationTimestamp ||
+  //           !userInfoResponse ||
+  //           !(Date.now() < expirationTimestamp)
+  //         ) {
+  //           navigate("/");
+  //         }
+  //       }
+  //     })();
+  //   } else {
+  //     navigate("/");
+  //   }
+  // }, []);
 
   const userRole = useSelector((state) => state.common.role);
 
-  useEffect(() => {
-    console.log(userRole);
+  // useEffect(() => {
+  //   console.log(userRole);
 
-    if (userRole && userRole.role !== "none" && userRole?.message !== "role verified") {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("expiration_timestamp");
-      localStorage.removeItem("userinfo_response");
-      localStorage.removeItem("role");
+  //   if (userRole && userRole.role !== "none" && userRole?.message !== "role verified") {
+  //     localStorage.removeItem("access_token");
+  //     localStorage.removeItem("refresh_token");
+  //     localStorage.removeItem("expiration_timestamp");
+  //     localStorage.removeItem("userinfo_response");
+  //     localStorage.removeItem("role");
 
-      const storedAccessToken = localStorage.getItem("access_token");
-      const storedRefreshToken = localStorage.getItem("refresh_token");
-      const expirationTimestamp = localStorage.getItem("expiration_timestamp");
-      const userInfoResponse = localStorage.getItem("userinfo_response");
-      const role = localStorage.getItem("role");
+  //     const storedAccessToken = localStorage.getItem("access_token");
+  //     const storedRefreshToken = localStorage.getItem("refresh_token");
+  //     const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+  //     const userInfoResponse = localStorage.getItem("userinfo_response");
+  //     const role = localStorage.getItem("role");
 
-      if (
-        !storedAccessToken ||
-        !storedRefreshToken ||
-        !expirationTimestamp ||
-        !userInfoResponse ||
-        !role ||
-        !(Date.now() < expirationTimestamp)
-      ) {
-        navigate("/");
-      }
-    }
-  }, [userRole]);
+  //     if (
+  //       !storedAccessToken ||
+  //       !storedRefreshToken ||
+  //       !expirationTimestamp ||
+  //       !userInfoResponse ||
+  //       !role ||
+  //       !(Date.now() < expirationTimestamp)
+  //     ) {
+  //       navigate("/");
+  //     }
+  //   }
+  // }, [userRole]);
 
   return (
     <>
@@ -203,6 +243,29 @@ const MainLayout = () => {
         {/* main content */}
         <Main theme={theme} open={leftDrawerOpened}>
           {/* breadcrumb */}
+
+          {/* <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "12px",
+            }}
+          >
+            <Typography>
+              {greeting},{" "}
+              <span
+                style={{
+                  fontFamily: "sans-serif",
+                  textTransform: "uppercase",
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                }}
+              >
+                {decryptedObject && decryptedObject.name}
+              </span>
+            </Typography>
+          </Box> */}
+
           <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
           {/* <PerfectScrollbar
           component="div"

@@ -61,12 +61,17 @@ const NavItem = ({ item, level }) => {
     if (matchesSM) dispatch({ type: SET_MENU, opened: false });
   };
 
+  let currentIndex;
+
   // active menu item on page load
   useEffect(() => {
-    const currentIndex = document.location.pathname
+    currentIndex = document.location.pathname
       .toString()
       .split("/")
       .findIndex((id) => id === item.id);
+
+    console.log(document.location.pathname.toString().split("/"), item, currentIndex);
+
     if (currentIndex > -1) {
       dispatch({ type: MENU_OPEN, id: item.id });
     }

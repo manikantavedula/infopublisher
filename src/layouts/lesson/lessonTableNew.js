@@ -144,7 +144,7 @@ export default function LessonTableNew({
               </Tooltip>
             ) : null}
 
-            {v.type === "part" && v.animation_video_id !== null ? (
+            {v.type === "part" && v.animation_video_id !== null && v.animation_video_id !== "" ? (
               <Tooltip title="Animation Video" placement="top" key={`${v.name}-${i}-action2`}>
                 <IconButton
                   color="primary"

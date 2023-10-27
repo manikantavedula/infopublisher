@@ -16,7 +16,7 @@ def get_data():
     results = []
     
     if mydb.is_connected():
-        mycursor.execute("SELECT * FROM school")
+        mycursor.execute("SELECT s.id as id, s.name as school, s.name as name, se.name as series, st.name as standard, s.contact as contact, s.email as email, s.address as address FROM student s, series se, standard st WHERE s.series = se.id AND s.standard = st.id")
         rows = mycursor.fetchall()
         
         # get the column names
@@ -25,18 +25,7 @@ def get_data():
         # create a list of dictionaries where each dictionary represents a row with column names as keys and row values as values
         results = [dict(zip(col_names, row)) for row in rows]
 
-        logger.debug(results)
-
-        for res in results:
-            school_series = [int(id) for id in res['school_series'].split(", ")]
-            params = tuple(school_series)
-
-            # Create a SQL query with the IN operator to get rows where id matches any value in id_list
-            query = "SELECT name FROM series WHERE id IN (%s)" % (','.join(['%s'] * len(school_series)))
-            mycursor.execute(query, params)
-            res2 = mycursor.fetchall()
-            flat_list = [item for sublist in res2 for item in sublist]
-            res['school_series'] = flat_list
+        #logger.debug(results)
 
         mycursor.close()
         mydb.close()

@@ -110,7 +110,16 @@ def get_school_series_data():
         # create a list of dictionaries where each dictionary represents a row with column names as keys and row values as values
         results = [dict(zip(col_names, row)) for row in rows]
 
-        logger.debug(results)
+        # logger.debug(f'school series {results}')
+
+        # Find dictionaries with series_id = 40
+        dictionaries_with_series_40 = [d for d in results if d['series_id'] == 40]
+
+        # Create new dictionaries with series_id = 1 by copying values from dictionaries with series_id = 40
+        new_dictionaries_with_series_1 = [{'standard': d['standard'], 'standard_id': d['standard_id'], 'series': 'Global Smart', 'series_id': 1} for d in dictionaries_with_series_40]
+
+        # Append the new dictionaries to the existing data
+        results.extend(new_dictionaries_with_series_1)
 
         mycursor.close()
         mydb.close()

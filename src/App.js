@@ -18,17 +18,13 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 function App() {
   const customization = useSelector((state) => state.customization);
 
-  const handleAuthenticationSuccess = () => {
-    console.log("invoked in App.js");
-  };
-
   return (
     <StyledEngineProvider injectFirst>
       <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
         <ThemeProvider theme={themes(customization)}>
           <CssBaseline />
           <NavigationScroll>
-            <Routes onAuthenticationSuccess={handleAuthenticationSuccess} />
+            <Routes />
           </NavigationScroll>
         </ThemeProvider>
       </GoogleOAuthProvider>

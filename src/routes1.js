@@ -75,9 +75,9 @@ const routes = [
   {
     type: "collapse",
     name: "Online Classes",
-    key: "online-classes",
+    key: "onlineclasses",
     icon: <OndemandVideo />,
-    route: "/online-classes",
+    route: "/onlineclasses",
     component: <OnlineClasses />,
   },
   {

@@ -4,6 +4,7 @@ import os
 import sys
 from api.series.routes import series_routes
 from api.school.routes import school_routes
+from api.student.routes import student_routes
 from api.standard.routes import standard_routes
 from api.subject.routes import subject_routes
 from api.lesson.routes import lesson_routes
@@ -44,6 +45,7 @@ app.config["GOOGLE_CLIENT_ID"] = "948640071935-o7fftdda4hnsnm8odnjjibsko94s9ou7.
 
 app.register_blueprint(series_routes)
 app.register_blueprint(school_routes)
+app.register_blueprint(student_routes)
 app.register_blueprint(standard_routes)
 app.register_blueprint(subject_routes)
 app.register_blueprint(lesson_routes)

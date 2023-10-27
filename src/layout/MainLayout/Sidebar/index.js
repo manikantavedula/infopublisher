@@ -13,11 +13,14 @@ import MenuList from "./MenuList";
 import LogoSection from "../LogoSection";
 import MenuCard from "./MenuCard";
 import { drawerWidth } from "store/constant";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
 
   const drawer = (

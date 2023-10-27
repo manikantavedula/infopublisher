@@ -22,14 +22,14 @@ def post_data(payload):
         email = payload['email']
         checkedItems = payload['checkedItems']
 
-        logger.debug(f'{checkedItems}')
+        #logger.debug(f'{checkedItems}')
         
-        check_query = "SELECT COUNT(*) FROM school WHERE email = %s"
-        mycursor.execute(check_query, (email,))
+        check_query = "SELECT COUNT(*) FROM school WHERE contact = %s"
+        mycursor.execute(check_query, (contact,))
         result = mycursor.fetchone()
         
-        check_query = "SELECT COUNT(*) FROM users WHERE email = %s"
-        mycursor.execute(check_query, (email,))
+        check_query = "SELECT COUNT(*) FROM users WHERE phone = %s"
+        mycursor.execute(check_query, (contact,))
         result1 = mycursor.fetchone()
 
         if result[0] == 0 and result1[0] == 0:
@@ -46,7 +46,7 @@ def post_data(payload):
                 arr.append(str(obj['series_id']) + '|-|' + str(obj['standard_id']))
             my_string = ', '.join(list(set(arr)))
 
-            logger.debug(f'{my_string}')
+            #logger.debug(f'{my_string}')
 
             insert_query = "INSERT INTO school (name, proper_name_id, email, contact, address, school_series, school_classes, created_by, last_edited_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             values = (school, proper_name_id, email, contact, address, my_string, '', 'admin', 'admin')
@@ -61,7 +61,7 @@ def post_data(payload):
             mycursor.close()
             mydb.close()
 
-            results = "Email already exists"
+            results = "Contact already exists"
         
     else:
         mycursor = None

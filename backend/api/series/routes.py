@@ -42,7 +42,7 @@ def submit_form():
     logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -66,7 +66,7 @@ def submit_edit_form():
     logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -91,7 +91,7 @@ def submit_delete_form():
     logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",

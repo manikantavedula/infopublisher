@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
-import { Avatar, Box, ButtonBase } from "@mui/material";
+import { Avatar, Box, ButtonBase, Typography } from "@mui/material";
 
 // project imports
 import LogoSection from "../LogoSection";
@@ -13,10 +13,51 @@ import NotificationSection from "./NotificationSection";
 // assets
 import { IconMenu2 } from "@tabler/icons";
 
+import CryptoJS from "crypto-js";
+import { useEffect } from "react";
+
+function decryptObject(ciphertext, secretKey) {
+  // Decrypt the object using AES
+  const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+  const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+
+  console.log(plaintext);
+  return JSON.parse(plaintext);
+}
+
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const Header = ({ handleLeftDrawerToggle }) => {
   const theme = useTheme();
+
+  const key = localStorage.getItem("key_for_access");
+  const login_role_data = localStorage.getItem("access_role_data");
+  const decryptedObject = decryptObject(login_role_data, key);
+
+  useEffect(() => {
+    console.log(decryptedObject);
+  }, [decryptedObject]);
+
+  function getGreetingByTime() {
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+
+    let greeting;
+
+    if (currentHour >= 5 && currentHour < 12) {
+      greeting = "Good Morning";
+    } else if (currentHour >= 12 && currentHour < 17) {
+      greeting = "Good Afternoon";
+    } else {
+      greeting = "Good Evening";
+    }
+
+    return greeting;
+  }
+
+  // Example usage:
+  const greeting = getGreetingByTime();
+  console.log(greeting);
 
   return (
     <>
@@ -56,13 +97,36 @@ const Header = ({ handleLeftDrawerToggle }) => {
         </ButtonBase>
       </Box>
 
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "right",
+          paddingLeft: "23px",
+        }}
+      >
+        <Typography>
+          {greeting},{" "}
+          <span
+            style={{
+              fontFamily: "sans-serif",
+              textTransform: "uppercase",
+              fontSize: "20px",
+              fontWeight: "bold",
+            }}
+          >
+            {decryptedObject && JSON.stringify(decryptedObject.name)}
+          </span>
+        </Typography>
+      </Box>
+
       {/* header search */}
-      <SearchSection />
+      {/* <SearchSection /> */}
       <Box sx={{ flexGrow: 1 }} />
       <Box sx={{ flexGrow: 1 }} />
 
       {/* notification & profile */}
-      <NotificationSection />
+      {/* <NotificationSection /> */}
       <ProfileSection />
     </>
   );

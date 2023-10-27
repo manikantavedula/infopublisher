@@ -10,6 +10,71 @@ import axios from "axios";
 import { commonActions } from "slices/common";
 import { useLayoutEffect } from "react";
 
+export const getLocalItems = () => {
+  const storedAccessToken = localStorage.getItem("access_token");
+  const storedRefreshToken = localStorage.getItem("refresh_token");
+  const storedUserInfoResponse = localStorage.getItem("userinfo_response");
+  const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+
+  return { storedAccessToken, storedRefreshToken, storedUserInfoResponse, expirationTimestamp };
+};
+
+export const removeLocalItems = () => {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("expiration_timestamp");
+  localStorage.removeItem("userinfo_response");
+  localStorage.removeItem("role");
+  localStorage.removeItem("email_check");
+};
+
+export const getRemovedLocalItemsStatus = () => {
+  const { storedAccessToken, storedRefreshToken, storedUserInfoResponse, expirationTimestamp } =
+    getLocalItems();
+
+  if (
+    !storedAccessToken ||
+    !storedRefreshToken ||
+    !expirationTimestamp ||
+    !storedUserInfoResponse ||
+    !(Date.now() < expirationTimestamp)
+  ) {
+    return true;
+  }
+};
+
+export const loginCheck = () => {
+  const { storedAccessToken, storedRefreshToken, storedUserInfoResponse, expirationTimestamp } =
+    getLocalItems();
+
+  if (
+    storedAccessToken &&
+    storedRefreshToken &&
+    expirationTimestamp &&
+    storedUserInfoResponse &&
+    Date.now() < expirationTimestamp
+  ) {
+    return true;
+  } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
+    return false;
+  }
+};
+
+export const loginCheckWithoutUser = () => {
+  const { storedAccessToken, storedRefreshToken, expirationTimestamp } = getLocalItems();
+
+  if (
+    storedAccessToken &&
+    storedRefreshToken &&
+    expirationTimestamp &&
+    Date.now() < expirationTimestamp
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const getGoogleUrl = () => {
   const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
 
@@ -35,6 +100,8 @@ export const getGoogleUrl = () => {
 };
 
 export const getUserInfo = async (tokenResponse, handleLoading, handleLogin) => {
+  console.log("getUserInfo", tokenResponse);
+
   let userInfoResponse;
 
   try {
@@ -61,6 +128,8 @@ export const getUserInfo = async (tokenResponse, handleLoading, handleLogin) => 
 };
 
 export const getAccessToken = async (code, handleLoading, handleLogin) => {
+  console.log("getAccessToken", code);
+
   let tokenResponse;
 
   try {
@@ -91,14 +160,15 @@ export const getAccessToken = async (code, handleLoading, handleLogin) => {
 };
 
 export const RefreshToken = async () => {
-  const expirationTimestamp = localStorage.getItem("expiration_timestamp");
+  const { storedRefreshToken, expirationTimestamp } = getLocalItems();
 
   console.log(expirationTimestamp && Date.now() < expirationTimestamp);
 
   if (expirationTimestamp && Date.now() < expirationTimestamp) {
     console.log("access token is not expired");
+
+    return "logout";
   } else {
-    const storedRefreshToken = localStorage.getItem("refresh_token");
     try {
       const response = await axios.post("https://oauth2.googleapis.com/token", {
         client_id: process.env.REACT_APP_CLIENT_ID,
@@ -156,22 +226,20 @@ const Callback = () => {
 
     if (tokens && tokens?.message !== "no data") {
       (async () => {
-        await dispatch(commonActions.getUserRole());
         await console.log("email_check");
+
+        await dispatch(commonActions.getUserRole());
 
         await navigate("/dashboard/default");
       })();
     } else if (tokens && tokens?.message === "no data") {
-      console.log("remove everything");
+      (async () => {
+        await console.log("remove everything");
 
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("expiration_timestamp");
-      localStorage.removeItem("userinfo_response");
-      localStorage.removeItem("role");
-      localStorage.removeItem("email_check");
+        await removeLocalItems();
 
-      navigate("/");
+        await navigate("/");
+      })();
     }
   }, [tokens]);
 
@@ -191,10 +259,12 @@ const Callback = () => {
       localStorage.setItem("userinfo_response", JSON.stringify(userData));
       localStorage.setItem("role", emailCheck?.role);
 
-      const exp = localStorage.getItem("expiration_timestamp");
-      const acc = localStorage.getItem("access_token");
-      const ref = localStorage.getItem("refresh_token");
-      const usr = localStorage.getItem("userinfo_response");
+      const {
+        storedAccessToken: acc,
+        storedRefreshToken: ref,
+        storedUserInfoResponse: usr,
+        expirationTimestamp: exp,
+      } = getLocalItems();
 
       if (exp && acc && ref && usr) {
         (async () => {
@@ -213,21 +283,15 @@ const Callback = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const storedAccessToken = localStorage.getItem("access_token");
-    const storedRefreshToken = localStorage.getItem("refresh_token");
-    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
 
-    if (
-      storedAccessToken &&
-      storedRefreshToken &&
-      expirationTimestamp &&
-      Date.now() < expirationTimestamp
-    ) {
+    if (loginCheckWithoutUser()) {
       setIsLoading(false);
       handleLogin();
     } else {
       const urlParams = new URLSearchParams(location.search);
       const code = urlParams.get("code");
+
+      console.log("code", code);
 
       const params = {};
       for (let [key, value] of urlParams.entries()) {

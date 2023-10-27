@@ -1,13 +1,14 @@
 import dashboard from "./dashboard";
 import pages from "./pages";
-import utilities from "./utilities";
+import utilities, { adminUtilities, schoolUtilities } from "./utilities";
 import other from "./other";
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, pages, other, utilities],
-  schoolItems: [dashboard, pages, other],
+  items: [dashboard, pages, other, adminUtilities],
+  schoolItems: [pages, schoolUtilities],
+  studentItems: [pages],
 };
 
 export default menuItems;

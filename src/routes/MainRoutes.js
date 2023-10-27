@@ -136,7 +136,7 @@ const MainRoutes = {
       path: "learn",
       children: [
         {
-          path: "online-classes",
+          path: "onlineclasses",
           element: <OnlineClasses />,
         },
       ],
@@ -145,7 +145,7 @@ const MainRoutes = {
       path: "learn",
       children: [
         {
-          path: "animated-classes",
+          path: "animatedclasses",
           element: <AnimatedClasses />,
         },
       ],
@@ -210,7 +210,7 @@ export const RestrictedSchoolRoutes = {
       path: "learn",
       children: [
         {
-          path: "online-classes",
+          path: "onlineclasses",
           element: <OnlineClasses />,
         },
       ],
@@ -219,7 +219,7 @@ export const RestrictedSchoolRoutes = {
       path: "learn",
       children: [
         {
-          path: "animated-classes",
+          path: "animatedclasses",
           element: <AnimatedClasses />,
         },
       ],
@@ -250,32 +250,10 @@ export const RestrictedStudentRoutes = {
   element: <MainLayout />,
   children: [
     {
-      path: "/dashboard",
-      element: <Dashboard />,
-    },
-    {
-      path: "dashboard",
-      children: [
-        {
-          path: "default",
-          element: <Dashboard />,
-        },
-      ],
-    },
-    {
-      path: "utils",
-      children: [
-        {
-          path: "student",
-          element: <Student />,
-        },
-      ],
-    },
-    {
       path: "learn",
       children: [
         {
-          path: "online-classes",
+          path: "onlineclasses",
           element: <OnlineClasses />,
         },
       ],
@@ -284,26 +262,8 @@ export const RestrictedStudentRoutes = {
       path: "learn",
       children: [
         {
-          path: "animated-classes",
+          path: "animatedclasses",
           element: <AnimatedClasses />,
-        },
-      ],
-    },
-    {
-      path: "assess",
-      children: [
-        {
-          path: "exam",
-          element: <Exam />,
-        },
-      ],
-    },
-    {
-      path: "prepare",
-      children: [
-        {
-          path: "test",
-          element: <PrepareTest />,
         },
       ],
     },

@@ -30,6 +30,17 @@ import {
   InputBase,
 } from "@mui/material";
 
+import CryptoJS from "crypto-js";
+
+function decryptObject(ciphertext, secretKey) {
+  // Decrypt the object using AES
+  const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+  const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+
+  console.log(plaintext);
+  return JSON.parse(plaintext);
+}
+
 // Create a custom theme with the desired color
 const theme = createTheme({
   palette: {
@@ -54,12 +65,16 @@ function School() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [errorMessageEmailToAddModal, setErrorMessageEmailToAddModal] = useState("");
 
+  const key = localStorage.getItem("key_for_access");
+  const login_role_data = localStorage.getItem("access_role_data");
+  const decryptedObject = decryptObject(login_role_data, key);
+  const accessRole = decryptedObject.role;
+
   useEffect(() => {
     // var requestOptions = {
     //   method: "GET",
     //   redirect: "follow",
     // };
-
     // fetch(
     //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/+918639693342/AUTOGEN2/INFOPB",
     //   requestOptions
@@ -67,12 +82,10 @@ function School() {
     //   .then((response) => response.text())
     //   .then((result) => console.log(result))
     //   .catch((error) => console.log("error", error));
-
     // var requestOptions = {
     //   method: "GET",
     //   redirect: "follow",
     // };
-
     // fetch(
     //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/VERIFY3/918639693342/487638",
     //   requestOptions
@@ -80,19 +93,18 @@ function School() {
     //   .then((response) => response.text())
     //   .then((result) => console.log(result))
     //   .catch((error) => console.log("error", error));
-
-    var requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
-
-    fetch(
-      "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/VERIFY/f18eaa75-fa37-11ed-addf-0200cd936042/487638",
-      requestOptions
-    )
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
+    ////////////////////////////////////////////////////////////////////////////
+    // var requestOptions = {
+    //   method: "GET",
+    //   redirect: "follow",
+    // };
+    // fetch(
+    //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/VERIFY/f18eaa75-fa37-11ed-addf-0200cd936042/487638",
+    //   requestOptions
+    // )
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log("error", error));
   }, []);
 
   const dispatch = useDispatch();
@@ -167,7 +179,7 @@ function School() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             "Access-Control-Allow-Headers":
               "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -207,7 +219,7 @@ function School() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             "Access-Control-Allow-Headers":
               "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -242,7 +254,7 @@ function School() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             "Access-Control-Allow-Headers":
               "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",

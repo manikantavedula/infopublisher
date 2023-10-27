@@ -22,10 +22,10 @@ def get_data_endpoint():
 @animatedClasses_routes.route('/submit-form', methods=['POST', 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def submit_form():
-    logger.debug(f'request: {request} {request.json}')
+    #logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -38,7 +38,7 @@ def submit_form():
         address = request.json['address']
         animatedClasses_series = request.json['animatedClasses_series']
 
-        logger.debug(f'A message to log. {request.json} {animatedClasses} {contact} {address} {animatedClasses_series}')
+        #logger.debug(f'A message to log. {request.json} {animatedClasses} {contact} {address} {animatedClasses_series}')
 
         post_data(animatedClasses, contact, address, animatedClasses_series)
 
@@ -48,10 +48,10 @@ def submit_form():
 @animatedClasses_routes.route('/submit-edit-form', methods=['POST', 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def submit_edit_form():
-    logger.debug(f'request: {request} {request.json}')
+    #logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -65,7 +65,7 @@ def submit_edit_form():
         animatedClasses_series = request.json['animatedClasses_series']
         id = request.json['id']
 
-        logger.debug(f'A message to log. {request.json} {animatedClasses} {contact} {address} {animatedClasses_series} {id}')
+        #logger.debug(f'A message to log. {request.json} {animatedClasses} {contact} {address} {animatedClasses_series} {id}')
 
         update_data(animatedClasses, contact, address, animatedClasses_series, id)
 
@@ -75,10 +75,10 @@ def submit_edit_form():
 @animatedClasses_routes.route('/submit-delete-form', methods=['POST', 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def submit_delete_form():
-    logger.debug(f'request: {request} {request.json}')
+    #logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -92,7 +92,7 @@ def submit_delete_form():
         animatedClasses_series = request.json['animatedClasses_series']
         id = request.json['id']
 
-        logger.debug(f'A message to log. {request.json} {animatedClasses} {contact} {address} {animatedClasses_series} {id}')
+        #logger.debug(f'A message to log. {request.json} {animatedClasses} {contact} {address} {animatedClasses_series} {id}')
 
         delete_data(id)
 

@@ -1,14 +1,7 @@
-import React, { useLayoutEffect, useState, useMemo, useCallback } from "react";
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import React, { useLayoutEffect, useState, useMemo, useCallback, useEffect } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
-import Footer from "examples/Footer";
 import { useMaterialUIController } from "context";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,13 +9,52 @@ import { studentActions } from "slices/student";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import StudentTable from "./studentTable";
+import StudentTableNew from "./studentTableNew";
 import { StudentAddModal } from "./modals/studentAddModal";
 import { StudentEditModal } from "./modals/studentEditModal";
 import { StudentDeleteModal } from "./modals/studentDeleteModal";
 import { StudentViewModal } from "./modals/studentViewModal";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import { useTheme } from "@mui/material/styles";
+import { IconSearch, IconPlus } from "@tabler/icons";
+import {
+  Button,
+  CardHeader,
+  Typography,
+  CardContent,
+  Divider,
+  IconButton,
+  Tooltip,
+  Paper,
+  InputBase,
+} from "@mui/material";
+
+import CryptoJS from "crypto-js";
+
+function decryptObject(ciphertext, secretKey) {
+  // Decrypt the object using AES
+  const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+  const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+
+  console.log(plaintext);
+  return JSON.parse(plaintext);
+}
+
+// Create a custom theme with the desired color
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#673ab7", // purple
+    },
+    secondary: {
+      main: "rgb(33, 150, 243)", // blue
+    },
+  },
+});
 
 function Student() {
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whichModal, setWhichModal] = useState("");
@@ -30,6 +62,53 @@ function Student() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [errorMessageContactToAddModal, setErrorMessageContactToAddModal] = useState("");
+  const [errorMessageContactToEditModal, setErrorMessageContactToEditModal] = useState("");
+
+  const key = localStorage.getItem("key_for_access");
+  const login_role_data = localStorage.getItem("access_role_data");
+  const decryptedObject = decryptObject(login_role_data, key);
+  const accessRoleID = decryptedObject.id;
+
+  console.log(accessRoleID);
+
+  useEffect(() => {
+    // var requestOptions = {
+    //   method: "GET",
+    //   redirect: "follow",
+    // };
+    // fetch(
+    //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/+918639693342/AUTOGEN2/INFOPB",
+    //   requestOptions
+    // )
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log("error", error));
+    // var requestOptions = {
+    //   method: "GET",
+    //   redirect: "follow",
+    // };
+    // fetch(
+    //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/VERIFY3/918639693342/487638",
+    //   requestOptions
+    // )
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log("error", error));
+    ////////////////////////////////////////////////////////////////////////////
+    // var requestOptions = {
+    //   method: "GET",
+    //   redirect: "follow",
+    // };
+    // fetch(
+    //   "https://2factor.in/API/V1/e6d1f0ea-fa33-11ed-addf-0200cd936042/SMS/VERIFY/f18eaa75-fa37-11ed-addf-0200cd936042/487638",
+    //   requestOptions
+    // )
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log("error", error));
+  }, []);
 
   const dispatch = useDispatch();
   useLayoutEffect(() => {
@@ -38,54 +117,75 @@ function Student() {
 
   const student = useSelector((state) => state.student.data);
 
+  useEffect(() => {
+    console.log(student);
+  }, [student]);
+
   const filteredData = useMemo(() => {
     console.log(searchQuery);
 
     if (searchQuery.trim() === "") {
-      return student;
+      return (
+        student &&
+        student.length > 0 &&
+        student.filter((item) => item.school === Number(accessRoleID))
+      );
     }
 
     const filteredStudent = student.filter(
       (item) =>
-        item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
-        item.student_series.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase())
+        (item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+          item.series.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+          item.standard.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+          item.contact.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase())) &&
+        item.school === Number(accessRoleID)
     );
+
+    console.log(filteredStudent);
 
     return filteredStudent;
   }, [searchQuery, student]);
 
   const searchInputRef = React.useRef(null);
 
-  const onOpenAddModal = () => {
+  const onOpenAddModal = useCallback(() => {
     setIsOpen(true);
     setWhichModal("add");
-  };
+  });
 
-  const onOpenEditModal = (val) => {
+  const onOpenEditModal = useCallback((val) => {
     setIsOpen(true);
     setWhichModal("edit");
     setEditModalData(val);
-  };
+  });
 
-  const onOpenViewModal = (val) => {
+  const onOpenViewModal = useCallback((val) => {
     setIsOpen(true);
     setWhichModal("view");
     setEditModalData(val);
-  };
+  });
 
-  const onOpenDeleteModal = (val) => {
+  const onOpenDeleteModal = useCallback((val) => {
     setIsOpen(true);
     setWhichModal("delete");
     setEditModalData(val);
-  };
+  });
 
-  const onCloseEmptyModal = () => {
+  const onCloseEmptyModal = useCallback(() => {
     setIsOpen(false);
     setWhichModal("");
     setEditModalData({});
-  };
+  });
 
-  const onCloseAddModal = async (values) => {
+  useEffect(() => {
+    console.log(errorMessageContactToAddModal);
+  }, [errorMessageContactToAddModal]);
+
+  useEffect(() => {
+    console.log(errorMessageContactToEditModal);
+  }, [errorMessageContactToEditModal]);
+
+  const onCloseAddModal = async (values, checkedItems) => {
     setIsLoading(true);
     console.log(values);
 
@@ -98,7 +198,7 @@ function Student() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             "Access-Control-Allow-Headers":
               "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -108,19 +208,24 @@ function Student() {
       );
       console.log(response.data);
 
-      setIsOpen(false);
-      setWhichModal("");
-      dispatch(studentActions.getAll());
-      setIsLoading(false);
+      if (response.data === "Contact already exists") {
+        setErrorMessageContactToAddModal(values.contact);
+      } else {
+        setErrorMessageContactToAddModal("");
+        setIsOpen(false);
+        setWhichModal("");
+        dispatch(studentActions.getAll());
+      }
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const onCloseEditModal = async (values) => {
+  const onCloseEditModal = async (values, checkedItems) => {
     setIsLoading(true);
-    console.log(values, editModalData);
+    console.log(values, editModalData, checkedItems);
 
     try {
       const response = await axios.post(
@@ -132,7 +237,7 @@ function Student() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             "Access-Control-Allow-Headers":
               "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -142,14 +247,19 @@ function Student() {
       );
       console.log(response.data);
 
-      setIsOpen(false);
-      setWhichModal("");
-      setEditModalData({});
-      dispatch(studentActions.getAll());
-      setIsLoading(false);
+      if (response.data === "Contact already exists") {
+        setErrorMessageContactToEditModal(values.contact);
+      } else {
+        setErrorMessageContactToEditModal("");
+        setIsOpen(false);
+        setWhichModal("");
+        setEditModalData({});
+        dispatch(studentActions.getAll());
+      }
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -167,7 +277,7 @@ function Student() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             "Access-Control-Allow-Headers":
               "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
@@ -177,14 +287,19 @@ function Student() {
       );
       console.log(response.data);
 
-      setIsOpen(false);
-      setWhichModal("");
-      setEditModalData({});
-      dispatch(studentActions.getAll());
-      setIsLoading(false);
+      if (response.data === "Contact already exists") {
+        setErrorMessageContactToEditModal(values.contact);
+      } else {
+        setErrorMessageContactToEditModal("");
+        setIsOpen(false);
+        setWhichModal("");
+        setEditModalData({});
+        dispatch(studentActions.getAll());
+      }
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -196,9 +311,12 @@ function Student() {
     setSearchQuery(event.target.value);
   });
 
+  const toggleSearch = () => {
+    setIsSearchOpen((prevSearch) => !prevSearch);
+  };
+
   return (
-    <DashboardLayout>
-      <DashboardNavbar />
+    <ThemeProvider theme={theme}>
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -208,6 +326,7 @@ function Student() {
           isOpen={isOpen}
           onClose={onCloseAddModal}
           onCloseEmpty={onCloseEmptyModal}
+          errorContact={errorMessageContactToAddModal}
         />
       ) : null}
 
@@ -217,6 +336,7 @@ function Student() {
           onClose={onCloseEditModal}
           onCloseEmpty={onCloseEmptyModal}
           editModalData={editModalData}
+          errorContact={errorMessageContactToEditModal}
         />
       ) : null}
 
@@ -237,68 +357,71 @@ function Student() {
         />
       ) : null}
 
-      <MDBox>
-        <Grid spacing={12}>
-          <MDBox pt={2} px={2} display="flex" justifyContent="flex-end">
-            <MDButton color={!darkMode ? "error" : "warning"} onClick={onOpenAddModal}>
-              <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-              &nbsp;add new Student
-            </MDButton>
-          </MDBox>
-        </Grid>
-      </MDBox>
+      <Grid>
+        <Card sx={{ boxShadow: "none" }}>
+          <CardContent>
+            <Grid
+              variant="gradient"
+              bgcolor="info"
+              borderRadius="lg"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h3" fontWeight={500} color="primary">
+                Student List
+              </Typography>
 
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
+              <Grid
+                size="small"
+                component="form"
+                sx={{ p: "2px 0px", display: "flex", alignItems: "center" }}
               >
-                <MDTypography variant="h6" color="white">
-                  Student List
-                </MDTypography>
+                {isSearchOpen ? (
+                  <TextField
+                    sx={{ ml: 1, flex: 1 }}
+                    size="small"
+                    placeholder="Search this table..."
+                    inputProps={{ "aria-label": "search this table..." }}
+                    autoFocus
+                    value={searchQuery}
+                    onChange={searchTable}
+                    variant="standard"
+                    label="Search"
+                  />
+                ) : null}
+                <Tooltip title="Search..." placement="top">
+                  <IconButton
+                    color="primary"
+                    type="button"
+                    aria-label="search"
+                    onClick={toggleSearch}
+                  >
+                    <IconSearch size="24px" />
+                  </IconButton>
+                </Tooltip>
 
-                <TextField
-                  label="Search this table..."
-                  color="success"
-                  value={searchQuery}
-                  onChange={searchTable}
-                  variant="filled"
-                  InputProps={
-                    !darkMode
-                      ? {
-                          style: {
-                            backgroundColor: "white",
-                          },
-                        }
-                      : { color: "white" }
-                  }
-                />
-              </MDBox>
+                <Tooltip title="Add Student" placement="top">
+                  <IconButton color="secondary" aria-label="delete" onClick={onOpenAddModal}>
+                    <IconPlus size="27px" />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+            </Grid>
+          </CardContent>
 
-              <StudentTable
-                filtereddata={filteredData}
-                onOpenEditModal={onOpenEditModal}
-                onOpenDeleteModal={onOpenDeleteModal}
-                onOpenViewModal={onOpenViewModal}
-              />
-            </Card>
-          </Grid>
-        </Grid>
-      </MDBox>
-      <Footer />
-    </DashboardLayout>
+          <Divider />
+
+          <StudentTableNew
+            filtereddata={filteredData}
+            onOpenEditModal={onOpenEditModal}
+            onOpenDeleteModal={onOpenDeleteModal}
+            onOpenViewModal={onOpenViewModal}
+          />
+        </Card>
+      </Grid>
+      {/* <Footer /> */}
+    </ThemeProvider>
   );
 }
 

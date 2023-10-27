@@ -16,7 +16,7 @@ export default function ThemeRoutes() {
   const user = useSelector((state) => state.common.role);
 
   useEffect(() => {
-    console.log(user);
+    console.log("routes", user);
   }, [user]);
 
   return useRoutes(

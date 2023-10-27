@@ -33,10 +33,10 @@ def get_school_series_data_endpoint():
 @school_routes.route('/submit-form', methods=['POST', 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def submit_form():
-    logger.debug(f'request: {request} {request.json}')
+    #logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -49,7 +49,7 @@ def submit_form():
         address = request.json['address']
         # school_series = request.json['school_series']
 
-        logger.debug(f'A message to log. {request.json} {school} {contact} {address}')
+        #logger.debug(f'A message to log. {request.json} {school} {contact} {address}')
 
         data = post_data(request.json)
 
@@ -59,10 +59,10 @@ def submit_form():
 @school_routes.route('/submit-edit-form', methods=['POST', 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def submit_edit_form():
-    logger.debug(f'request: {request} {request.json}')
+    #logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -76,7 +76,7 @@ def submit_edit_form():
         # school_series = request.json['school_series']
         id = request.json['id']
 
-        logger.debug(f'A message to log. {request.json} {school} {contact} {address} {id}')
+        #logger.debug(f'A message to log. {request.json} {school} {contact} {address} {id}')
 
         update_data(request.json)
 
@@ -86,10 +86,10 @@ def submit_edit_form():
 @school_routes.route('/submit-delete-form', methods=['POST', 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def submit_delete_form():
-    logger.debug(f'request: {request} {request.json}')
+    #logger.debug(f'request: {request} {request.json}')
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://app.infopublisher.in',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type',
             "Access-Control-Allow-Credentials": "true",
@@ -103,7 +103,7 @@ def submit_delete_form():
         # school_series = request.json['school_series']
         id = request.json['id']
 
-        logger.debug(f'A message to log. {request.json} {school} {contact} {address} {id}')
+        #logger.debug(f'A message to log. {request.json} {school} {contact} {address} {id}')
 
         delete_data(id)
 
