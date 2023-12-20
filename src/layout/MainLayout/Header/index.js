@@ -35,7 +35,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
   const decryptedObject = decryptObject(login_role_data, key);
 
   useEffect(() => {
-    console.log(decryptedObject);
+    console.log("greeting", decryptedObject, JSON.stringify(decryptedObject.name));
   }, [decryptedObject]);
 
   function getGreetingByTime() {
@@ -115,7 +115,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
               fontWeight: "bold",
             }}
           >
-            {decryptedObject && JSON.stringify(decryptedObject.name)}
+            {decryptedObject && decryptedObject?.name && decryptedObject.name.toString()}
           </span>
         </Typography>
       </Box>

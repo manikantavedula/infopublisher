@@ -823,37 +823,42 @@ function OnlineClasses() {
                                           <AccordionDetails>
                                             <Grid container spacing={2}>
                                               {y.parts.length > 0 &&
-                                                y.parts.map((z, m) => (
-                                                  <Grid item xs={4} sm={4} md={2}>
-                                                    <Box>
-                                                      <Tooltip
-                                                        title="Live Video"
-                                                        placement="top"
-                                                        className={z.liveVideoId}
-                                                      >
-                                                        <IconButton
-                                                          color="error"
-                                                          type="button"
-                                                          onClick={() =>
-                                                            onOpenVideoModal({
-                                                              ...v,
-                                                              videoType: "live",
-                                                              lessonIdName: y.name,
-                                                              name: z.name,
-                                                              partNo: z.partNo,
-                                                              liveVideoId: extractVideoId(
-                                                                z.liveVideoId
-                                                              ),
-                                                            })
-                                                          }
-                                                        >
-                                                          <YouTubeIcon sx={{ cursor: "pointer" }} />{" "}
-                                                        </IconButton>
-                                                      </Tooltip>
-                                                      <Typography>Part {m + 1}</Typography>
-                                                    </Box>
-                                                  </Grid>
-                                                ))}
+                                                y.parts.map(
+                                                  (z, m) =>
+                                                    z.liveVideoId && (
+                                                      <Grid item xs={4} sm={4} md={2}>
+                                                        <Box>
+                                                          <Tooltip
+                                                            title="Live Video"
+                                                            placement="top"
+                                                            className={z.liveVideoId}
+                                                          >
+                                                            <IconButton
+                                                              color="error"
+                                                              type="button"
+                                                              onClick={() =>
+                                                                onOpenVideoModal({
+                                                                  ...v,
+                                                                  videoType: "live",
+                                                                  lessonIdName: y.name,
+                                                                  name: z.name,
+                                                                  partNo: z.partNo,
+                                                                  liveVideoId: extractVideoId(
+                                                                    z.liveVideoId
+                                                                  ),
+                                                                })
+                                                              }
+                                                            >
+                                                              <YouTubeIcon
+                                                                sx={{ cursor: "pointer" }}
+                                                              />{" "}
+                                                            </IconButton>
+                                                          </Tooltip>
+                                                          <Typography>Part {m + 1}</Typography>
+                                                        </Box>
+                                                      </Grid>
+                                                    )
+                                                )}
                                             </Grid>
                                           </AccordionDetails>
                                         </Accordion>

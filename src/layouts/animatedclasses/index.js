@@ -249,6 +249,8 @@ function AnimatedClasses() {
 
       setFilteredSchoolAnimatedClasses(animatedClasses);
 
+      // const accessRole = localStorage.getItem("access_role");
+
       if (accessRole === "school") {
         setLoginAccessRole(accessRole);
 
@@ -307,8 +309,6 @@ function AnimatedClasses() {
         console.log(animatedClasses, result, filteredClasses);
 
         setFilteredSchoolAnimatedClasses(filteredClasses);
-
-        setIsLoading(false);
       } else if (accessRole === "student") {
         setLoginAccessRole(accessRole);
 
@@ -343,9 +343,9 @@ function AnimatedClasses() {
         console.log(animatedClasses, filteredClasses);
 
         setFilteredSchoolAnimatedClasses(filteredClasses);
-
-        setIsLoading(false);
       }
+
+      setIsLoading(false);
     }
   }, [animatedClasses]);
 
@@ -824,37 +824,42 @@ function AnimatedClasses() {
                                           <AccordionDetails>
                                             <Grid container spacing={2}>
                                               {y.parts.length > 0 &&
-                                                y.parts.map((z, m) => (
-                                                  <Grid item xs={2}>
-                                                    <Box>
-                                                      <Tooltip
-                                                        title="Animation Video"
-                                                        placement="top"
-                                                        className={z.animationVideoId}
-                                                      >
-                                                        <IconButton
-                                                          color="error"
-                                                          type="button"
-                                                          onClick={() =>
-                                                            onOpenVideoModal({
-                                                              ...v,
-                                                              videoType: "animation",
-                                                              lessonIdName: y.name,
-                                                              name: z.name,
-                                                              partNo: z.partNo,
-                                                              animationVideoId: extractVideoId(
-                                                                z.animationVideoId
-                                                              ),
-                                                            })
-                                                          }
-                                                        >
-                                                          <YouTubeIcon sx={{ cursor: "pointer" }} />{" "}
-                                                        </IconButton>
-                                                      </Tooltip>
-                                                      <Typography>Part {m + 1}</Typography>
-                                                    </Box>
-                                                  </Grid>
-                                                ))}
+                                                y.parts.map(
+                                                  (z, m) =>
+                                                    z.animationVideoId && (
+                                                      <Grid item xs={4} sm={4} md={2}>
+                                                        <Box>
+                                                          <Tooltip
+                                                            title="Animation Video"
+                                                            placement="top"
+                                                            className={z.animationVideoId}
+                                                          >
+                                                            <IconButton
+                                                              color="error"
+                                                              type="button"
+                                                              onClick={() =>
+                                                                onOpenVideoModal({
+                                                                  ...v,
+                                                                  videoType: "animation",
+                                                                  lessonIdName: y.name,
+                                                                  name: z.name,
+                                                                  partNo: z.partNo,
+                                                                  animationVideoId: extractVideoId(
+                                                                    z.animationVideoId
+                                                                  ),
+                                                                })
+                                                              }
+                                                            >
+                                                              <YouTubeIcon
+                                                                sx={{ cursor: "pointer" }}
+                                                              />{" "}
+                                                            </IconButton>
+                                                          </Tooltip>
+                                                          <Typography>Part {m + 1}</Typography>
+                                                        </Box>
+                                                      </Grid>
+                                                    )
+                                                )}
                                             </Grid>
                                           </AccordionDetails>
                                         </Accordion>

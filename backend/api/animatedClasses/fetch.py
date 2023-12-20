@@ -23,8 +23,24 @@ def get_data():
         # get the column names
         col_names1 = [description[0] for description in mycursor.description]
         data = [dict(zip(col_names1, row)) for row in rows1]
+        
+        # logger.debug(f'{data}')
+        logger.debug(f'animated classes')
 
-        #logger.debug(f'results 1 {data}')
+        # Find dictionaries with series_id = 40
+        dictionaries_with_series_40 = [d for d in data if d['series_id'] == 40]
+        dictionaries_with_telugu = [d for d in data if d['subject_name'] == 'Telugu']
+        dictionaries_with_hindi = [d for d in data if d['subject_name'] == 'Hindi']
+
+        # Create new dictionaries with series_id = 1 by copying values from dictionaries with series_id = 40
+        new_dictionaries_with_series_1 = [{**d, 'series_name': 'Global Smart', 'series_id': 1} for d in dictionaries_with_series_40]
+        new_dictionaries_with_series_telugu = [{**d, 'series_name': 'Smart Learn', 'series_id': 2} for d in dictionaries_with_telugu]
+        new_dictionaries_with_series_hindi = [{**d, 'series_name': 'Smart Learn', 'series_id': 2} for d in dictionaries_with_hindi]
+
+        # Append the new dictionaries to the existing data
+        data.extend(new_dictionaries_with_series_1)
+        data.extend(new_dictionaries_with_series_telugu)
+        data.extend(new_dictionaries_with_series_hindi)
 
         series_map = {}
 
@@ -109,6 +125,9 @@ def get_data():
 
         # Output the final result
         #logger.debug(f'results {results}')
+
+        mycursor.close()
+        mydb.close()
     else:
         mycursor = None
 
