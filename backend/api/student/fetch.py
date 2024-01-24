@@ -16,7 +16,7 @@ def get_data():
     results = []
     
     if mydb.is_connected():
-        mycursor.execute("SELECT s.id as id, s.name as school, s.name as name, se.name as series, st.name as standard, s.contact as contact, s.email as email, s.address as address FROM student s, series se, standard st WHERE s.series = se.id AND s.standard = st.id")
+        mycursor.execute("SELECT s.id as id, s.name as school, s.name as name, se.name as series, st.name as standard, s.contact as contact, s.email as email, s.address as address, s.school as school FROM student s, series se, standard st WHERE s.series = se.id AND s.standard = st.id")
         rows = mycursor.fetchall()
         
         # get the column names
