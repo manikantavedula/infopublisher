@@ -61,12 +61,12 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const EarningCard = ({ isLoading }) => {
   const theme = useTheme();
 
-  const dispatch = useDispatch();
-  useLayoutEffect(() => {
-    dispatch(lessonActions.getAll());
-  }, []);
+  // const dispatch = useDispatch();
+  // useLayoutEffect(() => {
+  //   dispatch(lessonActions.getCount());
+  // }, []);
 
-  const lesson = useSelector((state) => state.lesson.data);
+  const lesson = useSelector((state) => state.lesson.count);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -155,19 +155,7 @@ const EarningCard = ({ isLoading }) => {
                     <Typography
                       sx={{ fontSize: "2.125rem", fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}
                     >
-                      {`${
-                        lesson &&
-                        lesson.filter(
-                          (v) => v.live_video_id !== null || v.live_video_id?.length > 0
-                        ).length
-                      } ${
-                        lesson &&
-                        lesson.filter(
-                          (v) => v.live_video_id !== null || v.live_video_id?.length > 0
-                        ).length > 1
-                          ? "Classes"
-                          : "Class"
-                      }`}
+                      {`${lesson.online} ${lesson.online > 1 ? "Classes" : "Class"}`}
                     </Typography>
                   </Grid>
                   {/* <Grid item>

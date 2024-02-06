@@ -144,6 +144,8 @@ function decryptObject(ciphertext, secretKey) {
 }
 
 function OnlineClasses() {
+  console.log("In OnlineClasses");
+
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const navigate = useNavigate;
@@ -166,68 +168,16 @@ function OnlineClasses() {
   const [allowedClassess, setAllowedClassess] = useState([]);
 
   const dispatch = useDispatch();
+
+  const onlineClasses = useSelector((state) => state.onlineClasses.data);
+
   useLayoutEffect(() => {
     setIsLoading(true);
-    dispatch(lessonActions.getAll());
-    dispatch(seriesActions.getAll());
-    dispatch(onlineClassesActions.getAll());
 
-    // dispatch(commonActions.getUserRole());
+    console.log(onlineClasses);
 
-    const storedAccessToken = localStorage.getItem("access_token");
-    const storedRefreshToken = localStorage.getItem("refresh_token");
-    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
-    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
-
-    // if (
-    //   storedAccessToken &&
-    //   storedRefreshToken &&
-    //   expirationTimestamp &&
-    //   storedUserInfoResponse &&
-    //   Date.now() < expirationTimestamp
-    // ) {
-    //   console.log("Auth is working fine.");
-    // } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
-    //   console.log("refresh token for main layout");
-    //   let status;
-
-    //   (async () => {
-    //     status = await RefreshToken();
-
-    //     await dispatch(commonActions.storeTokens());
-
-    //     await console.log("refresh token status", status);
-
-    //     if (status === "error") {
-    //       localStorage.removeItem("access_token");
-    //       localStorage.removeItem("refresh_token");
-    //       localStorage.removeItem("expiration_timestamp");
-    //       localStorage.removeItem("userinfo_response");
-
-    //       const storedAccessToken = localStorage.getItem("access_token");
-    //       const storedRefreshToken = localStorage.getItem("refresh_token");
-    //       const expirationTimestamp = localStorage.getItem("expiration_timestamp");
-    //       const userInfoResponse = localStorage.getItem("userinfo_response");
-
-    //       if (
-    //         !storedAccessToken ||
-    //         !storedRefreshToken ||
-    //         !expirationTimestamp ||
-    //         !userInfoResponse ||
-    //         !(Date.now() < expirationTimestamp)
-    //       ) {
-    //         navigate("/");
-    //       }
-    //     }
-    //   })();
-    // } else {
-    //   navigate("/");
-    // }
-  }, []);
-
-  const lesson = useSelector((state) => state.lesson.data);
-  const series = useSelector((state) => state.series.data);
-  const onlineClasses = useSelector((state) => state.onlineClasses.data);
+    if (!onlineClasses || onlineClasses.length <= 0) dispatch(onlineClassesActions.getAll());
+  }, [onlineClasses]);
 
   const key = localStorage.getItem("key_for_access");
   const login_role_data = localStorage.getItem("access_role_data");
@@ -248,22 +198,15 @@ function OnlineClasses() {
 
       setFilteredSchoolOnlineClasses(onlineClasses);
 
-      // const accessRole = localStorage.getItem("access_role");
-
       if (accessRole === "school") {
         setLoginAccessRole(accessRole);
 
         console.log(decryptedObject);
 
         const inputString = decryptedObject["school_series"];
-
-        // Split the input string by commas to get individual pairs
         const pairs = inputString.split(", ");
-
-        // Initialize an empty array to store the final result
         const result = [];
 
-        // Iterate over each pair and extract the ID and standard numbers
         pairs.forEach((pair) => {
           const [id, standard] = pair.split("|-|");
 
@@ -284,10 +227,6 @@ function OnlineClasses() {
         console.log(result);
 
         setAllowedClassess(result);
-
-        // let filteredClasses = onlineClasses.filter((v) => {
-        //   return result.some((w) => v.series_id === w.id);
-        // });
 
         let filteredClasses = onlineClasses
           .filter((classObj) => {
@@ -348,49 +287,9 @@ function OnlineClasses() {
     }
   }, [onlineClasses]);
 
-  const filteredData = useMemo(() => {
-    console.log(searchQuery);
-
-    if (searchQuery.trim() === "") {
-      return lesson;
-    }
-
-    const filteredOnlineClasses = lesson.filter((item) => {
-      console.log(item, item.name, item.name.toLowerCase(), searchQuery);
-      return item.name.toLowerCase().includes(searchQuery.trim().toLowerCase());
-    });
-
-    return filteredOnlineClasses;
-  }, [searchQuery, lesson]);
-
-  const searchInputRef = React.useRef(null);
-
-  const onOpenAddModal = () => {
-    setIsOpen(true);
-    setWhichModal("add");
-  };
-
-  const onOpenEditModal = (val) => {
-    setIsOpen(true);
-    setWhichModal("edit");
-    setEditModalData(val);
-  };
-
   const onOpenVideoModal = (val) => {
     setIsOpen(true);
     setWhichModal("video");
-    setEditModalData(val);
-  };
-
-  const onOpenDeleteModal = (val) => {
-    setIsOpen(true);
-    setWhichModal("delete");
-    setEditModalData(val);
-  };
-
-  const onOpenViewModal = (val) => {
-    setIsOpen(true);
-    setWhichModal("view");
     setEditModalData(val);
   };
 
@@ -398,121 +297,6 @@ function OnlineClasses() {
     setIsOpen(false);
     setWhichModal("");
     setEditModalData({});
-  };
-
-  const onCloseAddModal = async (values) => {
-    setIsLoading(true);
-    console.log(values);
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/submit-form`,
-        {
-          ...values,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            "Access-Control-Allow-Headers":
-              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
-            "Access-Control-Allow-Credentials": "true",
-          },
-        }
-      );
-      console.log(response.data);
-
-      setIsOpen(false);
-      setWhichModal("");
-      dispatch(lessonActions.getAll());
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
-  const onCloseEditModal = async (values) => {
-    setIsLoading(true);
-    console.log(values, editModalData);
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/submit-edit-form`,
-        {
-          ...editModalData,
-          ...values,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            "Access-Control-Allow-Headers":
-              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
-            "Access-Control-Allow-Credentials": "true",
-          },
-        }
-      );
-      console.log(response.data);
-
-      setIsOpen(false);
-      setWhichModal("");
-      setEditModalData({});
-      dispatch(lessonActions.getAll());
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
-  const onCloseDeleteModal = async (values) => {
-    setIsLoading(true);
-    console.log(values, editModalData);
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/submit-delete-form`,
-        {
-          ...editModalData,
-          ...values,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            "Access-Control-Allow-Headers":
-              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
-            "Access-Control-Allow-Credentials": "true",
-          },
-        }
-      );
-      console.log(response.data);
-
-      setIsOpen(false);
-      setWhichModal("");
-      setEditModalData({});
-      dispatch(lessonActions.getAll());
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
-  const searchTable = useCallback((event) => {
-    console.log(event.target.value, searchInputRef, searchInputRef.current);
-
-    searchInputRef.current?.focus();
-
-    setSearchQuery(event.target.value);
-  });
-
-  const toggleSearch = () => {
-    setIsSearchOpen((prevSearch) => !prevSearch);
   };
 
   const [expandedSeries, setExpandedSeries] = useState(false);

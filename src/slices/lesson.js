@@ -6,6 +6,7 @@ const name = "lesson";
 function createInitialState() {
   return {
     data: null,
+    count: { animation: 0, online: 0 },
     isLoading: false,
     error: null,
   };
@@ -30,8 +31,25 @@ function createExtraActions() {
     });
   }
 
+  function getCount() {
+    return createAsyncThunk("lessonSlice/fetchDataCount", async () => {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/lesson/data-count`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "https://app.infopublisher.in",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          "Access-Control-Allow-Headers":
+            "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
+          "Access-Control-Allow-Credentials": "true",
+        },
+      });
+      return response.data;
+    });
+  }
+
   return {
     getAll: getAll(),
+    getCount: getCount(),
   };
 }
 
@@ -57,8 +75,28 @@ function createExtraReducers() {
     };
   }
 
+  function getCount() {
+    const { pending, fulfilled, rejected } = extraActions.getCount;
+
+    return {
+      [pending]: (state) => ({ ...state, isLoading: true }),
+      [fulfilled]: (state, action) => ({
+        ...state,
+        count: action.payload,
+        isLoading: false,
+        error: null,
+      }),
+      [rejected]: (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      }),
+    };
+  }
+
   return {
     ...getAll(),
+    ...getCount(),
   };
 }
 

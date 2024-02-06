@@ -54,6 +54,8 @@ const theme = createTheme({
 });
 
 function School() {
+  console.log("In School");
+
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

@@ -61,12 +61,12 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const TotalOrderLineChartCard = ({ isLoading }) => {
   const theme = useTheme();
 
-  const dispatch = useDispatch();
-  useLayoutEffect(() => {
-    dispatch(lessonActions.getAll());
-  }, []);
+  // const dispatch = useDispatch();
+  // useLayoutEffect(() => {
+  //   dispatch(lessonActions.getCount());
+  // }, []);
 
-  const lesson = useSelector((state) => state.lesson.data);
+  const lesson = useSelector((state) => state.lesson.count);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -155,19 +155,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                     <Typography
                       sx={{ fontSize: "2.125rem", fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}
                     >
-                      {`${
-                        lesson &&
-                        lesson.filter(
-                          (v) => v.animation_video_id !== null || v.animation_video_id?.length > 0
-                        ).length
-                      } ${
-                        lesson &&
-                        lesson.filter(
-                          (v) => v.animation_video_id !== null || v.animation_video_id?.length > 0
-                        ).length > 1
-                          ? "Classes"
-                          : "Class"
-                      }`}
+                      {`${lesson.animation} ${lesson.animation > 1 ? "Classes" : "Class"}`}
                     </Typography>
                   </Grid>
                   {/* <Grid item>

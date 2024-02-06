@@ -28,6 +28,10 @@ import {
   Tooltip,
   Paper,
   InputBase,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 
 import CryptoJS from "crypto-js";
@@ -54,6 +58,8 @@ const theme = createTheme({
 });
 
 function Student() {
+  console.log("In Student");
+
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -125,19 +131,17 @@ function Student() {
     console.log(searchQuery);
 
     if (searchQuery.trim() === "") {
-      return (
-        student &&
-        student.length > 0 &&
-        student.filter((item) => item.school === Number(accessRoleID))
-      );
+      return;
     }
+
+    console.log(student);
 
     const filteredStudent = student.filter(
       (item) =>
         (item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
-          item.series.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
-          item.standard.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
-          item.contact.join(" ").toLowerCase().includes(searchQuery.trim().toLowerCase())) &&
+          item.series.concat(" ").toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+          item.standard.concat(" ").toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+          item.contact.concat(" ").toLowerCase().includes(searchQuery.trim().toLowerCase())) &&
         item.school === Number(accessRoleID)
     );
 
@@ -315,6 +319,11 @@ function Student() {
     setIsSearchOpen((prevSearch) => !prevSearch);
   };
 
+  const buttonSearch = (e) => {
+    console.log(e.target.value);
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
@@ -402,9 +411,30 @@ function Student() {
                 </Tooltip>
 
                 <Tooltip title="Add Student" placement="top">
-                  <IconButton color="secondary" aria-label="delete" onClick={onOpenAddModal}>
+                  <IconButton color="secondary" aria-label="add" onClick={onOpenAddModal}>
                     <IconPlus size="27px" />
                   </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Select Standard" placement="top">
+                  <FormControl sx={{ m: 1, minWidth: 150 }}>
+                    <InputLabel id="demo-simple-select-standard-label">Select Standard</InputLabel>
+                    <Select
+                      value={searchQuery}
+                      label="select-standard"
+                      onChange={(e) => buttonSearch(e)}
+                      placeholder=""
+                    >
+                      <MenuItem value="">
+                        <em>Reset</em>
+                      </MenuItem>
+
+                      {student &&
+                        [...new Set(student.map((v) => v.standard))].map((v) => (
+                          <MenuItem value={v}>{v}</MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
                 </Tooltip>
               </Grid>
             </Grid>

@@ -144,6 +144,8 @@ function decryptObject(ciphertext, secretKey) {
 }
 
 function AnimatedClasses() {
+  console.log("In AnimatedClasses");
+
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const navigate = useNavigate;
@@ -166,67 +168,7 @@ function AnimatedClasses() {
   const [allowedClassess, setAllowedClassess] = useState([]);
 
   const dispatch = useDispatch();
-  useLayoutEffect(() => {
-    setIsLoading(true);
-    dispatch(lessonActions.getAll());
-    dispatch(seriesActions.getAll());
-    dispatch(animatedClassesActions.getAll());
 
-    // dispatch(commonActions.getUserRole());
-
-    const storedAccessToken = localStorage.getItem("access_token");
-    const storedRefreshToken = localStorage.getItem("refresh_token");
-    const storedUserInfoResponse = localStorage.getItem("userinfo_response");
-    const expirationTimestamp = localStorage.getItem("expiration_timestamp");
-
-    // if (
-    //   storedAccessToken &&
-    //   storedRefreshToken &&
-    //   expirationTimestamp &&
-    //   storedUserInfoResponse &&
-    //   Date.now() < expirationTimestamp
-    // ) {
-    //   console.log("Auth is working fine.");
-    // } else if (expirationTimestamp && Date.now() > expirationTimestamp && storedRefreshToken) {
-    //   console.log("refresh token for main layout");
-    //   let status;
-
-    //   (async () => {
-    //     status = await RefreshToken();
-
-    //     await dispatch(commonActions.storeTokens());
-
-    //     await console.log("refresh token status", status);
-
-    //     if (status === "error") {
-    //       localStorage.removeItem("access_token");
-    //       localStorage.removeItem("refresh_token");
-    //       localStorage.removeItem("expiration_timestamp");
-    //       localStorage.removeItem("userinfo_response");
-
-    //       const storedAccessToken = localStorage.getItem("access_token");
-    //       const storedRefreshToken = localStorage.getItem("refresh_token");
-    //       const expirationTimestamp = localStorage.getItem("expiration_timestamp");
-    //       const userInfoResponse = localStorage.getItem("userinfo_response");
-
-    //       if (
-    //         !storedAccessToken ||
-    //         !storedRefreshToken ||
-    //         !expirationTimestamp ||
-    //         !userInfoResponse ||
-    //         !(Date.now() < expirationTimestamp)
-    //       ) {
-    //         navigate("/");
-    //       }
-    //     }
-    //   })();
-    // } else {
-    //   navigate("/");
-    // }
-  }, []);
-
-  const lesson = useSelector((state) => state.lesson.data);
-  const series = useSelector((state) => state.series.data);
   const animatedClasses = useSelector((state) => state.animatedClasses.data);
 
   const key = localStorage.getItem("key_for_access");
@@ -237,6 +179,12 @@ function AnimatedClasses() {
   const [filteredSchoolAnimatedClasses, setFilteredSchoolAnimatedClasses] =
     useState(animatedClasses);
 
+  useLayoutEffect(() => {
+    console.log(animatedClasses);
+
+    setIsLoading(true);
+  }, []);
+
   useEffect(() => {
     console.log(filteredSchoolAnimatedClasses);
   }, [filteredSchoolAnimatedClasses]);
@@ -244,7 +192,10 @@ function AnimatedClasses() {
   useEffect(() => {
     console.log(animatedClasses);
 
-    if (animatedClasses && animatedClasses.length > 0) {
+    if (!animatedClasses || animatedClasses.length <= 0) {
+      dispatch(animatedClassesActions.getAll());
+      setIsLoading(false);
+    } else if (animatedClasses && animatedClasses.length > 0) {
       console.log(animatedClasses);
 
       setFilteredSchoolAnimatedClasses(animatedClasses);
@@ -349,49 +300,9 @@ function AnimatedClasses() {
     }
   }, [animatedClasses]);
 
-  const filteredData = useMemo(() => {
-    console.log(searchQuery);
-
-    if (searchQuery.trim() === "") {
-      return lesson;
-    }
-
-    const filteredAnimatedClasses = lesson.filter((item) => {
-      console.log(item, item.name, item.name.toLowerCase(), searchQuery);
-      return item.name.toLowerCase().includes(searchQuery.trim().toLowerCase());
-    });
-
-    return filteredAnimatedClasses;
-  }, [searchQuery, lesson]);
-
-  const searchInputRef = React.useRef(null);
-
-  const onOpenAddModal = () => {
-    setIsOpen(true);
-    setWhichModal("add");
-  };
-
-  const onOpenEditModal = (val) => {
-    setIsOpen(true);
-    setWhichModal("edit");
-    setEditModalData(val);
-  };
-
   const onOpenVideoModal = (val) => {
     setIsOpen(true);
     setWhichModal("video");
-    setEditModalData(val);
-  };
-
-  const onOpenDeleteModal = (val) => {
-    setIsOpen(true);
-    setWhichModal("delete");
-    setEditModalData(val);
-  };
-
-  const onOpenViewModal = (val) => {
-    setIsOpen(true);
-    setWhichModal("view");
     setEditModalData(val);
   };
 
@@ -399,121 +310,6 @@ function AnimatedClasses() {
     setIsOpen(false);
     setWhichModal("");
     setEditModalData({});
-  };
-
-  const onCloseAddModal = async (values) => {
-    setIsLoading(true);
-    console.log(values);
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/submit-form`,
-        {
-          ...values,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            "Access-Control-Allow-Headers":
-              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
-            "Access-Control-Allow-Credentials": "true",
-          },
-        }
-      );
-      console.log(response.data);
-
-      setIsOpen(false);
-      setWhichModal("");
-      dispatch(lessonActions.getAll());
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
-  const onCloseEditModal = async (values) => {
-    setIsLoading(true);
-    console.log(values, editModalData);
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/submit-edit-form`,
-        {
-          ...editModalData,
-          ...values,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            "Access-Control-Allow-Headers":
-              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
-            "Access-Control-Allow-Credentials": "true",
-          },
-        }
-      );
-      console.log(response.data);
-
-      setIsOpen(false);
-      setWhichModal("");
-      setEditModalData({});
-      dispatch(lessonActions.getAll());
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
-  const onCloseDeleteModal = async (values) => {
-    setIsLoading(true);
-    console.log(values, editModalData);
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/lesson/submit-delete-form`,
-        {
-          ...editModalData,
-          ...values,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "https://app.infopublisher.in",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            "Access-Control-Allow-Headers":
-              "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Origin, X-Requested-With, Content-Type, Accept, Authorization, access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,content-type",
-            "Access-Control-Allow-Credentials": "true",
-          },
-        }
-      );
-      console.log(response.data);
-
-      setIsOpen(false);
-      setWhichModal("");
-      setEditModalData({});
-      dispatch(lessonActions.getAll());
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
-  const searchTable = useCallback((event) => {
-    console.log(event.target.value, searchInputRef, searchInputRef.current);
-
-    searchInputRef.current?.focus();
-
-    setSearchQuery(event.target.value);
-  });
-
-  const toggleSearch = () => {
-    setIsSearchOpen((prevSearch) => !prevSearch);
   };
 
   const [expandedSeries, setExpandedSeries] = useState(false);

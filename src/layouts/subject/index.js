@@ -52,6 +52,8 @@ const theme = createTheme({
 });
 
 function Subject() {
+  console.log("In Subject");
+
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

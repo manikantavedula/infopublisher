@@ -3,6 +3,7 @@ import logger from "redux-logger";
 import thunk from "redux-thunk";
 import { commonReducer } from "./slices/common";
 import { seriesReducer } from "./slices/series";
+import { distributorReducer } from "./slices/distributor";
 import { schoolReducer } from "./slices/school";
 import { studentReducer } from "./slices/student";
 import { standardReducer } from "./slices/standard";
@@ -19,6 +20,7 @@ const store = configureStore({
   reducer: {
     common: commonReducer,
     series: seriesReducer,
+    distributor: distributorReducer,
     school: schoolReducer,
     standard: standardReducer,
     subject: subjectReducer,

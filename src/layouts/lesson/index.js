@@ -101,6 +101,8 @@ const StyledMenu = styled((props) => (
 }));
 
 function Lesson() {
+  console.log("In Lesson");
+
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

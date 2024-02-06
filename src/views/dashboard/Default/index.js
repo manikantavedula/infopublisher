@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 
 // material-ui
 import { Grid } from "@mui/material";
@@ -12,10 +12,17 @@ import TotalIncomeLightCard from "./TotalIncomeLightCard";
 import TotalGrowthBarChart from "./TotalGrowthBarChart";
 import { gridSpacing } from "store/constant";
 
-// ==============================|| DEFAULT DASHBOARD ||============================== //
+import { useDispatch } from "react-redux";
+import { lessonActions } from "slices/lesson";
 
 const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  useLayoutEffect(() => {
+    dispatch(lessonActions.getCount());
+  }, []);
+
   useEffect(() => {
     setLoading(false);
   }, []);
@@ -42,7 +49,8 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12}>
+
+      {/* <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12} md={8}>
             <TotalGrowthBarChart isLoading={isLoading} />
@@ -51,7 +59,7 @@ const Dashboard = () => {
             <PopularCard isLoading={isLoading} />
           </Grid>
         </Grid>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

@@ -32,6 +32,34 @@ def get_data():
 
     return results
 
+def get_count():
+    mycursor = None
+
+    mydb = connect_to_db()
+    
+    if mydb.is_connected():
+        print("Connection successful")
+    else:
+        print("Connection failed")
+
+    mycursor = mydb.cursor()
+
+    results = []
+    
+    if mydb.is_connected():
+        mycursor.execute("SELECT COUNT(*) FROM lesson WHERE live_video_id IS NOT NULL OR LENGTH(live_video_id) < 0")
+        rows = mycursor.fetchone()
+        
+        mycursor.execute("SELECT COUNT(*) FROM lesson WHERE animation_video_id IS NOT NULL OR LENGTH(animation_video_id) < 0")
+        rows1 = mycursor.fetchone()
+
+        mycursor.close()
+        mydb.close()
+    else:
+        mycursor = None
+
+    return {"online": rows[0], "animation": rows1[0]}
+
 def get_data_by_id(d):
     print("Hello World databyid function")
 

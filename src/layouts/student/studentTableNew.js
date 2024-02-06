@@ -110,14 +110,21 @@ export default function StudentTableNew({
 
   return (
     <TableContainer>
-      <Table sx={{ minWidth: 700, boxShadow: "none" }} size="small" aria-label="customized table">
+      <Table
+        sx={{
+          //minWidth: 700,
+          boxShadow: "none",
+        }}
+        size="small"
+        aria-label="customized table"
+      >
         <TableHead>
           <TableRow>
-            <StyledTableCell align={columns[0].align}>S.No</StyledTableCell>
+            {/* <StyledTableCell align={columns[0].align}>S.No</StyledTableCell> */}
             <StyledTableCell align={columns[1].align}>Student</StyledTableCell>
-            <StyledTableCell align={columns[2].align}>Series</StyledTableCell>
-            <StyledTableCell align={columns[2].align}>Standard</StyledTableCell>
-            <StyledTableCell align={columns[3].align}>Contact</StyledTableCell>
+            {/* <StyledTableCell align={columns[2].align}>Series</StyledTableCell> */}
+            {/* <StyledTableCell align={columns[2].align}>Standard</StyledTableCell> */}
+            {/* <StyledTableCell align={columns[3].align}>Contact</StyledTableCell> */}
             <StyledTableCell align={columns[4].align}>Action</StyledTableCell>
           </TableRow>
         </TableHead>
@@ -125,13 +132,13 @@ export default function StudentTableNew({
           {rows &&
             rows.map((row, i) => (
               <StyledTableRow key={i}>
-                <StyledTableCell component="th" scope="row" align={columns[0].align}>
+                {/* <StyledTableCell component="th" scope="row" align={columns[0].align}>
                   {row.sno}
-                </StyledTableCell>
+                </StyledTableCell> */}
                 <StyledTableCell align={columns[1].align}>{row.student}</StyledTableCell>
-                <StyledTableCell align={columns[2].align}>{row.series}</StyledTableCell>
-                <StyledTableCell align={columns[2].align}>{row.standard}</StyledTableCell>
-                <StyledTableCell align={columns[3].align}>{row.contact}</StyledTableCell>
+                {/* <StyledTableCell align={columns[2].align}>{row.series}</StyledTableCell> */}
+                {/* <StyledTableCell align={columns[2].align}>{row.standard}</StyledTableCell> */}
+                {/* <StyledTableCell align={columns[3].align}>{row.contact}</StyledTableCell> */}
                 <StyledTableCell align={columns[4].align}>{row.action}</StyledTableCell>
               </StyledTableRow>
             ))}

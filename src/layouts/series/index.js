@@ -48,6 +48,8 @@ const theme = createTheme({
 });
 
 function Series() {
+  console.log("In Series");
+
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

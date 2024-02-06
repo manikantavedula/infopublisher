@@ -49,6 +49,14 @@ const utilities = {
       breadcrumbs: false,
     },
     {
+      id: "distributor",
+      title: "Distributor",
+      type: "item",
+      url: "/utils/distributor",
+      icon: icons.IconPalette,
+      breadcrumbs: false,
+    },
+    {
       id: "school",
       title: "School",
       type: "item",
@@ -124,6 +132,14 @@ export const adminUtilities = {
       type: "item",
       url: "/utils/lesson",
       icon: icons.IconShadow,
+      breadcrumbs: false,
+    },
+    {
+      id: "distributor",
+      title: "Distributor",
+      type: "item",
+      url: "/utils/distributor",
+      icon: icons.IconPalette,
       breadcrumbs: false,
     },
     {

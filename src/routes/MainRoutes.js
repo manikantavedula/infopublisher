@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 
 const Dashboard = Loadable(lazy(() => import("views/dashboard/Default")));
 const Series = Loadable(lazy(() => import("layouts/series")));
+const Distributor = Loadable(lazy(() => import("layouts/distributor")));
 const School = Loadable(lazy(() => import("layouts/school")));
 const Standard = Loadable(lazy(() => import("layouts/standard")));
 const Subject = Loadable(lazy(() => import("layouts/subject")));
@@ -93,6 +94,15 @@ const MainRoutes = {
         {
           path: "subject",
           element: <Subject />,
+        },
+      ],
+    },
+    {
+      path: "utils",
+      children: [
+        {
+          path: "distributor",
+          element: <Distributor />,
         },
       ],
     },

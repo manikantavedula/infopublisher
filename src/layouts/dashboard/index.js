@@ -21,6 +21,8 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
 
+  console.log("In Dashboard");
+
   return (
     <DashboardLayout>
       <DashboardNavbar />

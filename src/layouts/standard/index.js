@@ -53,6 +53,8 @@ const theme = createTheme({
 });
 
 function Standard() {
+  console.log("In Standard");
+
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

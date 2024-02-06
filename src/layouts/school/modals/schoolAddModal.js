@@ -17,9 +17,15 @@ import {
   Checkbox,
   FormControlLabel,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { seriesActions } from "slices/series";
+import { distributorActions } from "slices/distributor";
 import { schoolActions } from "slices/school";
 import { Close } from "@mui/icons-material";
 import Grid from "@mui/material/Grid";
@@ -72,6 +78,7 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty, errorEmail }) {
   }, [errorEmail]);
 
   const validationSchema = yup.object().shape({
+    distributor: yup.string().required("Please select an option"),
     school: yup.string().required("School is required"),
     email: yup
       .string()
@@ -95,10 +102,12 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty, errorEmail }) {
   useLayoutEffect(() => {
     dispatch(seriesActions.getAll());
     dispatch(schoolActions.getSchoolSeries());
+    dispatch(distributorActions.getAll());
   }, []);
 
   const series = useSelector((state) => state.series.data);
   const schoolSeries = useSelector((state) => state.school.dataSchoolSeries);
+  const distributor = useSelector((state) => state.distributor.data);
 
   useEffect(() => {
     console.log(series, schoolSeries);
@@ -115,7 +124,13 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty, errorEmail }) {
     );
   }, [series, schoolSeries]);
 
-  const initialValues = { school: "", email: "", contact: "", address: "" };
+  const initialValues = {
+    distributor: "",
+    school: "",
+    email: "",
+    contact: "",
+    address: "",
+  };
 
   const onSubmit = (values) => {
     console.log(values, checkedItems);
@@ -281,7 +296,7 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty, errorEmail }) {
           onSubmit(values);
         }}
       >
-        {({ handleSubmit, errors, touched, setFieldValue }) => (
+        {({ values, handleSubmit, errors, touched, setFieldValue }) => (
           <Form
             onSubmit={(v) => {
               console.log(v);
@@ -298,6 +313,34 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty, errorEmail }) {
                 }}
               >
                 <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Distributor</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-distributor"
+                        value={values.distributor}
+                        label="Distributor"
+                        error={touched.distributor && Boolean(errors.distributor)}
+                        helperText={touched.distributor && errors.distributor}
+                        onChange={(event) => {
+                          setFieldValue("distributor", event.target.value);
+                          setFieldValue("type", "");
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {distributor &&
+                          distributor.length > 0 &&
+                          distributor.map((v) => <MenuItem value={v.id}>{v.name}</MenuItem>)}
+                      </Select>
+                      <FormHelperText sx={{ color: "red" }}>
+                        {errors.distributor && touched.distributor ? errors.distributor : ""}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+
                   <Grid item xs={6}>
                     <TextField
                       name="school"
@@ -344,7 +387,9 @@ export function SchoolAddModal({ isOpen, onClose, onCloseEmpty, errorEmail }) {
                         marginBottom: "16px",
                       }}
                     />
+                  </Grid>
 
+                  <Grid item xs={6}>
                     <TextField
                       name="address"
                       label="Address"
