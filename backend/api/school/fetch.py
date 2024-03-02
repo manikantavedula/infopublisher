@@ -47,20 +47,17 @@ def get_data():
 
             series_ids = list(params.keys())
             standard_ids = [standard_id for standard_ids_list in params.values() for standard_id in standard_ids_list]
-            distributor_id = res['distributor']
+            # distributor_id = res['distributor']
 
             # Create a SQL query with the IN operator to get rows where id matches any value in id_list
             series_query = "SELECT id, name FROM series WHERE id IN (%s)"
             standard_query = "SELECT id, name FROM standard WHERE id IN (%s)"
-            distributor_query = "SELECT id, name FROM distributor WHERE id IN (%s)"
 
             series_placeholders = ",".join(["%s"] * len(series_ids))
             standard_placeholders = ",".join(["%s"] * len(standard_ids))
-            distributor_placeholders = ",".join(["%s"] * len(distributor_id))
 
             series_query = series_query % series_placeholders
             standard_query = standard_query % standard_placeholders
-            distributor_query = distributor_query % distributor_placeholders
 
             mycursor.execute(series_query, tuple(series_ids))
             series_rows = mycursor.fetchall()
@@ -68,16 +65,8 @@ def get_data():
             mycursor.execute(standard_query, tuple(standard_ids))
             standard_rows = mycursor.fetchall()
 
-            mycursor.execute(distributor_query, tuple(distributor_id))
-            distributor_rows = mycursor.fetchall()
-
             # series_names = [row[0] for row in series_rows]
             # standard_names = [row[0] for row in standard_rows]
-            
-            distributor_data = {}
-            for row in distributor_rows:
-                distributor_id, distributor_name = row
-                distributor_data[distributor_id] = {'distributor_id': distributor_id, 'distributor_name': distributor_name}
             
             series_data = {}
             for row in series_rows:

@@ -23,6 +23,7 @@ def update_data(payload):
         email = payload['email']
         id = payload['id']
         checkedItems = payload['checkedItems']
+        distributor = payload['distributor']
 
         logger.debug(f'{checkedItems}')
 
@@ -36,8 +37,8 @@ def update_data(payload):
 
         logger.debug(f'{my_string}')
 
-        update_query = "UPDATE school SET name=%s, proper_name_id=%s, email=%s, contact=%s, address=%s, school_series=%s, school_classes=%s, created_by=%s, last_edited_by=%s WHERE id=%s"
-        values = (school, proper_name_id, email, contact, address, my_string, '', 'admin', 'admin', id)
+        update_query = "UPDATE school SET name=%s, proper_name_id=%s, email=%s, contact=%s, address=%s, distributor=%s, school_series=%s, school_classes=%s, created_by=%s, last_edited_by=%s WHERE id=%s"
+        values = (school, proper_name_id, email, contact, address, distributor, my_string, '', 'admin', 'admin', id)
         mycursor.execute(update_query, values)
         mydb.commit()
 
