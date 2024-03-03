@@ -40,11 +40,12 @@ def get_data_by_standard_endpoint():
     
     elif request.method == 'POST':
         standard = request.json['standardID']
+        series = request.json['series']
         # status = request.json['status']
 
         logger.debug(f'A message to log. {request.json} {standard}')
 
-        data = get_data_by_standard(standard)
+        data = get_data_by_standard(series, standard)
         response = make_response(jsonify(data))
 
         return response

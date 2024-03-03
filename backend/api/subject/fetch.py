@@ -1,6 +1,6 @@
 from connection import connect_to_db
 
-def get_data_by_standard(standard):
+def get_data_by_standard(series, standard):
     mycursor = None
 
     mydb = connect_to_db()
@@ -12,10 +12,35 @@ def get_data_by_standard(standard):
 
     mycursor = mydb.cursor()
 
-    results = []
+    results = []# Execute the SQL query
+    
+    query = ("SELECT s.* FROM series s WHERE s.proper_name_id = %s")
+    mycursor.execute(query, ('whiz_kid',))
+    result1 = mycursor.fetchone()
+    column_names1 = mycursor.column_names
+
+    series_name = ''
+    
+    query = ("SELECT s.* FROM series s WHERE s.proper_name_id = %s")
+    mycursor.execute(query, (series,))
+    result2 = mycursor.fetchone()
+    column_names2 = mycursor.column_names
+
+    if(series == 'global_smart'):
+        if result1:
+            column_index1 = column_names1.index('id')
+            series_name = result1[column_index1]
+        else:
+            return False
+    else:
+        if result2:
+            column_index2 = column_names2.index('id')
+            series_name = result1[column_index2]
+        else:
+            return False
     
     if mydb.is_connected():
-        mycursor.execute("SELECT s.* FROM `lesson` l, `subject` s WHERE l.standard = %s AND l.subject = s.id GROUP BY s.name", (standard,))
+        mycursor.execute("SELECT s.* FROM `lesson` l, `subject` s WHERE l.series = %s AND l.standard = %s AND l.subject = s.id GROUP BY s.name", (series_name, standard,))
         rows = mycursor.fetchall()
         
         # get the column names

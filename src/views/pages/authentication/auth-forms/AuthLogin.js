@@ -27,7 +27,9 @@ const validationSchemaOTP = Yup.object().shape({
 });
 
 const AuthLogin = React.memo(({ isLoading, handleLoading, ...others }) => {
-  const [secretKey, setSecretKey] = useState(generateSecretKey());
+  const [secretKey, setSecretKey] = useState(() => {
+    return generateSecretKey();
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isOTP, setIsOTP] = useState(false);

@@ -58,7 +58,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
 
-const TotalOrderLineChartCard = ({ isLoading }) => {
+const TotalOrderLineChartCard = ({ isLoading, data }) => {
   const theme = useTheme();
 
   // const dispatch = useDispatch();
@@ -66,7 +66,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
   //   dispatch(lessonActions.getCount());
   // }, []);
 
-  const lesson = useSelector((state) => state.lesson.count);
+  // const lesson = useSelector((state) => state.lesson.count);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -155,7 +155,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                     <Typography
                       sx={{ fontSize: "2.125rem", fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}
                     >
-                      {`${lesson.animation} ${lesson.animation > 1 ? "Classes" : "Class"}`}
+                      {`${data?.animation} ${data?.animation > 1 ? "Classes" : "Class"}`}
                     </Typography>
                   </Grid>
                   {/* <Grid item>

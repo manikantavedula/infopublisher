@@ -8,12 +8,20 @@ function createInitialState() {
     data: null,
     isLoading: false,
     error: null,
+    filteredOnlineClasses: null,
   };
 }
 
 const initialState = createInitialState();
 
 function createExtraActions() {
+  function getFilteredOnlineClasses(data) {
+    console.log(data);
+    return createAsyncThunk("onlineClassesSlice/filteredOnlineClasses", async () => {
+      return data;
+    });
+  }
+
   function getAll() {
     return createAsyncThunk("onlineClassesSlice/fetchData", async () => {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/onlineClasses/data`, {
@@ -31,6 +39,7 @@ function createExtraActions() {
   }
 
   return {
+    getFilteredOnlineClasses: getFilteredOnlineClasses(),
     getAll: getAll(),
   };
 }
@@ -38,6 +47,25 @@ function createExtraActions() {
 const extraActions = createExtraActions();
 
 function createExtraReducers() {
+  function getFilteredOnlineClasses() {
+    const { pending, fulfilled, rejected } = extraActions.getFilteredOnlineClasses;
+
+    return {
+      [pending]: (state) => ({ ...state, isLoading: true }),
+      [fulfilled]: (state, action) => ({
+        ...state,
+        filteredOnlineClasses: action.payload,
+        isLoading: false,
+        error: null,
+      }),
+      [rejected]: (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      }),
+    };
+  }
+
   function getAll() {
     const { pending, fulfilled, rejected } = extraActions.getAll;
 
@@ -58,6 +86,7 @@ function createExtraReducers() {
   }
 
   return {
+    ...getFilteredOnlineClasses(),
     ...getAll(),
   };
 }

@@ -17,12 +17,18 @@ import {
   Checkbox,
   FormControlLabel,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { Formik, Form } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import { seriesActions } from "slices/series";
 import { schoolActions } from "slices/school";
+import { distributorActions } from "slices/distributor";
 import Grid from "@mui/material/Grid";
 import * as yup from "yup";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -62,6 +68,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 const validationSchema = yup.object().shape({
+  distributor: yup.string().required("Distributor is required"),
   school: yup.string().required("School is required"),
   email: yup
     .string()
@@ -77,13 +84,15 @@ const validationSchema = yup.object().shape({
 
 export function SchoolViewModal({ isOpen, onClose, onCloseEmpty, editModalData }) {
   // eslint-disable-next-line camelcase
-  const { name, email, contact, address, school_series, formatted_series } = editModalData;
+  const { name, email, contact, address, distributor, school_series, formatted_series } =
+    editModalData;
 
   const initialValues = {
     school: name,
     email,
     contact,
     address,
+    distributor,
     // eslint-disable-next-line camelcase
     school_series,
   };
@@ -95,10 +104,12 @@ export function SchoolViewModal({ isOpen, onClose, onCloseEmpty, editModalData }
   useLayoutEffect(() => {
     dispatch(seriesActions.getAll());
     dispatch(schoolActions.getSchoolSeries());
+    dispatch(distributorActions.getAll());
   }, []);
 
   const series = useSelector((state) => state.series.data);
   const schoolSeries = useSelector((state) => state.school.dataSchoolSeries);
+  const distributors = useSelector((state) => state.distributor.data);
 
   useEffect(() => {
     console.log(initialValues);
@@ -302,6 +313,35 @@ export function SchoolViewModal({ isOpen, onClose, onCloseEmpty, editModalData }
               >
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Distributor</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-distributor"
+                        value={values.distributor}
+                        label="Distributor"
+                        error={touched.distributor && Boolean(errors.distributor)}
+                        helperText={touched.distributor && errors.distributor}
+                        // onChange={(event) => {
+                        //   setFieldValue("distributor", event.target.value);
+                        //   setFieldValue("type", "");
+                        // }}
+                        disabled
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {distributors &&
+                          distributors.length > 0 &&
+                          distributors.map((v) => <MenuItem value={v.id}>{v.name}</MenuItem>)}
+                      </Select>
+                      <FormHelperText sx={{ color: "red" }}>
+                        {errors.distributor && touched.distributor ? errors.distributor : ""}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={6}>
                     <TextField
                       name="school"
                       label="School"
@@ -353,7 +393,9 @@ export function SchoolViewModal({ isOpen, onClose, onCloseEmpty, editModalData }
                       defaultValue={values.contact}
                       disabled
                     />
+                  </Grid>
 
+                  <Grid item xs={6}>
                     <TextField
                       name="address"
                       label="Address"

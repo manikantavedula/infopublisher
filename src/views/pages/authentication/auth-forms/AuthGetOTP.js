@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import AnimateButton from "ui-component/extended/AnimateButton";
-import { handleMobileOTPMethod } from "./handleMobileOTPMethod";
+import useHandleMobileOTPMethod from "./useHandleMobileOTPMethod";
 
 function AuthGetOTP({
   initialValues,
@@ -20,8 +20,14 @@ function AuthGetOTP({
   handleIsOTP,
   handleInitialValues,
 }) {
+  const { performPullOTP } = useHandleMobileOTPMethod(
+    handleInitialValues,
+    handleLoading,
+    handleIsOTP
+  );
+
   const onSubmit = (values) => {
-    handleMobileOTPMethod(handleInitialValues, values, handleLoading, handleIsOTP);
+    performPullOTP(values);
   };
 
   return (

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import AnimateButton from "ui-component/extended/AnimateButton";
-import { handleMobileOTPVerificationMethod } from "./handleMobileOTPVerificationMethod";
+import useHandleMobileOTPVerificationMethod from "./useHandleMobileOTPVerificationMethod";
 
 function AuthEnterOTP({
   initialValues,
@@ -21,8 +21,15 @@ function AuthEnterOTP({
   secretKey,
   navigate,
 }) {
+  const { performCheckOTP } = useHandleMobileOTPVerificationMethod(
+    handleLoading,
+    dispatch,
+    secretKey,
+    navigate
+  );
+
   const onSubmit = (values) => {
-    handleMobileOTPVerificationMethod(values, handleLoading, dispatch, secretKey, navigate);
+    performCheckOTP(values);
   };
 
   return (

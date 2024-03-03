@@ -100,6 +100,33 @@ function a11yProps(index) {
   };
 }
 
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps1(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -146,18 +173,6 @@ function decryptObject(ciphertext, secretKey) {
 function OnlineClasses() {
   console.log("In OnlineClasses");
 
-  const theme = useTheme();
-  const [value, setValue] = useState(0);
-  const navigate = useNavigate;
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setValue(index);
-  };
-
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [whichModal, setWhichModal] = useState("");
@@ -166,6 +181,11 @@ function OnlineClasses() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [loginAccessRole, setLoginAccessRole] = useState("");
   const [allowedClassess, setAllowedClassess] = useState([]);
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const dispatch = useDispatch();
 
@@ -176,8 +196,12 @@ function OnlineClasses() {
 
     console.log(onlineClasses);
 
+    dispatch(seriesActions.getAll());
+
     if (!onlineClasses || onlineClasses.length <= 0) dispatch(onlineClassesActions.getAll());
   }, [onlineClasses]);
+
+  const series = useSelector((state) => state.series.data);
 
   const key = localStorage.getItem("key_for_access");
   const login_role_data = localStorage.getItem("access_role_data");
@@ -367,149 +391,33 @@ function OnlineClasses() {
           ) : null}
 
           {accessRole === "other" ? (
-            <Box sx={{ bgcolor: "background.paper", width: "100%" }}>
-              {filteredSchoolOnlineClasses &&
-                filteredSchoolOnlineClasses.length > 0 &&
-                filteredSchoolOnlineClasses.map((v, i) => (
-                  <Accordion
-                    expanded={expandedSeries === `panelseries${i + 1}`}
-                    onChange={handleChangeAccSeries(`panelseries${i + 1}`)}
-                    key={`panelseries${i + 1}`}
-                  >
-                    <AccordionSummary
-                      aria-controls={`panelseries${i + 1}d-content`}
-                      id={`panelseries${i + 1}d-header`}
-                    >
-                      {/* <Typography>{v.name}</Typography> */}
-                      <Typography>
-                        {v.name === "Whiz Kid" ? (
-                          <img src={whizkid} width={100} />
-                        ) : v.name === "Smart Learn" ? (
-                          <img src={smartlearn} width={100} />
-                        ) : (
-                          <img src={globalsmart} width={100} />
-                        )}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {v.data.length > 0 &&
-                        v.data.map((w, j) => (
-                          <Accordion
-                            expanded={expandedStandard === `panelstandard${i + j + 1}`}
-                            onChange={handleChangeAccStandard(`panelstandard${i + j + 1}`)}
-                            key={`panelstandard${i + j + 1}`}
-                          >
-                            <AccordionSummary
-                              aria-controls={`panelstandard${i + j + 1}d-content`}
-                              id={`panelstandard${i + j + 1}d-header`}
-                            >
-                              <Typography>{w.name}</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              {w.data.length > 0 &&
-                                w.data.map((x, k) => (
-                                  <Accordion
-                                    expanded={expandedSubject === `panelsubject${i + j + k + 1}`}
-                                    onChange={handleChangeAccSubject(
-                                      `panelsubject${i + j + k + 1}`
-                                    )}
-                                    key={`panelsubject${i + j + k + 1}`}
-                                  >
-                                    <AccordionSummary
-                                      aria-controls={`panelsubject${i + j + k + 1}d-content`}
-                                      id={`panelsubject${i + j + k + 1}d-header`}
-                                    >
-                                      <Typography>{x.name}</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                      {x.data.length > 0 &&
-                                        x.data.map((y, l) => (
-                                          <Accordion
-                                            expanded={
-                                              expandedLesson === `panellesson${i + j + k + l + 1}`
-                                            }
-                                            onChange={handleChangeAccLesson(
-                                              `panellesson${i + j + k + l + 1}`
-                                            )}
-                                            key={`panellesson${i + j + k + l + 1}`}
-                                          >
-                                            <AccordionSummary
-                                              aria-controls={`panellesson${
-                                                i + j + k + l + 1
-                                              }d-content`}
-                                              id={`panellesson${i + j + k + l + 1}d-header`}
-                                            >
-                                              <Typography>{y.name}</Typography>
-                                            </AccordionSummary>
-                                            <AccordionDetails>
-                                              {y.parts.length > 0 &&
-                                                y.parts.map((z, m) => (
-                                                  <Accordion
-                                                    expanded={
-                                                      expandedParts ===
-                                                      `panelparts${i + j + k + l + m + 1}`
-                                                    }
-                                                    onChange={handleChangeAccParts(
-                                                      `panelparts${i + j + k + l + m + 1}`
-                                                    )}
-                                                    key={`panelparts${i + j + k + l + m + 1}`}
-                                                  >
-                                                    <AccordionSummary
-                                                      aria-controls={`panelparts${
-                                                        i + j + k + l + m + 1
-                                                      }d-content`}
-                                                      id={`panelparts${
-                                                        i + j + k + l + m + 1
-                                                      }d-header`}
-                                                    >
-                                                      <Typography>{z.name}</Typography>
-                                                    </AccordionSummary>
-                                                    <AccordionDetails>
-                                                      {!z.liveVideoId ? null : (
-                                                        <Tooltip
-                                                          title="Live Video"
-                                                          placement="top"
-                                                          className={z.liveVideoId}
-                                                        >
-                                                          <IconButton
-                                                            color="primary"
-                                                            type="button"
-                                                            onClick={() =>
-                                                              onOpenVideoModal({
-                                                                ...v,
-                                                                videoType: "live",
-                                                                lessonIdName: y.name,
-                                                                name: z.name,
-                                                                partNo: z.partNo,
-                                                                liveVideoId: extractVideoId(
-                                                                  z.liveVideoId
-                                                                ),
-                                                              })
-                                                            }
-                                                          >
-                                                            <IconVideo size="24px" />
-                                                          </IconButton>
-                                                        </Tooltip>
-                                                      )}
-                                                    </AccordionDetails>
-                                                  </Accordion>
-                                                ))}
-                                            </AccordionDetails>
-                                          </Accordion>
-                                        ))}
-                                    </AccordionDetails>
-                                  </Accordion>
-                                ))}
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-            </Box>
+            <>{/* #MW@34 comment */}</>
           ) : (
             <Box sx={{ bgcolor: "background.paper", width: "100%" }}>
-              {filteredSchoolOnlineClasses &&
+              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                {series &&
+                  series.length > 0 &&
+                  series.map((v, i) => (
+                    <Tab
+                      label={
+                        <Box>
+                          <Typography>
+                            {v.name === "Whiz Kid" ? (
+                              <img src={whizkid} width={100} />
+                            ) : v.name === "Smart Learn" ? (
+                              <img src={smartlearn} width={100} />
+                            ) : (
+                              <img src={globalsmart} width={100} />
+                            )}
+                          </Typography>
+                        </Box>
+                      }
+                      {...a11yProps1(i)}
+                    />
+                  ))}
+              </Tabs>
+
+              {/* {filteredSchoolOnlineClasses &&
                 filteredSchoolOnlineClasses.length > 0 &&
                 filteredSchoolOnlineClasses.map((v, i) => (
                   <AccordionDetails>
@@ -654,7 +562,7 @@ function OnlineClasses() {
                         </Accordion>
                       ))}
                   </AccordionDetails>
-                ))}
+                ))} */}
             </Box>
           )}
         </>
@@ -664,3 +572,133 @@ function OnlineClasses() {
 }
 
 export default OnlineClasses;
+
+// #MW@34 comment
+{
+  /* <Box sx={{ bgcolor: "background.paper", width: "100%" }}>
+  {filteredSchoolOnlineClasses &&
+    filteredSchoolOnlineClasses.length > 0 &&
+    filteredSchoolOnlineClasses.map((v, i) => (
+      <Accordion
+        expanded={expandedSeries === `panelseries${i + 1}`}
+        onChange={handleChangeAccSeries(`panelseries${i + 1}`)}
+        key={`panelseries${i + 1}`}
+      >
+        <AccordionSummary
+          aria-controls={`panelseries${i + 1}d-content`}
+          id={`panelseries${i + 1}d-header`}
+        >
+          <Typography>
+            {v.name === "Whiz Kid" ? (
+              <img src={whizkid} width={100} />
+            ) : v.name === "Smart Learn" ? (
+              <img src={smartlearn} width={100} />
+            ) : (
+              <img src={globalsmart} width={100} />
+            )}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {v.data.length > 0 &&
+            v.data.map((w, j) => (
+              <Accordion
+                expanded={expandedStandard === `panelstandard${i + j + 1}`}
+                onChange={handleChangeAccStandard(`panelstandard${i + j + 1}`)}
+                key={`panelstandard${i + j + 1}`}
+              >
+                <AccordionSummary
+                  aria-controls={`panelstandard${i + j + 1}d-content`}
+                  id={`panelstandard${i + j + 1}d-header`}
+                >
+                  <Typography>{w.name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {w.data.length > 0 &&
+                    w.data.map((x, k) => (
+                      <Accordion
+                        expanded={expandedSubject === `panelsubject${i + j + k + 1}`}
+                        onChange={handleChangeAccSubject(`panelsubject${i + j + k + 1}`)}
+                        key={`panelsubject${i + j + k + 1}`}
+                      >
+                        <AccordionSummary
+                          aria-controls={`panelsubject${i + j + k + 1}d-content`}
+                          id={`panelsubject${i + j + k + 1}d-header`}
+                        >
+                          <Typography>{x.name}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {x.data.length > 0 &&
+                            x.data.map((y, l) => (
+                              <Accordion
+                                expanded={expandedLesson === `panellesson${i + j + k + l + 1}`}
+                                onChange={handleChangeAccLesson(`panellesson${i + j + k + l + 1}`)}
+                                key={`panellesson${i + j + k + l + 1}`}
+                              >
+                                <AccordionSummary
+                                  aria-controls={`panellesson${i + j + k + l + 1}d-content`}
+                                  id={`panellesson${i + j + k + l + 1}d-header`}
+                                >
+                                  <Typography>{y.name}</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                  {y.parts.length > 0 &&
+                                    y.parts.map((z, m) => (
+                                      <Accordion
+                                        expanded={
+                                          expandedParts === `panelparts${i + j + k + l + m + 1}`
+                                        }
+                                        onChange={handleChangeAccParts(
+                                          `panelparts${i + j + k + l + m + 1}`
+                                        )}
+                                        key={`panelparts${i + j + k + l + m + 1}`}
+                                      >
+                                        <AccordionSummary
+                                          aria-controls={`panelparts${
+                                            i + j + k + l + m + 1
+                                          }d-content`}
+                                          id={`panelparts${i + j + k + l + m + 1}d-header`}
+                                        >
+                                          <Typography>{z.name}</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                          {!z.liveVideoId ? null : (
+                                            <Tooltip
+                                              title="Live Video"
+                                              placement="top"
+                                              className={z.liveVideoId}
+                                            >
+                                              <IconButton
+                                                color="primary"
+                                                type="button"
+                                                onClick={() =>
+                                                  onOpenVideoModal({
+                                                    ...v,
+                                                    videoType: "live",
+                                                    lessonIdName: y.name,
+                                                    name: z.name,
+                                                    partNo: z.partNo,
+                                                    liveVideoId: extractVideoId(z.liveVideoId),
+                                                  })
+                                                }
+                                              >
+                                                <IconVideo size="24px" />
+                                              </IconButton>
+                                            </Tooltip>
+                                          )}
+                                        </AccordionDetails>
+                                      </Accordion>
+                                    ))}
+                                </AccordionDetails>
+                              </Accordion>
+                            ))}
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                </AccordionDetails>
+              </Accordion>
+            ))}
+        </AccordionDetails>
+      </Accordion>
+    ))}
+</Box>; */
+}

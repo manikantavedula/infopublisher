@@ -1,6 +1,91 @@
 from connection import connect_to_db
 from .logger import logger
 
+def get_data_by_role(role, series, standard, subject):
+    mycursor = None
+
+    mydb = connect_to_db()
+    
+    if mydb.is_connected():
+        print("Connection successful")
+    else:
+        print("Connection failed")
+
+    mycursor = mydb.cursor()
+
+    results = []
+
+    query1 = ("SELECT s.* FROM series s WHERE s.id = %s")
+    mycursor.execute(query1, (series,))
+    result1 = mycursor.fetchone()
+    column_names1 = mycursor.column_names
+    
+    query2 = ("SELECT s.* FROM series s WHERE s.proper_name_id = %s")
+    mycursor.execute(query2, ('whiz_kid',))
+    result2 = mycursor.fetchone()
+    column_names2 = mycursor.column_names
+    series_name = ''
+    
+    query3 = ("SELECT s.* FROM subject s WHERE s.id = %s")
+    mycursor.execute(query3, (subject,))
+    result3 = mycursor.fetchone()
+    column_names3 = mycursor.column_names
+    subject_name = ''
+
+    if result1:
+        column_index1 = column_names1.index('proper_name_id')
+        series_name = result1[column_index1]
+
+        if(series_name == 'global_smart'):
+            if result2:
+                column_index2 = column_names2.index('id')
+                series_name = result2[column_index2]
+            else:
+                return False
+        elif(series_name == 'smart_learn'):
+            if result3:
+                column_index3 = column_names3.index('proper_name_id')
+                subject_name = result3[column_index3]
+
+                if subject_name in ['telugu', 'hindi', 'english']:
+                    if result2:
+                        column_index2 = column_names2.index('id')
+                        series_name = result2[column_index2]
+                    else:
+                        series_name = series
+            else:
+                return False
+        else:
+            series_name = series
+    else:
+        return False
+    
+    if mydb.is_connected():
+        mycursor.execute("SELECT l.id, l.name, l.series, l.standard, l.subject, l.type, (SELECT COUNT(*) FROM lesson ln WHERE type=%s AND l.id = ln.lesson_id) as parts_length FROM `lesson` l WHERE l.type = %s AND l.series = %s AND l.subject = %s AND l.standard = %s", ('part', 'main', series_name, subject, standard))
+        rows1 = mycursor.fetchall()
+        
+        # get the column names
+        col_names1 = [description[0] for description in mycursor.description]
+
+        mycursor.execute("SELECT l.id, l.name, l.series, l.standard, l.subject, l.type, l.lesson_id, l.live_video_id, l.animation_video_id FROM `lesson` l WHERE l.type = %s AND l.series = %s AND l.subject = %s AND l.standard = %s", ('part', series_name, subject, standard))
+        rows2 = mycursor.fetchall()
+        
+        # get the column names
+        col_names2 = [description[0] for description in mycursor.description]
+
+        # create a list of dictionaries where each dictionary represents a row with column names as keys and row values as values
+        results1 = [dict(zip(col_names1, row)) for row in rows1]
+        results2 = [dict(zip(col_names2, row)) for row in rows2]
+
+        results = [results1, results2]
+
+        mycursor.close()
+        mydb.close()
+    else:
+        mycursor = None
+
+    return results
+
 def get_data():
     mycursor = None
 
