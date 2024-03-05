@@ -3652,3 +3652,28 @@ fsdfds
 2024-03-04 00:56:33,280 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
 2024-03-04 00:56:40,062 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
 2024-03-04 00:56:40,062 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 10:48:02,848 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 10:48:02,848 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 10:48:12,420 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 10:48:12,420 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 10:49:52,187 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 10:49:52,187 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 10:52:55,466 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 10:52:55,467 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 12:01:04,076 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 12:01:04,076 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 12:02:51,922 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'whiz_kid', 'standard': '3rd', 'standardID': '6'}
+2024-03-04 12:02:51,922 - api.subject.routes - DEBUG - A message to log. {'series': 'whiz_kid', 'standard': '3rd', 'standardID': '6'} 6
+2024-03-04 12:03:25,415 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'whiz_kid', 'standard': '3rd', 'standardID': '6'}
+2024-03-04 12:03:25,415 - api.subject.routes - DEBUG - A message to log. {'series': 'whiz_kid', 'standard': '3rd', 'standardID': '6'} 6
+2024-03-04 12:03:33,808 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'whiz_kid', 'standard': '3rd', 'standardID': '6'}
+2024-03-04 12:03:33,808 - api.subject.routes - DEBUG - A message to log. {'series': 'whiz_kid', 'standard': '3rd', 'standardID': '6'} 6
+2024-03-04 12:33:38,366 - api.animatedClasses.logger - DEBUG - animated classes
+2024-03-04 13:09:28,815 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 13:09:28,815 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 13:10:45,287 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 13:10:45,287 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 13:13:48,426 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'}
+2024-03-04 13:13:48,426 - api.subject.routes - DEBUG - A message to log. {'series': 'smart_learn', 'standard': '2nd', 'standardID': '4'} 4
+2024-03-04 15:16:31,072 - api.subject.routes - DEBUG - request: <Request 'http://127.0.0.1:5000/subject/dataByStandard' [POST]> {'series': 'global_smart', 'standard': '1st', 'standardID': '7'}
+2024-03-04 15:16:31,074 - api.subject.routes - DEBUG - A message to log. {'series': 'global_smart', 'standard': '1st', 'standardID': '7'} 7

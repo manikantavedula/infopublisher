@@ -1620,3 +1620,70 @@
 2024-03-04 01:34:44,247 - api.onlineClasses.logger - DEBUG - online classes
 2024-03-04 01:39:29,369 - api.onlineClasses.logger - DEBUG - online classes
 2024-03-04 01:40:56,491 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 10:48:02,958 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 10:48:02,958 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 10:48:12,558 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 10:48:12,558 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 10:49:52,284 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 10:49:52,284 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 10:52:55,643 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 10:52:55,643 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 12:01:04,262 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 12:01:04,262 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 12:02:44,328 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 12:02:52,005 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6}
+2024-03-04 12:02:52,005 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6} 6
+2024-03-04 12:02:55,425 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 5}
+2024-03-04 12:02:55,425 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 5} 6
+2024-03-04 12:02:56,634 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6}
+2024-03-04 12:02:56,637 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6} 6
+2024-03-04 12:02:58,619 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': '6'}
+2024-03-04 12:02:58,620 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': '6'} 6
+2024-03-04 12:03:25,463 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6}
+2024-03-04 12:03:25,463 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6} 6
+2024-03-04 12:03:27,560 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 7}
+2024-03-04 12:03:27,560 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 7} 6
+2024-03-04 12:03:29,454 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': '7'}
+2024-03-04 12:03:29,454 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': '7'} 6
+2024-03-04 12:03:33,846 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6}
+2024-03-04 12:03:33,846 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '40', 'standardID': '6', 'subject': 6} 6
+2024-03-04 12:08:33,668 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 13:09:28,925 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 13:09:28,925 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 13:10:45,402 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 13:10:45,402 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 13:13:48,523 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6}
+2024-03-04 13:13:48,523 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '2', 'standardID': '4', 'subject': 6} 4
+2024-03-04 13:14:04,904 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 13:14:17,818 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 13:14:30,775 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 13:14:41,494 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:45:28,191 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:45:53,053 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:49:48,615 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:50:48,595 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:50:59,259 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:51:36,308 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:51:51,572 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:51:54,592 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:52:26,580 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:52:46,537 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:52:57,195 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:53:12,351 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:53:15,710 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:53:31,891 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:53:44,605 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:53:50,475 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 14:57:47,361 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:04:32,835 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:05:44,737 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:07:21,431 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:10:01,269 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:10:35,313 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:10:48,655 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:11:05,849 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:11:51,300 - api.onlineClasses.logger - DEBUG - online classes
+2024-03-04 15:16:31,157 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '1', 'standardID': '7', 'subject': 6}
+2024-03-04 15:16:31,157 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '1', 'standardID': '7', 'subject': 6} 7
+2024-03-04 15:16:34,358 - api.onlineClasses.logger - DEBUG - request: <Request 'http://127.0.0.1:5000/onlineClasses/dataByRole' [POST]> {'role': 'admin', 'seriesID': '1', 'standardID': '7', 'subject': '6'}
+2024-03-04 15:16:34,358 - api.onlineClasses.logger - DEBUG - A message to log. {'role': 'admin', 'seriesID': '1', 'standardID': '7', 'subject': '6'} 7
